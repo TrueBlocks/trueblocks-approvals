@@ -1,0 +1,94 @@
+.detail-table {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 25% 75%;
+  gap: 0;
+}
+
+.detail-section-header {
+  grid-column: 1 / -1;
+  background: transparent;
+  color: var(--mantine-color-text);
+  text-align: left;
+  font-weight: 600;
+  padding: 8px 6px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--mantine-color-gray-4);
+}
+
+.detail-section-header.first-section-header {
+  font-size: 1.1em;
+}
+
+.detail-row-prompt {
+  padding: 4px 6px;
+  font-weight: 500;
+  color: var(--mantine-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  background: transparent;
+  border: none;
+}
+
+.detail-row-value {
+  padding: 4px 6px;
+  overflow-x: auto;
+  word-break: break-word;
+  vertical-align: top;
+  color: var(--mantine-color-text);
+}
+
+.detail-separator {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--mantine-color-gray-4);
+  height: 1px;
+  margin: 4px 0;
+}
+
+.detail-json-toggle {
+  margin: 4px 0 8px;
+}
+
+.detail-json-block {
+  font-family: monospace;
+  font-size: 12px;
+  background: transparent;
+  color: var(--mantine-color-text);
+  padding: 8px;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid var(--mantine-color-gray-4);
+}
+
+/* Componentized DetailPanel styles */
+.detail-panel-componentized {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-row {
+  display: grid;
+  width: 100%;
+  gap: 0;
+}
+
+.detail-row[data-columns='1'] {
+  grid-template-columns: 25% 75%;
+}
+
+.detail-row .detail-row-prompt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-row .detail-row-value {
+  overflow-x: auto;
+  word-break: break-word;
+}
+
+/* Title now reuses .detail-section-header (optionally with .first-section-header) */
