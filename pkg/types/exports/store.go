@@ -21,8 +21,9 @@ import (
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
-type Approval = sdk.Approval
-type Approve = sdk.Log
+type OpenApproval = sdk.Approval
+type ApprovalLog = sdk.Log
+type ApprovalTx = sdk.Transaction
 type Asset = sdk.Asset
 type Balance = sdk.Balance
 type Log = sdk.Log
@@ -36,11 +37,14 @@ type Withdrawal = sdk.Withdrawal
 // EXISTING_CODE
 
 var (
-	approvalsStore   = make(map[string]*store.Store[Approval])
-	approvalsStoreMu sync.Mutex
+	openApprovalsStore   = make(map[string]*store.Store[OpenApproval])
+	openApprovalsStoreMu sync.Mutex
 
-	approvesStore   = make(map[string]*store.Store[Approve])
-	approvesStoreMu sync.Mutex
+	approvalLogsStore   = make(map[string]*store.Store[ApprovalLog])
+	approvalLogsStoreMu sync.Mutex
+
+	approvalTxsStore   = make(map[string]*store.Store[ApprovalTx])
+	approvalTxsStoreMu sync.Mutex
 
 	assetsStore   = make(map[string]*store.Store[Asset])
 	assetsStoreMu sync.Mutex
@@ -70,9 +74,9 @@ var (
 	withdrawalsStoreMu sync.Mutex
 )
 
-func (c *ExportsCollection) getApprovalsStore(payload *types.Payload, facet types.DataFacet) *store.Store[Approval] {
-	approvalsStoreMu.Lock()
-	defer approvalsStoreMu.Unlock()
+func (c *ExportsCollection) getOpenApprovalsStore(payload *types.Payload, facet types.DataFacet) *store.Store[OpenApproval] {
+	openApprovalsStoreMu.Lock()
+	defer openApprovalsStoreMu.Unlock()
 
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -80,7 +84,7 @@ func (c *ExportsCollection) getApprovalsStore(payload *types.Payload, facet type
 	chain := payload.Chain
 	address := payload.Address
 	storeKey := getStoreKey(chain, address)
-	theStore := approvalsStore[storeKey]
+	theStore := openApprovalsStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
@@ -91,22 +95,22 @@ func (c *ExportsCollection) getApprovalsStore(payload *types.Payload, facet type
 				NoZero:    true,
 			}
 			if _, _, err := tokensOpts.TokensApprovals(); err != nil {
-				wrappedErr := types.NewSDKError("exports", ExportsApprovals, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Exports approvals SDK query error: %v", wrappedErr))
+				wrappedErr := types.NewSDKError("exports", ExportsOpenApprovals, "fetch", err)
+				logging.LogBackend(fmt.Sprintf("Exports openapprovals SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE
 			return nil
 		}
 
-		processFunc := func(item interface{}) *Approval {
-			if it, ok := item.(*Approval); ok {
+		processFunc := func(item interface{}) *OpenApproval {
+			if it, ok := item.(*OpenApproval); ok {
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Approval) (key interface{}, includeInMap bool) {
+		mappingFunc := func(item *OpenApproval) (key interface{}, includeInMap bool) {
 			// EXISTING_CODE
 			// EXISTING_CODE
 			return nil, false
@@ -118,15 +122,15 @@ func (c *ExportsCollection) getApprovalsStore(payload *types.Payload, facet type
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		approvalsStore[storeKey] = theStore
+		openApprovalsStore[storeKey] = theStore
 	}
 
 	return theStore
 }
 
-func (c *ExportsCollection) getApprovesStore(payload *types.Payload, facet types.DataFacet) *store.Store[Approve] {
-	approvesStoreMu.Lock()
-	defer approvesStoreMu.Unlock()
+func (c *ExportsCollection) getApprovalTxsStore(payload *types.Payload, facet types.DataFacet) *store.Store[ApprovalTx] {
+	approvalTxsStoreMu.Lock()
+	defer approvalTxsStoreMu.Unlock()
 
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -134,7 +138,7 @@ func (c *ExportsCollection) getApprovesStore(payload *types.Payload, facet types
 	chain := payload.Chain
 	address := payload.Address
 	storeKey := getStoreKey(chain, address)
-	theStore := approvesStore[storeKey]
+	theStore := approvalTxsStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
@@ -145,21 +149,21 @@ func (c *ExportsCollection) getApprovesStore(payload *types.Payload, facet types
 				Articulate: true,
 			}
 			if _, _, err := exportOpts.ExportApprovals(); err != nil {
-				wrappedErr := types.NewSDKError("exports", ExportsApproves, "fetch", err)
+				wrappedErr := types.NewSDKError("exports", ExportsApprovalTxs, "fetch", err)
 				return wrappedErr
 			}
 			// EXISTING_CODE
 			return nil
 		}
 
-		processFunc := func(item interface{}) *Approve {
-			if it, ok := item.(*Approve); ok {
+		processFunc := func(item interface{}) *ApprovalTx {
+			if it, ok := item.(*ApprovalTx); ok {
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Approve) (key interface{}, includeInMap bool) {
+		mappingFunc := func(item *ApprovalTx) (key interface{}, includeInMap bool) {
 			// EXISTING_CODE
 			// EXISTING_CODE
 			return nil, false
@@ -171,7 +175,70 @@ func (c *ExportsCollection) getApprovesStore(payload *types.Payload, facet types
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		approvesStore[storeKey] = theStore
+		approvalTxsStore[storeKey] = theStore
+	}
+
+	return theStore
+}
+
+// New method for ApprovalLogs - extracts logs from transaction data
+func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet types.DataFacet) *store.Store[ApprovalLog] {
+	approvalLogsStoreMu.Lock()
+	defer approvalLogsStoreMu.Unlock()
+
+	// EXISTING_CODE
+	// EXISTING_CODE
+
+	chain := payload.Chain
+	address := payload.Address
+	storeKey := getStoreKey(chain, address)
+	theStore := approvalLogsStore[storeKey]
+	if theStore == nil {
+		queryFunc := func(ctx *output.RenderCtx) error {
+			// EXISTING_CODE
+			exportOpts := sdk.ExportOptions{
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: chain},
+				RenderCtx:  ctx,
+				Addrs:      []string{address},
+				Articulate: true,
+			}
+			if _, _, err := exportOpts.ExportApprovals(); err != nil {
+				wrappedErr := types.NewSDKError("exports", ExportsApprovalLogs, "fetch", err)
+				return wrappedErr
+			}
+			// EXISTING_CODE
+			return nil
+		}
+
+		processFunc := func(item interface{}) *ApprovalLog {
+			// Extract logs from transaction data
+			if tx, ok := item.(*sdk.Transaction); ok {
+				for _, log := range tx.Receipt.Logs {
+					if len(log.Topics) > 0 {
+						return (*ApprovalLog)(&log)
+					}
+				}
+			}
+			// Direct log case (fallback)
+			if it, ok := item.(*ApprovalLog); ok {
+				return it
+			}
+			return nil
+		}
+
+		mappingFunc := func(item *ApprovalLog) (key interface{}, includeInMap bool) {
+			// EXISTING_CODE
+			// EXISTING_CODE
+			return nil, false
+		}
+
+		storeName := c.GetStoreName(facet, chain, address)
+		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
+
+		// EXISTING_CODE
+		// EXISTING_CODE
+
+		approvalLogsStore[storeKey] = theStore
 	}
 
 	return theStore
@@ -668,10 +735,12 @@ func (c *ExportsCollection) GetStoreName(dataFacet types.DataFacet, chain, addre
 		name = "exports-transfers"
 	case ExportsTransactions:
 		name = "exports-transactions"
-	case ExportsApprovals:
-		name = "exports-approvals"
-	case ExportsApproves:
-		name = "exports-approves"
+	case ExportsOpenApprovals:
+		name = "exports-openapprovals"
+	case ExportsApprovalLogs:
+		name = "exports-approvallogs"
+	case ExportsApprovalTxs:
+		name = "exports-approvaltxs"
 	case ExportsWithdrawals:
 		name = "exports-withdrawals"
 	case ExportsAssets:

@@ -28,6 +28,7 @@
     "exports": {
       "menuOrder": 20,
       "disabled": false,
+      "facetOrder": ["assets", "openapprovals", "approvallogs", "approvaltxs"],
       "disabledFacets": {
         "statements": true,
         "balances": true,

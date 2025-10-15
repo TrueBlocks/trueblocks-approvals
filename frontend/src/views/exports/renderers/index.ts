@@ -5,6 +5,6 @@ export * from './Approval';
 export * from './Statement';
 
 export const renderers = {
-  'exports.approvals': renderApprovalDetailPanel,
+  'exports.openapprovals': renderApprovalDetailPanel,
   'exports.statements': renderStatementDetailPanel,
 };

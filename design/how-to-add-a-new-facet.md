@@ -229,6 +229,46 @@ exportOpts := sdk.ExportOptions{
 }
 ```
 
+### Multi-Facet Refactoring Patterns
+
+When renaming or restructuring multiple related facets, follow this pattern:
+
+1. **Update DataFacet Constants**: Change all constant definitions in one commit
+2. **Update Type Aliases**: Ensure type mappings reflect the new data structure (e.g., Transaction vs Log)
+3. **Update Collections**: Modify struct fields and initialization methods
+4. **Update Store Methods**: Rename and add new store getter methods
+5. **Update View Configuration**: Modify facet ordering and field definitions
+6. **Generate TypeScript Bindings**: Run `wails generate module`
+7. **Update Frontend References**: Modify switch cases and data access
+8. **Update Renderers**: Adjust any custom renderer mappings
+9. **Test and Validate**: Run linting and tests
+
+#### Example: Splitting One Facet into Multiple
+```go
+// Before: Single facet
+ExportsApproves types.DataFacet = "approves"
+
+// After: Split into multiple semantic facets
+ExportsApprovalLogs types.DataFacet = "approvallogs"  // Log data
+ExportsApprovalTxs  types.DataFacet = "approvaltxs"   // Transaction data
+```
+
+#### Log Extraction from Transaction Data
+When the SDK changes return types, you may need to extract specific data:
+```go
+processFunc := func(item interface{}) *ApprovalLog {
+    // Extract logs from transaction data
+    if tx, ok := item.(*sdk.Transaction); ok {
+        for _, log := range tx.Receipt.Logs {
+            if len(log.Topics) > 0 {
+                return (*ApprovalLog)(&log)
+            }
+        }
+    }
+    return nil
+}
+```
+
 ## Troubleshooting
 
 ### Common Issues

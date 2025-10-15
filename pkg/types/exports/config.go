@@ -55,22 +55,32 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
 		},
-		"approvals": {
-			Name:          "Approvals",
-			Store:         "approvals",
+		"openapprovals": {
+			Name:          "Open Approvals",
+			Store:         "openapprovals",
 			IsForm:        false,
 			DividerBefore: false,
-			Fields:        getApprovalsFields(),
+			Fields:        getOpenApprovalsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "panel",
 		},
-		"approves": {
-			Name:          "Approves",
-			Store:         "approves",
+		"approvallogs": {
+			Name:          "Approval Logs",
+			Store:         "approvallogs",
 			IsForm:        false,
 			DividerBefore: false,
-			Fields:        getApprovesFields(),
+			Fields:        getApprovalLogsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+			RendererTypes: "",
+		},
+		"approvaltxs": {
+			Name:          "Approval Transactions",
+			Store:         "approvaltxs",
+			IsForm:        false,
+			DividerBefore: false,
+			Fields:        getApprovalTxsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
@@ -130,7 +140,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 	cfg := &types.ViewConfig{
 		ViewName:   "exports",
 		Facets:     facets,
-		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "approvals", "approves", "withdrawals", "assets", "logs", "traces", "receipts"},
+		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "openapprovals", "approvallogs", "approvaltxs", "withdrawals", "assets", "logs", "traces", "receipts"},
 		Actions: map[string]types.ActionConfig{
 			"export": {Name: "export", Label: "Export", Icon: "Export"},
 		},
@@ -142,7 +152,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
-func getApprovalsFields() []types.FieldConfig {
+func getOpenApprovalsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		// EXISTING_CODE
 		{Section: "Context", Key: "timestamp"},
@@ -162,7 +172,7 @@ func getApprovalsFields() []types.FieldConfig {
 	return ret
 }
 
-func getApprovesFields() []types.FieldConfig {
+func getApprovalLogsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		// EXISTING_CODE
 		{Section: "Context", Key: "blockNumber"},
@@ -180,6 +190,35 @@ func getApprovesFields() []types.FieldConfig {
 		{Section: "Articulation", Key: "articulatedLog", Formatter: "json", NoTable: true},
 		{Section: "Articulation", Key: "compressedLog", NoTable: true},
 		{Section: "", Key: "actions", NoDetail: true},
+		// EXISTING_CODE
+	}
+	types.NormalizeFields(ret)
+	return ret
+}
+
+func getApprovalTxsFields() []types.FieldConfig {
+	ret := []types.FieldConfig{
+		// EXISTING_CODE - Use transaction fields since ApprovalTx = sdk.Transaction
+		{Section: "Context", Key: "blockNumber"},
+		{Section: "Context", Key: "transactionIndex"},
+		{Section: "Overview", Key: "hash"},
+		{Section: "Overview", Key: "from"},
+		{Section: "Overview", Key: "to"},
+		{Section: "Overview", Key: "value"},
+		{Section: "Gas", Key: "gasUsed"},
+		{Section: "", Key: "actions", NoDetail: true},
+		{Section: "Overview", Key: "timestamp", NoTable: true},
+		{Section: "Overview", Key: "input", NoTable: true},
+		{Section: "Overview", Key: "articulatedTx", NoTable: true},
+		{Section: "Overview", Key: "isError", NoTable: true},
+		{Section: "Overview", Key: "hasToken", NoTable: true},
+		{Section: "Gas", Key: "gas", NoTable: true},
+		{Section: "Gas", Key: "gasPrice", NoTable: true},
+		{Section: "Gas", Key: "maxFeePerGas", NoTable: true},
+		{Section: "Gas", Key: "maxPriorityFeePerGas", NoTable: true},
+		{Section: "Context", Key: "blockHash", NoTable: true},
+		{Section: "Details", Key: "nonce", NoTable: true},
+		{Section: "Details", Key: "type", NoTable: true},
 		// EXISTING_CODE
 	}
 	types.NormalizeFields(ret)

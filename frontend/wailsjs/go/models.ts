@@ -458,8 +458,9 @@ export namespace exports {
 	
 	export class ExportsPage {
 	    facet: types.DataFacet;
-	    approvals: types.Approval[];
-	    approves: types.Log[];
+	    openapprovals: types.Approval[];
+	    approvallogs: types.Log[];
+	    approvaltxs: types.Transaction[];
 	    assets: types.Name[];
 	    balances: types.Token[];
 	    logs: types.Log[];
@@ -481,8 +482,9 @@ export namespace exports {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.facet = source["facet"];
-	        this.approvals = this.convertValues(source["approvals"], types.Approval);
-	        this.approves = this.convertValues(source["approves"], types.Log);
+	        this.openapprovals = this.convertValues(source["openapprovals"], types.Approval);
+	        this.approvallogs = this.convertValues(source["approvallogs"], types.Log);
+	        this.approvaltxs = this.convertValues(source["approvaltxs"], types.Transaction);
 	        this.assets = this.convertValues(source["assets"], types.Name);
 	        this.balances = this.convertValues(source["balances"], types.Token);
 	        this.logs = this.convertValues(source["logs"], types.Log);
@@ -1321,8 +1323,9 @@ export namespace types {
 	    BALANCES = "balances",
 	    TRANSFERS = "transfers",
 	    TRANSACTIONS = "transactions",
-	    APPROVALS = "approvals",
-	    APPROVES = "approves",
+	    OPENAPPROVALS = "openapprovals",
+	    APPROVALLOGS = "approvallogs",
+	    APPROVALTXS = "approvaltxs",
 	    WITHDRAWALS = "withdrawals",
 	    ASSETS = "assets",
 	    LOGS = "logs",

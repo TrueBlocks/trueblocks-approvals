@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	storePkg "github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
@@ -25,8 +25,9 @@ import (
 // TODO: The slices should be slices to pointers
 type ExportsPage struct {
 	Facet         types.DataFacet `json:"facet"`
-	Approvals     []Approval      `json:"approvals"`
-	Approves      []Approve       `json:"approves"`
+	OpenApprovals []OpenApproval  `json:"openapprovals"`
+	ApprovalLogs  []ApprovalLog   `json:"approvallogs"`
+	ApprovalTxs   []ApprovalTx    `json:"approvaltxs"`
 	Assets        []Asset         `json:"assets"`
 	Balances      []Balance       `json:"balances"`
 	Logs          []Log           `json:"logs"`
@@ -171,41 +172,60 @@ func (c *ExportsCollection) GetPage(
 		}
 		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
-	case ExportsApprovals:
-		facet := c.approvalsFacet
-		var filterFunc func(*Approval) bool
+	case ExportsOpenApprovals:
+		facet := c.openApprovalsFacet
+		var filterFunc func(*OpenApproval) bool
 		if filter != "" {
-			filterFunc = func(item *Approval) bool {
-				return c.matchesApprovalFilter(item, filter)
+			filterFunc = func(item *OpenApproval) bool {
+				return c.matchesOpenApprovalFilter(item, filter)
 			}
 		}
-		sortFunc := func(items []Approval, sort sdk.SortSpec) error {
+		sortFunc := func(items []OpenApproval, sort sdk.SortSpec) error {
 			return sdk.SortApprovals(items, sort)
 		}
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("exports", dataFacet, "GetPage", err)
 		} else {
 
-			page.Approvals, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
+			page.OpenApprovals, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
-	case ExportsApproves:
-		facet := c.approvesFacet
-		var filterFunc func(*Approve) bool
+	case ExportsApprovalLogs:
+		facet := c.approvalLogsFacet
+		var filterFunc func(*ApprovalLog) bool
 		if filter != "" {
-			filterFunc = func(item *Approve) bool {
-				return c.matchesApproveFilter(item, filter)
+			filterFunc = func(item *ApprovalLog) bool {
+				return c.matchesApprovalLogFilter(item, filter)
 			}
 		}
-		sortFunc := func(items []Approve, sort sdk.SortSpec) error {
-			return sdk.SortApproves(items, sort)
+		sortFunc := func(items []ApprovalLog, sort sdk.SortSpec) error {
+			return sdk.SortLogs(items, sort)
 		}
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("exports", dataFacet, "GetPage", err)
 		} else {
 
-			page.Approves, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
+			page.ApprovalLogs, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
+		}
+		page.IsFetching = facet.IsFetching()
+		page.ExpectedTotal = facet.ExpectedCount()
+	case ExportsApprovalTxs:
+		facet := c.approvalTxsFacet
+		var filterFunc func(*ApprovalTx) bool
+		if filter != "" {
+			filterFunc = func(item *ApprovalTx) bool {
+				return c.matchesApprovalTxFilter(item, filter)
+			}
+		}
+		sortFunc := func(items []ApprovalTx, sort sdk.SortSpec) error {
+			return sdk.SortTransactions(items, sort)
+		}
+		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
+			return nil, types.NewStoreError("exports", dataFacet, "GetPage", err)
+		} else {
+
+			page.ApprovalTxs, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
@@ -579,18 +599,111 @@ func (c *ExportsCollection) matchesReceiptFilter(item *Receipt, filter string) b
 	// strings.Contains(strings.ToLower(item.ContractAddress.Hex()), filter)
 }
 
-func (c *ExportsCollection) matchesApprovalFilter(item *Approval, filter string) bool {
+func (c *ExportsCollection) matchesOpenApprovalFilter(item *OpenApproval, filter string) bool {
 	_ = item    // delint
 	_ = filter  // delint
 	return true // strings.Contains(strings.ToLower(item.TransactionHash.Hex()), filter) ||
 	// strings.Contains(strings.ToLower(item.ContractAddress.Hex()), filter)
 }
 
-func (c *ExportsCollection) matchesApproveFilter(item *Approve, filter string) bool {
+func (c *ExportsCollection) matchesApprovalLogFilter(item *ApprovalLog, filter string) bool {
 	_ = item    // delint
 	_ = filter  // delint
 	return true // strings.Contains(strings.ToLower(item.TransactionHash.Hex()), filter) ||
 	// strings.Contains(strings.ToLower(item.ContractAddress.Hex()), filter)
+}
+
+func (c *ExportsCollection) matchesApprovalTxFilter(item *ApprovalTx, filter string) bool {
+	_ = item    // delint
+	_ = filter  // delint
+	return true // strings.Contains(strings.ToLower(item.TransactionHash.Hex()), filter) ||
+	// strings.Contains(strings.ToLower(item.ContractAddress.Hex()), filter)
+}
+
+// GetPageForRecord finds the page containing a specific record and returns it
+func (c *ExportsCollection) GetPageForRecord(
+	payload *types.Payload,
+	recordId string,
+	recordIdField string,
+	pageSize int,
+	sortSpec sdk.SortSpec,
+	filter string,
+) (*ExportsPage, error) {
+	dataFacet := payload.DataFacet
+
+	// For assets facet, search through all data to find the record
+	if dataFacet == ExportsAssets {
+		facet := c.assetsFacet
+
+		// Use the same filtering pattern as regular GetPage
+		filter = strings.ToLower(filter)
+		var filterFunc func(*Asset) bool
+		if filter != "" {
+			filterFunc = func(item *Asset) bool {
+				return c.matchesAssetFilter(item, filter)
+			}
+		}
+		sortFunc := func(items []Asset, sort sdk.SortSpec) error {
+			return sdk.SortAssets(items, sort)
+		}
+
+		// Get all data from the facet (not paginated) but with proper filtering and sorting
+		// Use a very large pageSize to get all items
+		var allData []Asset
+		if result, err := facet.GetPage(0, 1000000, filterFunc, sortSpec, sortFunc); err != nil {
+			return nil, types.NewStoreError("exports", dataFacet, "GetPageForRecord", err)
+		} else {
+			allData = result.Items
+		}
+
+		logging.LogBackend(fmt.Sprintf("GetPageForRecord: Searching for recordId='%s' in %d assets", recordId, len(allData)))
+
+		// Find the record index in the properly filtered and sorted data
+		recordIndex := -1
+		for i, asset := range allData {
+			var fieldValue string
+			switch recordIdField {
+			case "address":
+				fieldValue = asset.Address.Hex()
+			default:
+				return nil, fmt.Errorf("unsupported record ID field: %s", recordIdField)
+			}
+
+			// Log first few addresses and the exact comparison
+			if i < 10 {
+				logging.LogBackend(fmt.Sprintf("GetPageForRecord: Asset[%d] address='%s', comparing with target='%s'", i, fieldValue, recordId))
+			}
+
+			if strings.EqualFold(fieldValue, recordId) {
+				logging.LogBackend(fmt.Sprintf("GetPageForRecord: FOUND MATCH at index %d: '%s' == '%s'", i, fieldValue, recordId))
+				recordIndex = i
+				break
+			}
+		}
+
+		if recordIndex == -1 {
+			logging.LogBackend(fmt.Sprintf("GetPageForRecord: Record NOT FOUND. Searched %d assets for recordId='%s'", len(allData), recordId))
+			return nil, fmt.Errorf("record with ID %s not found in field %s", recordId, recordIdField)
+		}
+
+		// Calculate which page contains this record
+		pageNumber := recordIndex / pageSize
+		first := pageNumber * pageSize
+
+		// Get the specific page using the regular GetPage method (ensures consistency)
+		if page, err := c.GetPage(payload, first, pageSize, sortSpec, filter); err != nil {
+			return nil, err
+		} else {
+			return page.(*ExportsPage), nil
+		}
+	}
+
+	// For other facets, fall back to regular GetPage (first page)
+	if page, err := c.GetPage(payload, 0, pageSize, sortSpec, filter); err != nil {
+		return nil, err
+	} else {
+		return page.(*ExportsPage), nil
+	}
 }
 
 // EXISTING_CODE
