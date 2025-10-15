@@ -7,7 +7,7 @@ import {
   useTableKeys,
 } from '@components';
 import { Form, FormField } from '@components';
-import { useFiltering } from '@contexts';
+import { useFiltering, useViewContext } from '@contexts';
 import { usePreferences } from '@hooks';
 import { project } from '@models';
 import { getDebugClass } from '@utils';
@@ -30,7 +30,7 @@ export interface TableProps<T extends Record<string, unknown>> {
   data: T[];
   loading: boolean;
   viewStateKey: project.ViewStateKey;
-  onSubmit: (data: T) => void;
+  onSubmit?: (data: T) => void;
   onDelete?: (rowData: T) => void;
   onRemove?: (rowData: T) => void;
   onAutoname?: (rowData: T) => void;
@@ -69,8 +69,9 @@ export const Table = <T extends Record<string, unknown>>({
     ? processedColumns
     : processedColumns.slice(0, 6);
 
-  const { pagination } = usePagination(viewStateKey);
+  const { pagination, goToPage } = usePagination(viewStateKey);
   const { filter, setFiltering } = useFiltering(viewStateKey);
+  const { getPendingNavigation, setPendingNavigation } = useViewContext();
   const { currentPage, pageSize, totalItems } = pagination;
   const totalPages = Math.ceil(totalItems / pageSize);
 
@@ -95,7 +96,9 @@ export const Table = <T extends Record<string, unknown>>({
 
   const handleModalFormSubmit = (values: T) => {
     setIsModalOpen(false);
-    onSubmit(values);
+    if (onSubmit) {
+      onSubmit(values);
+    }
     focusTable();
   };
 
@@ -106,9 +109,15 @@ export const Table = <T extends Record<string, unknown>>({
     viewStateKey,
     onEnter: () => {
       if (selectedRowIndex >= 0 && selectedRowIndex < data.length) {
-        const rowData = data[selectedRowIndex] || null;
-        setCurrentRowData(rowData);
-        setIsModalOpen(true);
+        const rowData = data[selectedRowIndex];
+        if (rowData) {
+          if (!onSubmit) {
+            setCurrentRowData(rowData);
+            setIsModalOpen(true);
+          } else {
+            onSubmit(rowData);
+          }
+        }
       }
     },
     onEscape: () => {
@@ -239,10 +248,46 @@ export const Table = <T extends Record<string, unknown>>({
   }, [currentPage, focusTable]);
 
   useEffect(() => {
-    if (selectedRowIndex === -1 || selectedRowIndex >= data.length) {
-      setSelectedRowIndex(Math.max(0, data.length - 1));
+    // Check for pending navigation first
+    const pendingNavigation = getPendingNavigation(viewStateKey);
+
+    if (pendingNavigation) {
+      // Handle pending navigation
+      const targetPage = Math.floor(pendingNavigation.rowIndex / pageSize);
+      const targetRowInPage = pendingNavigation.rowIndex % pageSize;
+
+      if (currentPage !== targetPage) {
+        // Navigate to the target page first
+        goToPage(targetPage);
+        // Row selection will happen when new page data loads
+      } else {
+        // We're on the right page, select the row if it's valid
+        if (targetRowInPage >= 0 && targetRowInPage < data.length) {
+          setSelectedRowIndex(targetRowInPage);
+          // Clear pending navigation after successful selection
+          setPendingNavigation(viewStateKey, null);
+        } else {
+          // Invalid row index, clear pending navigation
+          setPendingNavigation(viewStateKey, null);
+        }
+      }
+    } else {
+      // Normal reset behavior when no pending navigation
+      if (selectedRowIndex === -1 || selectedRowIndex >= data.length) {
+        setSelectedRowIndex(Math.max(0, data.length - 1));
+      }
     }
-  }, [data, selectedRowIndex, setSelectedRowIndex]);
+  }, [
+    data,
+    selectedRowIndex,
+    setSelectedRowIndex,
+    viewStateKey,
+    currentPage,
+    pageSize,
+    goToPage,
+    getPendingNavigation,
+    setPendingNavigation,
+  ]);
 
   const handleRowClick = (index: number) => {
     setSelectedRowIndex(index);

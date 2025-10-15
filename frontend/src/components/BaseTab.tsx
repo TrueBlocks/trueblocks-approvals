@@ -40,7 +40,7 @@ export function BaseTab<T extends Record<string, unknown>>({
           columns={columns}
           viewStateKey={viewStateKey}
           loading={loading}
-          onSubmit={onSubmit || (() => {})}
+          onSubmit={onSubmit}
           onDelete={onDelete}
           onRemove={onRemove}
           onAutoname={onAutoname}

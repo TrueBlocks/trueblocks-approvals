@@ -46,3 +46,9 @@ type ProjectPayload struct {
 	LastView       string               `json:"lastView"`
 	LastFacetMap   map[string]DataFacet `json:"lastFacetMap"`
 }
+
+type NavigationPayload struct {
+	Payload
+	RecordId string `json:"recordId"` // Unique identifier for database lookup
+	RowIndex int    `json:"rowIndex"` // Calculated position in current table
+}

@@ -227,6 +227,8 @@ export function NameFromAddress(arg1:string):Promise<types.Name|boolean>;
 
 export function NamesCrud(arg1:types.Payload,arg2:crud.Operation,arg3:any):Promise<void>;
 
+export function NavigateToRow(arg1:types.NavigationPayload):Promise<void>;
+
 export function NewProject(arg1:string,arg2:string):Promise<void>;
 
 export function OpenProjectFile(arg1:string):Promise<void>;

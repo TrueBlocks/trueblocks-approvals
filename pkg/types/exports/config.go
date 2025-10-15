@@ -155,15 +155,15 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 func getOpenApprovalsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		// EXISTING_CODE
-		{Section: "Context", Key: "timestamp"},
-		{Section: "Context", Key: "blockNumber", Formatter: "number"},
+		{Section: "Context", Key: "timestamp", Formatter: "datetime", NoTable: true},
+		{Section: "Context", Key: "blockNumber", Formatter: "number", NoTable: true},
 		{Section: "Details", Key: "owner", Formatter: "address"},
-		{Section: "Details", Key: "spender", Formatter: "address"},
 		{Section: "Details", Key: "token", Formatter: "address"},
+		{Section: "Details", Key: "spender", Formatter: "address"},
 		{Section: "Details", Key: "allowance", Formatter: "wei"},
 		{Section: "Data", Key: "lastAppBlock", Formatter: "number", NoTable: true},
 		{Section: "Data", Key: "lastAppLogID", Formatter: "number", NoTable: true},
-		{Section: "Data", Key: "lastAppTs", Formatter: "timestamp", NoTable: true},
+		{Section: "Data", Key: "lastAppTs"},
 		{Section: "Data", Key: "lastAppTxID", Formatter: "number", NoTable: true},
 		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
 		// EXISTING_CODE

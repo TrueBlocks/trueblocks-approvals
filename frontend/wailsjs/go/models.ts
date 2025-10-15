@@ -801,6 +801,7 @@ export namespace msgs {
 	    TAB_CYCLE = "hotkey:tab-cycle",
 	    IMAGES_CHANGED = "images:changed",
 	    PROJECT_OPENED = "project:opened",
+	    NAVIGATE_TO_ROW = "navigation:row",
 	}
 
 }
@@ -2778,6 +2779,34 @@ export namespace types {
 		    }
 		    return a;
 		}
+	}
+	export class NavigationPayload {
+	    collection: string;
+	    dataFacet: DataFacet;
+	    chain?: string;
+	    address?: string;
+	    period?: string;
+	    format?: string;
+	    projectPath?: string;
+	    recordId: string;
+	    rowIndex: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new NavigationPayload(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.collection = source["collection"];
+	        this.dataFacet = source["dataFacet"];
+	        this.chain = source["chain"];
+	        this.address = source["address"];
+	        this.period = source["period"];
+	        this.format = source["format"];
+	        this.projectPath = source["projectPath"];
+	        this.recordId = source["recordId"];
+	        this.rowIndex = source["rowIndex"];
+	    }
 	}
 	
 	

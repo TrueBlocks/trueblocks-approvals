@@ -414,6 +414,10 @@ export function NamesCrud(arg1, arg2, arg3) {
   return window['go']['app']['App']['NamesCrud'](arg1, arg2, arg3);
 }
 
+export function NavigateToRow(arg1) {
+  return window['go']['app']['App']['NavigateToRow'](arg1);
+}
+
 export function NewProject(arg1, arg2) {
   return window['go']['app']['App']['NewProject'](arg1, arg2);
 }

@@ -165,6 +165,11 @@ func EmitProjectModal(msgText string, payload ...interface{}) {
 	emitMessage(EventProjectModal, msgText, payload...)
 }
 
+// EmitNavigateToRow signals navigation to a specific row in a facet.
+func EmitNavigateToRow(payload *types.NavigationPayload) {
+	emitMessage(EventNavigateToRow, "row-navigation", *payload)
+}
+
 // On registers a callback function for a specific event type.
 // In production, it uses Wails' runtime.EventsOn.
 // In test mode, it registers the callback with the internal listener system.
