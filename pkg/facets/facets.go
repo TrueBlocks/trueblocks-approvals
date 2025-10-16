@@ -7,7 +7,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/progress"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
@@ -84,20 +83,10 @@ func (r *Facet[T]) NeedsUpdate() bool {
 	return state == types.FacetStateStale
 }
 
-func (r *Facet[T]) StartFetching() bool {
-	currentState := r.GetState()
-	if currentState == types.FacetStateFetching {
-		return false
-	}
-	r.state.Store(types.FacetStateFetching)
-	return true
-}
-
 func (r *Facet[T]) Reset() {
 	r.mutex.Lock()
 	r.view = r.view[:0]
 	r.expectedCnt = 0
-	r.state.Store(types.FacetStateStale)
 	storeToReset := r.store
 	r.mutex.Unlock()
 
@@ -157,10 +146,6 @@ func (r *Facet[T]) FetchFacet() error {
 		return nil
 	}
 
-	if !r.StartFetching() {
-		return ErrAlreadyLoading
-	}
-
 	go func() {
 		ticker := time.NewTicker(progress.MaxWaitTime / 2)
 		defer ticker.Stop()
@@ -176,7 +161,7 @@ func (r *Facet[T]) FetchFacet() error {
 			select {
 			case err := <-done:
 				if err != nil && err != store.ErrStaleFetch && err.Error() != "context canceled" {
-					logging.LogBackend(fmt.Sprintf("Fetch error: %s", err.Error()))
+					msgs.EmitError("Fetch failed", err)
 				}
 				return
 

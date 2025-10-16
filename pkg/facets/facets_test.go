@@ -34,13 +34,23 @@ func TestFacetStateTransitions(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore)
 
-	assert.True(t, facet.StartFetching(), "StartFetching should return true on first call")
-	assert.Equal(t, types.FacetStateFetching, facet.GetState(), "Expected state to be StateFetching")
-	assert.False(t, facet.StartFetching(), "StartFetching should return false when already fetching")
+	// Test initial state
+	assert.Equal(t, types.FacetStateStale, facet.GetState(), "Expected initial state to be StateStale")
 
+	// Test reset maintains stale state
 	facet.Reset()
 	assert.Equal(t, types.FacetStateStale, facet.GetState(), "Expected state to be StateStale after reset")
 	assert.Equal(t, 0, facet.Count(), "Expected count to be 0 after reset")
+
+	// Test that fetch through facet properly delegates to store
+	err := facet.FetchFacet()
+	assert.NoError(t, err, "FetchFacet should succeed")
+
+	// Since fetch is now async, wait for completion
+	time.Sleep(50 * time.Millisecond)
+
+	// After successful fetch, facet should be in LOADED state (store completed the fetch)
+	assert.Equal(t, types.FacetStateLoaded, facet.GetState(), "Expected state to be StateLoaded after successful fetch")
 }
 
 func TestFacetLoad(t *testing.T) {
@@ -61,10 +71,14 @@ func TestFacetLoad(t *testing.T) {
 		err = facet.FetchFacet()
 		assert.NoError(t, err, "Second load should not return error")
 
+		// Test the early return when data is already loaded
 		facet.Reset()
-		assert.True(t, facet.StartFetching(), "Could not set facet to fetching state for test")
+		err = facet.FetchFacet() // Should load the data
+		assert.NoError(t, err, "First fetch should succeed")
+
+		// Now facet has data, so subsequent fetch should return early with cached message
 		err = facet.FetchFacet()
-		assert.Equal(t, ErrAlreadyLoading, err, "Expected ErrAlreadyLoading when loading while already fetching")
+		assert.NoError(t, err, "Subsequent fetch should return early without error when data is cached")
 	})
 
 	t.Run("loadWithSingleItemStore", func(t *testing.T) {
