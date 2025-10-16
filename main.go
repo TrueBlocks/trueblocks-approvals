@@ -25,6 +25,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/monitors"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/status"
+
 	//
 	"github.com/wailsapp/wails/v2"
 	wLogger "github.com/wailsapp/wails/v2/pkg/logger"
@@ -70,7 +71,8 @@ func main() {
 			msgs.AllMessages,
 			types.AllDataFacets,
 			types.AllCruds,
-			types.AllStates,
+			types.AllFacetStates,
+			types.AllStoreStates,
 		},
 	}
 

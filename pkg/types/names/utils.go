@@ -1,8 +1,8 @@
 package names
 
 import (
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
@@ -22,7 +22,7 @@ func (c *NamesCollection) loadNamesSync(chain string) error {
 	defer namesStoreMu.Unlock()
 
 	// Double-check if store is already loaded after acquiring lock
-	if namesStore != nil && namesStore.GetState() == store.StateLoaded {
+	if namesStore != nil && namesStore.GetState() == types.StoreStateLoaded {
 		return nil
 	}
 
@@ -49,7 +49,7 @@ func (c *NamesCollection) loadNamesSync(chain string) error {
 		}
 
 		// Mark the store as loaded
-		namesStore.ChangeState(0, store.StateLoaded, "Synchronously loaded names")
+		namesStore.ChangeState(0, types.StoreStateLoaded, "Synchronously loaded names")
 	}
 
 	return nil
@@ -63,7 +63,7 @@ func (c *NamesCollection) ensureLoadedSync(chain string) bool {
 	}
 
 	// Quick check without lock first (optimization)
-	if namesStore.GetState() == store.StateLoaded {
+	if namesStore.GetState() == types.StoreStateLoaded {
 		return true
 	}
 
@@ -73,5 +73,5 @@ func (c *NamesCollection) ensureLoadedSync(chain string) bool {
 	}
 
 	// Verify the store is now loaded
-	return namesStore.GetState() == store.StateLoaded
+	return namesStore.GetState() == types.StoreStateLoaded
 }

@@ -1286,6 +1286,13 @@ export namespace status {
 
 export namespace types {
 	
+	export enum StoreState {
+	    STALE = 0,
+	    FETCHING = 1,
+	    LOADED = 2,
+	    ERROR = 3,
+	    CANCELED = 4,
+	}
 	export enum DataFacet {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",

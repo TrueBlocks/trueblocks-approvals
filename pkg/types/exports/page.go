@@ -393,7 +393,7 @@ func (c *ExportsCollection) getSummaryPage(
 		}
 		page.Statements = valueSlice
 		page.TotalItems = total
-		page.State = types.StateLoaded
+		page.State = types.FacetStateLoaded
 		return page, nil
 
 	case ExportsBalances:
@@ -436,7 +436,7 @@ func (c *ExportsCollection) getSummaryPage(
 
 		page.Balances = valueSlice
 		page.TotalItems = total
-		page.State = types.StateLoaded
+		page.State = types.FacetStateLoaded
 		return page, nil
 
 	// EXISTING_CODE

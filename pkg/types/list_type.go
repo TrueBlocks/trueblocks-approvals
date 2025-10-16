@@ -1,22 +1,43 @@
 package types
 
+type StoreState int
+
+const (
+	StoreStateStale    StoreState = iota // Needs refresh
+	StoreStateFetching                   // Currently loading
+	StoreStateLoaded                     // Complete data
+	StoreStateError                      // Error occurred
+	StoreStateCanceled                   // User canceled
+)
+
+var AllStoreStates = []struct {
+	Value  StoreState `json:"value"`
+	TSName string     `json:"tsname"`
+}{
+	{StoreStateStale, "STALE"},
+	{StoreStateFetching, "FETCHING"},
+	{StoreStateLoaded, "LOADED"},
+	{StoreStateError, "ERROR"},
+	{StoreStateCanceled, "CANCELED"},
+}
+
 type LoadState string
 
 const (
-	StateStale    LoadState = "stale"
-	StateFetching LoadState = "fetching"
-	StatePartial  LoadState = "partial"
-	StateLoaded   LoadState = "loaded"
-	StateError    LoadState = "error"
+	FacetStateStale    LoadState = "stale"
+	FacetStateFetching LoadState = "fetching"
+	FacetStatePartial  LoadState = "partial"
+	FacetStateLoaded   LoadState = "loaded"
+	FacetStateError    LoadState = "error"
 )
 
-var AllStates = []struct {
+var AllFacetStates = []struct {
 	Value  LoadState `json:"value"`
 	TSName string    `json:"tsname"`
 }{
-	{StateStale, "STALE"},
-	{StateFetching, "FETCHING"},
-	{StatePartial, "PARTIAL"},
-	{StateLoaded, "LOADED"},
-	{StateError, "ERROR"},
+	{FacetStateStale, "STALE"},
+	{FacetStateFetching, "FETCHING"},
+	{FacetStatePartial, "PARTIAL"},
+	{FacetStateLoaded, "LOADED"},
+	{FacetStateError, "ERROR"},
 }

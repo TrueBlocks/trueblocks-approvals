@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/crud"
 	dalle "github.com/TrueBlocks/trueblocks-dalle/v2"
 	"github.com/TrueBlocks/trueblocks-dalle/v2/pkg/storage"
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 )
 
 // seriesCrud handles create, update, remove for series facet
@@ -125,7 +125,7 @@ func (c *DressesCollection) seriesCrud(
 		Payload:       types.Payload{Collection: "dresses", DataFacet: DressesSeries},
 		CurrentCount:  currentCount,
 		ExpectedTotal: currentCount,
-		State:         types.StateLoaded,
+		State:         types.FacetStateLoaded,
 		Summary:       payloadSummary,
 		Timestamp:     time.Now().Unix(),
 		EventPhase:    "complete",

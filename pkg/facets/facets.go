@@ -62,40 +62,40 @@ func NewFacet[T any](
 		buckets:         types.NewBuckets(),
 		bucketsMu:       sync.RWMutex{},
 	}
-	facet.state.Store(types.StateStale)
+	facet.state.Store(types.FacetStateStale)
 	store.RegisterObserver(facet)
 
 	return facet
 }
 
 func (r *Facet[T]) IsLoaded() bool {
-	return r.GetState() == types.StateLoaded
+	return r.GetState() == types.FacetStateLoaded
 }
 
 func (r *Facet[T]) GetState() types.LoadState {
 	if state := r.state.Load(); state != nil {
 		return state.(types.LoadState)
 	}
-	return types.StateStale
+	return types.FacetStateStale
 }
 
 func (r *Facet[T]) NeedsUpdate() bool {
 	state := r.GetState()
-	return state == types.StateStale
+	return state == types.FacetStateStale
 }
 
 func (r *Facet[T]) StartFetching() bool {
 	currentState := r.GetState()
-	if currentState == types.StateFetching {
+	if currentState == types.FacetStateFetching {
 		return false
 	}
-	r.state.Store(types.StateFetching)
+	r.state.Store(types.FacetStateFetching)
 	return true
 }
 
 func (r *Facet[T]) SetPartial() {
-	if r.GetState() == types.StateFetching {
-		r.state.Store(types.StatePartial)
+	if r.GetState() == types.FacetStateFetching {
+		r.state.Store(types.FacetStatePartial)
 	}
 }
 
@@ -103,7 +103,7 @@ func (r *Facet[T]) Reset() {
 	r.mutex.Lock()
 	r.view = r.view[:0]
 	r.expectedCnt = 0
-	r.state.Store(types.StateStale)
+	r.state.Store(types.FacetStateStale)
 	storeToReset := r.store
 	r.mutex.Unlock()
 
@@ -154,11 +154,11 @@ var ErrAlreadyLoading = errors.New("already loading")
 func (r *Facet[T]) Load() error {
 	currentState := r.GetState()
 
-	if currentState == types.StateFetching {
+	if currentState == types.FacetStateFetching {
 		return ErrAlreadyLoading
 	}
 
-	if currentState != types.StateStale {
+	if currentState != types.FacetStateStale {
 		msgs.EmitStatus(fmt.Sprintf("cached: %d items", len(r.view)))
 		return nil
 	}
@@ -336,11 +336,11 @@ func (r *Facet[T]) OnNewItem(item *T, index int) {
 	}
 }
 
-func (r *Facet[T]) OnStateChanged(state store.StoreState, reason string) {
+func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 	// Map store states to facet states
 	switch state {
-	case store.StateStale:
-		r.state.Store(types.StateStale)
+	case types.StoreStateStale:
+		r.state.Store(types.FacetStateStale)
 		r.expectedCnt = 0
 		r.mutex.Lock()
 		r.view = r.view[:0]
@@ -352,8 +352,8 @@ func (r *Facet[T]) OnStateChanged(state store.StoreState, reason string) {
 
 		msgs.EmitStatus(fmt.Sprintf("data outdated: %s", reason))
 
-	case store.StateFetching:
-		r.state.Store(types.StateFetching)
+	case types.StoreStateFetching:
+		r.state.Store(types.FacetStateFetching)
 		r.expectedCnt = 0
 		r.mutex.Lock()
 		r.view = r.view[:0]
@@ -363,9 +363,9 @@ func (r *Facet[T]) OnStateChanged(state store.StoreState, reason string) {
 			r.summaryProvider.ResetSummary()
 		}
 
-	case store.StateLoaded:
+	case types.StoreStateLoaded:
 		r.SyncWithStore()
-		r.state.Store(types.StateLoaded)
+		r.state.Store(types.FacetStateLoaded)
 		r.mutex.RLock()
 		currentCount := len(r.view)
 		r.expectedCnt = r.store.GetExpectedTotal()
@@ -376,7 +376,7 @@ func (r *Facet[T]) OnStateChanged(state store.StoreState, reason string) {
 			collectionPayload := types.DataLoadedPayload{
 				CurrentCount:  currentCount,
 				ExpectedTotal: currentCount,
-				State:         types.StateLoaded,
+				State:         types.FacetStateLoaded,
 				Summary:       r.summaryProvider.GetSummary(),
 				Timestamp:     time.Now().Unix(),
 				EventPhase:    "complete",
@@ -387,21 +387,21 @@ func (r *Facet[T]) OnStateChanged(state store.StoreState, reason string) {
 			msgs.EmitLoaded(collectionPayload)
 		}
 
-	case store.StateError:
+	case types.StoreStateError:
 		r.mutex.RLock()
 		hasData := len(r.view) > 0
 		currentCount := len(r.view)
 		r.mutex.RUnlock()
 		if hasData {
-			r.state.Store(types.StatePartial)
+			r.state.Store(types.FacetStatePartial)
 			msgs.EmitStatus(fmt.Sprintf("partial load: %d items (error: %s)", currentCount, reason))
 		} else {
-			r.state.Store(types.StateError)
+			r.state.Store(types.FacetStateError)
 			msgs.EmitError(fmt.Sprintf("load failed: %s", reason), errors.New(reason))
 		}
 
-	case store.StateCanceled:
-		r.state.Store(types.StateStale)
+	case types.StoreStateCanceled:
+		r.state.Store(types.FacetStateStale)
 		msgs.EmitStatus("loading canceled")
 	}
 }

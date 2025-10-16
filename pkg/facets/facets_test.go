@@ -23,7 +23,7 @@ func TestNewFacet(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore)
 
-	assert.Equal(t, types.StateStale, facet.GetState(), "Expected initial state to be StateStale")
+	assert.Equal(t, types.FacetStateStale, facet.GetState(), "Expected initial state to be StateStale")
 	assert.Equal(t, 0, facet.Count(), "Expected initial count to be 0")
 	assert.True(t, facet.NeedsUpdate(), "New facet should need update")
 	assert.False(t, facet.IsLoaded(), "New facet should not be loaded")
@@ -35,14 +35,14 @@ func TestFacetStateTransitions(t *testing.T) {
 	facet := createTestFacet(testStore)
 
 	assert.True(t, facet.StartFetching(), "StartFetching should return true on first call")
-	assert.Equal(t, types.StateFetching, facet.GetState(), "Expected state to be StateFetching")
+	assert.Equal(t, types.FacetStateFetching, facet.GetState(), "Expected state to be StateFetching")
 	assert.False(t, facet.StartFetching(), "StartFetching should return false when already fetching")
 
 	facet.SetPartial()
-	assert.Equal(t, types.StatePartial, facet.GetState(), "Expected state to be StatePartial")
+	assert.Equal(t, types.FacetStatePartial, facet.GetState(), "Expected state to be StatePartial")
 
 	facet.Reset()
-	assert.Equal(t, types.StateStale, facet.GetState(), "Expected state to be StateStale after reset")
+	assert.Equal(t, types.FacetStateStale, facet.GetState(), "Expected state to be StateStale after reset")
 	assert.Equal(t, 0, facet.Count(), "Expected count to be 0 after reset")
 }
 
@@ -55,11 +55,11 @@ func TestFacetLoad(t *testing.T) {
 		assert.NoError(t, err, "Load should not return error on first call")
 
 		waitForCondition(t, 5*time.Second, facet, func() bool {
-			return facet.GetState() == types.StateLoaded
+			return facet.GetState() == types.FacetStateLoaded
 		}, "standard facet to be loaded")
 
 		assert.Equal(t, 5, facet.Count(), "Expected count to be 5 after load")
-		assert.Equal(t, types.StateLoaded, facet.GetState(), "Expected state to be StateLoaded")
+		assert.Equal(t, types.FacetStateLoaded, facet.GetState(), "Expected state to be StateLoaded")
 
 		err = facet.Load()
 		assert.NoError(t, err, "Second load should not return error")
@@ -99,17 +99,17 @@ func TestFacetLoad(t *testing.T) {
 			nil,
 		)
 
-		assert.Equal(t, types.StateStale, facet.GetState(), "Initial state for single item store facet should be Stale")
+		assert.Equal(t, types.FacetStateStale, facet.GetState(), "Initial state for single item store facet should be Stale")
 
 		err := facet.Load()
 		assert.NoError(t, err, "Load for single item store failed")
 
 		waitForCondition(t, 5*time.Second, facet, func() bool {
-			return facet.GetState() == types.StateLoaded
+			return facet.GetState() == types.FacetStateLoaded
 		}, "single item store facet to be loaded")
 
 		assert.Equal(t, 1, facet.Count(), "Expected count to be 1 for single item store")
-		assert.Equal(t, types.StateLoaded, facet.GetState(), "Expected state to be StateLoaded for single item store")
+		assert.Equal(t, types.FacetStateLoaded, facet.GetState(), "Expected state to be StateLoaded for single item store")
 	})
 }
 
@@ -122,7 +122,7 @@ func TestFacetFiltering(t *testing.T) {
 	}
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
-		return facet.GetState() == types.StateLoaded
+		return facet.GetState() == types.FacetStateLoaded
 	}, "filtered facet to be loaded (TestFacetFiltering)")
 
 	// Items are {1,10}, {2,20}, {3,30}, {4,40}, {5,50}
@@ -152,14 +152,14 @@ func TestFacetPagination(t *testing.T) {
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
-		return facet.GetState() == types.StateLoaded
+		return facet.GetState() == types.FacetStateLoaded
 	}, "facet to be loaded (TestFacetPagination)")
 
 	page1, err := facet.GetPage(0, 2, nil, sdk.SortSpec{}, nil)
 	assert.NoError(err, "GetPage failed")
 	assert.Len(page1.Items, 2, "Expected 2 items in first page")
 	assert.Equal(5, page1.TotalItems, "Expected total items to be 5")
-	assert.Equal(types.StateLoaded, page1.State, "Expected page state to be StateLoaded")
+	assert.Equal(types.FacetStateLoaded, page1.State, "Expected page state to be StateLoaded")
 
 	page2, err := facet.GetPage(2, 2, nil, sdk.SortSpec{}, nil)
 	assert.NoError(err, "GetPage failed")
@@ -184,7 +184,7 @@ func TestFacetPageWithFilter(t *testing.T) {
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
-		return facet.GetState() == types.StateLoaded
+		return facet.GetState() == types.FacetStateLoaded
 	}, "facet to be loaded (TestFacetPageWithFilter)")
 
 	filterFunc := func(item *TestItem) bool {
@@ -208,7 +208,7 @@ func TestFacetSorting(t *testing.T) {
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
-		return facet.GetState() == types.StateLoaded
+		return facet.GetState() == types.FacetStateLoaded
 	}, "facet to be loaded (TestFacetSorting)")
 
 	sortFunc := func(items []TestItem, spec sdk.SortSpec) error {
@@ -236,7 +236,7 @@ func TestFacetSortingError(t *testing.T) {
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
-		return facet.GetState() == types.StateLoaded
+		return facet.GetState() == types.FacetStateLoaded
 	}, "facet to be loaded (TestFacetSortingError)")
 
 	sortFuncError := func(items []TestItem, spec sdk.SortSpec) error {
@@ -254,22 +254,22 @@ func TestFacetObserverInterface(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore)
 
-	facet.OnStateChanged(store.StateFetching, "Test fetching")
-	assert.Equal(types.StateFetching, facet.GetState(), "Expected state to be StateFetching")
+	facet.OnStateChanged(types.StoreStateFetching, "Test fetching")
+	assert.Equal(types.FacetStateFetching, facet.GetState(), "Expected state to be StateFetching")
 
-	facet.OnStateChanged(store.StateLoaded, "Test loaded")
-	assert.Equal(types.StateLoaded, facet.GetState(), "Expected state to be StateLoaded")
+	facet.OnStateChanged(types.StoreStateLoaded, "Test loaded")
+	assert.Equal(types.FacetStateLoaded, facet.GetState(), "Expected state to be StateLoaded")
 
-	facet.OnStateChanged(store.StateError, "Test error")
-	assert.Equal(types.StateError, facet.GetState(), "Expected state to be StateError")
+	facet.OnStateChanged(types.StoreStateError, "Test error")
+	assert.Equal(types.FacetStateError, facet.GetState(), "Expected state to be StateError")
 
 	// Test partial state with existing data
 	facet.OnNewItem(&TestItem{ID: 1, Name: "Test", Value: 100}, 0)
-	facet.OnStateChanged(store.StateError, "Test partial error")
-	assert.Equal(types.StatePartial, facet.GetState(), "Expected state to be StatePartial when error occurs with existing data")
+	facet.OnStateChanged(types.StoreStateError, "Test partial error")
+	assert.Equal(types.FacetStatePartial, facet.GetState(), "Expected state to be StatePartial when error occurs with existing data")
 
-	facet.OnStateChanged(store.StateCanceled, "Test canceled")
-	assert.Equal(types.StateStale, facet.GetState(), "Expected state to be StateStale after cancel")
+	facet.OnStateChanged(types.StoreStateCanceled, "Test canceled")
+	assert.Equal(types.FacetStateStale, facet.GetState(), "Expected state to be StateStale after cancel")
 }
 
 func TestFacetForEvery(t *testing.T) {

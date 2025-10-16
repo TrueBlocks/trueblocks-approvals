@@ -7,23 +7,14 @@ import (
 	"sync/atomic"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
 )
 
-type StoreState int
-
-const (
-	StateStale    StoreState = iota // Needs refresh
-	StateFetching                   // Currently loading
-	StateLoaded                     // Complete data
-	StateError                      // Error occurred
-	StateCanceled                   // User canceled
-)
-
 type FacetObserver[T any] interface {
 	OnNewItem(item *T, index int)
-	OnStateChanged(state StoreState, reason string)
+	OnStateChanged(state types.StoreState, reason string)
 }
 
 type MappingFunc[T any] func(item *T) (key interface{}, includeInMap bool)
@@ -37,7 +28,7 @@ type Store[T any] struct {
 	mappingFunc        MappingFunc[T]
 	dataMap            *map[interface{}]*T
 	contextKey         string // Key for ContextManager
-	state              StoreState
+	state              types.StoreState
 	stateReason        string
 	expectedTotalItems atomic.Int64
 	dataGeneration     atomic.Uint64
@@ -61,7 +52,7 @@ func NewStore[T any](
 		processFunc:    processFunc,
 		mappingFunc:    mappingFunc,
 		contextKey:     contextKey,
-		state:          StateStale,
+		state:          types.StoreStateStale,
 		summaryManager: NewSummaryManager[T](),
 	}
 	if mappingFunc != nil {
@@ -104,9 +95,9 @@ func (s *Store[T]) UnregisterObserver(observer FacetObserver[T]) {
 	}
 }
 
-func (s *Store[T]) ChangeState(expectedGeneration uint64, newState StoreState, reason string) {
+func (s *Store[T]) ChangeState(expectedGeneration uint64, newState types.StoreState, reason string) {
 	s.mutex.Lock()
-	if expectedGeneration != 0 && (newState == StateLoaded || newState == StateError) {
+	if expectedGeneration != 0 && (newState == types.StoreStateLoaded || newState == types.StoreStateError) {
 		if s.dataGeneration.Load() != expectedGeneration {
 			s.mutex.Unlock()
 			return
@@ -127,14 +118,14 @@ func (s *Store[T]) ChangeState(expectedGeneration uint64, newState StoreState, r
 	}
 }
 
-func (s *Store[T]) GetState() StoreState {
+func (s *Store[T]) GetState() types.StoreState {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 	return s.state
 }
 
 func (s *Store[T]) MarkStale(reason string) {
-	s.ChangeState(0, StateStale, reason)
+	s.ChangeState(0, types.StoreStateStale, reason)
 }
 
 func (s *Store[T]) GetItem(index int) *T {
@@ -182,7 +173,7 @@ func (s *Store[T]) Count() int {
 
 func (s *Store[T]) Fetch() error {
 	fetchGeneration := s.dataGeneration.Load()
-	s.ChangeState(fetchGeneration, StateFetching, "Starting data fetch")
+	s.ChangeState(fetchGeneration, types.StoreStateFetching, "Starting data fetch")
 
 	renderCtx := RegisterContext(s.contextKey)
 	done := make(chan struct{})
@@ -210,7 +201,7 @@ func (s *Store[T]) Fetch() error {
 			if !ok {
 				modelChanClosed = true
 				if errorChanClosed && processingError == nil {
-					s.ChangeState(fetchGeneration, StateLoaded, "Data loaded successfully")
+					s.ChangeState(fetchGeneration, types.StoreStateLoaded, "Data loaded successfully")
 				}
 				continue
 			}
@@ -268,16 +259,16 @@ func (s *Store[T]) Fetch() error {
 			if !ok {
 				errorChanClosed = true
 				if modelChanClosed && processingError == nil {
-					s.ChangeState(fetchGeneration, StateLoaded, "Data loaded successfully")
+					s.ChangeState(fetchGeneration, types.StoreStateLoaded, "Data loaded successfully")
 				}
 				continue
 			}
 			processingError = streamErr
-			s.ChangeState(fetchGeneration, StateError, streamErr.Error())
+			s.ChangeState(fetchGeneration, types.StoreStateError, streamErr.Error())
 
 		case err := <-errChan:
 			processingError = err
-			s.ChangeState(fetchGeneration, StateError, err.Error())
+			s.ChangeState(fetchGeneration, types.StoreStateError, err.Error())
 			return processingError
 
 		case <-done:
@@ -286,7 +277,7 @@ func (s *Store[T]) Fetch() error {
 			continue
 
 		case <-renderCtx.Ctx.Done():
-			s.ChangeState(0, StateCanceled, "User cancelled operation")
+			s.ChangeState(0, types.StoreStateCanceled, "User cancelled operation")
 			return renderCtx.Ctx.Err()
 		}
 	}
@@ -339,7 +330,7 @@ func (s *Store[T]) Reset() {
 	s.summaryManager.Reset()
 	s.expectedTotalItems.Store(0)
 	s.dataGeneration.Add(1)
-	newState := StateStale
+	newState := types.StoreStateStale
 	reason := "Store reset"
 	s.mutex.Unlock()
 

@@ -4,8 +4,9 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/types"
+	coreTypes "github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/types"
 )
 
 // -------------------- Helper/Mock Functions and Types --------------------
@@ -16,8 +17,8 @@ type TestData struct {
 	Value int    `json:"value"`
 }
 
-func (t *TestData) Model(chain, format string, verbose bool, extraOptions map[string]any) types.Model {
-	return types.Model{
+func (t *TestData) Model(chain, format string, verbose bool, extraOptions map[string]any) coreTypes.Model {
+	return coreTypes.Model{
 		Data: map[string]any{
 			"id":    t.ID,
 			"name":  t.Name,
@@ -31,7 +32,7 @@ func (t *TestData) Model(chain, format string, verbose bool, extraOptions map[st
 type MockObserver struct {
 	newItems     []*TestData
 	stateChanges []struct {
-		state  StoreState
+		state  types.StoreState
 		reason string
 	}
 	mutex sync.Mutex
@@ -43,11 +44,11 @@ func (m *MockObserver) OnNewItem(item *TestData, index int) {
 	m.newItems = append(m.newItems, item)
 }
 
-func (m *MockObserver) OnStateChanged(state StoreState, reason string) {
+func (m *MockObserver) OnStateChanged(state types.StoreState, reason string) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	m.stateChanges = append(m.stateChanges, struct {
-		state  StoreState
+		state  types.StoreState
 		reason string
 	}{state, reason})
 }
@@ -61,13 +62,13 @@ func (m *MockObserver) GetNewItems() []*TestData {
 }
 
 func (m *MockObserver) GetStateChanges() []struct {
-	state  StoreState
+	state  types.StoreState
 	reason string
 } {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	result := make([]struct {
-		state  StoreState
+		state  types.StoreState
 		reason string
 	}, len(m.stateChanges))
 	copy(result, m.stateChanges)
