@@ -250,7 +250,7 @@ export const Comparitoor = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        state={pageData?.state || types.FacetState.STALE}
+        state={pageData?.state || types.FacetState.FACET_STALE}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -298,7 +298,7 @@ export const Comparitoor = () => {
         rowActions={config.rowActions}
         headerActions={config.headerActions}
         count={++renderCnt.current}
-        state={pageData?.state || types.FacetState.STALE}
+        state={pageData?.state || types.FacetState.FACET_STALE}
         totalItems={pageData?.totalItems}
       />
       <ConfirmModal

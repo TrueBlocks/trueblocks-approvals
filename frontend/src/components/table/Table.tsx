@@ -194,7 +194,7 @@ export const Table = <T extends Record<string, unknown>>({
   };
 
   useEffect(() => {
-    if (data.length > 0 && state !== types.FacetState.FETCHING) {
+    if (data.length > 0 && state !== types.FacetState.FACET_FETCHING) {
       const safeFocusTable = () => {
         // Check if table's own modal is open
         if (isModalOpenRef.current) {
@@ -353,7 +353,7 @@ export const Table = <T extends Record<string, unknown>>({
           <Header columns={displayColumns} viewStateKey={viewStateKey} />
           <tbody className={getDebugClass(5)}>
             {data.length === 0 ? (
-              state === types.FacetState.FETCHING ? (
+              state === types.FacetState.FACET_FETCHING ? (
                 <tr>
                   <td
                     colSpan={displayColumns.length}
@@ -401,7 +401,7 @@ export const Table = <T extends Record<string, unknown>>({
                 selectedRowIndex={selectedRowIndex}
                 handleRowClick={handleRowClick}
                 noDataMessage={
-                  state === types.FacetState.FETCHING
+                  state === types.FacetState.FACET_FETCHING
                     ? 'Loading...'
                     : 'No data found.'
                 }

@@ -135,7 +135,7 @@ yarn test-dalle        # Dalle module tests
     data={pageData?.monitors || []}
     columns={getColumns(getCurrentDataFacet())}
     viewStateKey={viewStateKey}
-    loading={pageData?.state === types.FacetState.FETCHING || false}
+    loading={pageData?.state === types.FacetState.FACET_FETCHING || false}
     error={error}
     onSubmit={handleSubmit}
     onDelete={handleDelete}

@@ -12,15 +12,15 @@ interface StateDisplayProps {
 
 const getStateColor = (state: types.FacetState) => {
   switch (state) {
-    case types.FacetState.STALE:
+    case types.FacetState.FACET_STALE:
       return 'gray';
-    case types.FacetState.FETCHING:
+    case types.FacetState.FACET_FETCHING:
       return 'blue';
-    case types.FacetState.PARTIAL:
+    case types.FacetState.FACET_PARTIAL:
       return 'yellow';
-    case types.FacetState.LOADED:
+    case types.FacetState.FACET_LOADED:
       return 'green';
-    case types.FacetState.ERROR:
+    case types.FacetState.FACET_ERROR:
       return 'red';
     default:
       return 'gray';
@@ -29,15 +29,15 @@ const getStateColor = (state: types.FacetState) => {
 
 const getStateLabel = (state: types.FacetState) => {
   switch (state) {
-    case types.FacetState.STALE:
+    case types.FacetState.FACET_STALE:
       return 'Stale';
-    case types.FacetState.FETCHING:
+    case types.FacetState.FACET_FETCHING:
       return 'Fetching...';
-    case types.FacetState.PARTIAL:
+    case types.FacetState.FACET_PARTIAL:
       return 'Partial';
-    case types.FacetState.LOADED:
+    case types.FacetState.FACET_LOADED:
       return 'Loaded';
-    case types.FacetState.ERROR:
+    case types.FacetState.FACET_ERROR:
       return 'Error';
     default:
       return 'Unknown';

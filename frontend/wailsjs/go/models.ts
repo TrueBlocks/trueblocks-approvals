@@ -1286,6 +1286,13 @@ export namespace status {
 
 export namespace types {
 	
+	export enum StoreState {
+	    STALE = 0,
+	    FETCHING = 1,
+	    LOADED = 2,
+	    ERROR = 3,
+	    CANCELED = 4,
+	}
 	export enum DataFacet {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",
@@ -1329,18 +1336,11 @@ export namespace types {
 	    GALLERY = "gallery",
 	}
 	export enum FacetState {
-	    STALE = "stale",
-	    FETCHING = "fetching",
-	    PARTIAL = "partial",
-	    LOADED = "loaded",
-	    ERROR = "error",
-	}
-	export enum StoreState {
-	    STALE = 0,
-	    FETCHING = 1,
-	    LOADED = 2,
-	    ERROR = 3,
-	    CANCELED = 4,
+	    FACET_STALE = "stale",
+	    FACET_FETCHING = "fetching",
+	    FACET_PARTIAL = "partial",
+	    FACET_LOADED = "loaded",
+	    FACET_ERROR = "error",
 	}
 	export class AbiCalcs {
 	    name?: string;
