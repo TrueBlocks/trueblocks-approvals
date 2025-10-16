@@ -50,7 +50,7 @@
 //	 doneCh := msgs.WaitForLoadedEvent(string(abis.AbisDownloaded))
 //
 //	 // Trigger data loading
-//	 abisCollection.LoadData(abis.AbisDownloaded)
+//	 abisCollection.FetchByFacet(abis.AbisDownloaded)
 //
 //	 // Wait for the data to be loaded, with a timeout
 //	 select {

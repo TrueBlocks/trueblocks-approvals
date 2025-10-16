@@ -13,7 +13,7 @@ type Page interface {
 
 type Collection interface {
 	GetPage(payload *Payload, first, pageSize int, sort sdk.SortSpec, filter string) (Page, error)
-	LoadData(facet DataFacet)
+	FetchByFacet(facet DataFacet)
 	Reset(facet DataFacet)
 	NeedsUpdate(facet DataFacet) bool
 	GetSupportedFacets() []DataFacet

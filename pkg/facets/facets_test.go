@@ -51,7 +51,7 @@ func TestFacetLoad(t *testing.T) {
 		testStore := createTestStore()
 		facet := createTestFacet(testStore)
 
-		err := facet.Load()
+		err := facet.FetchFacet()
 		assert.NoError(t, err, "Load should not return error on first call")
 
 		waitForCondition(t, 5*time.Second, facet, func() bool {
@@ -61,12 +61,12 @@ func TestFacetLoad(t *testing.T) {
 		assert.Equal(t, 5, facet.Count(), "Expected count to be 5 after load")
 		assert.Equal(t, types.FacetStateLoaded, facet.GetState(), "Expected state to be StateLoaded")
 
-		err = facet.Load()
+		err = facet.FetchFacet()
 		assert.NoError(t, err, "Second load should not return error")
 
 		facet.Reset()
 		assert.True(t, facet.StartFetching(), "Could not set facet to fetching state for test")
-		err = facet.Load()
+		err = facet.FetchFacet()
 		assert.Equal(t, ErrAlreadyLoading, err, "Expected ErrAlreadyLoading when loading while already fetching")
 	})
 
@@ -101,7 +101,7 @@ func TestFacetLoad(t *testing.T) {
 
 		assert.Equal(t, types.FacetStateStale, facet.GetState(), "Initial state for single item store facet should be Stale")
 
-		err := facet.Load()
+		err := facet.FetchFacet()
 		assert.NoError(t, err, "Load for single item store failed")
 
 		waitForCondition(t, 5*time.Second, facet, func() bool {
@@ -117,7 +117,7 @@ func TestFacetFiltering(t *testing.T) {
 	testStore := createTestStore()
 	facet := createFilteredFacet(testStore, 30)
 
-	if err := facet.Load(); err != nil {
+	if err := facet.FetchFacet(); err != nil {
 		t.Fatalf("Load failed: %v", err)
 	}
 
@@ -148,7 +148,7 @@ func TestFacetPagination(t *testing.T) {
 
 	assert := assert.New(t)
 
-	err := facet.Load()
+	err := facet.FetchFacet()
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
@@ -180,7 +180,7 @@ func TestFacetPageWithFilter(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore) // Using standard facet, filter applied in GetPage
 
-	err := facet.Load()
+	err := facet.FetchFacet()
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
@@ -204,7 +204,7 @@ func TestFacetSorting(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore)
 
-	err := facet.Load()
+	err := facet.FetchFacet()
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {
@@ -232,7 +232,7 @@ func TestFacetSortingError(t *testing.T) {
 	testStore := createTestStore()
 	facet := createTestFacet(testStore)
 
-	err := facet.Load()
+	err := facet.FetchFacet()
 	assert.NoError(err, "Load failed")
 
 	waitForCondition(t, 5*time.Second, facet, func() bool {

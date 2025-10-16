@@ -132,6 +132,6 @@ func (c *MonitorsCollection) Clean(payload *types.Payload, addresses []string) e
 		logging.LogBackend("Cleaned all monitors")
 	}
 
-	c.LoadData(MonitorsMonitors)
+	c.FetchByFacet(MonitorsMonitors)
 	return nil
 }

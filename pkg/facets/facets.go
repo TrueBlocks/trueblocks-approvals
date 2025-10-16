@@ -151,7 +151,7 @@ func (r *Facet[T]) UpdateBuckets(updateFunc func(*types.Buckets)) {
 
 var ErrAlreadyLoading = errors.New("already loading")
 
-func (r *Facet[T]) Load() error {
+func (r *Facet[T]) FetchFacet() error {
 	currentState := r.GetState()
 
 	if currentState == types.FacetStateFetching {
@@ -229,7 +229,7 @@ func (r *Facet[T]) GetPage(
 		} else if r.NeedsUpdate() {
 			// No data in store, trigger load
 			go func() {
-				_ = r.Load()
+				_ = r.FetchFacet()
 			}()
 		}
 	}

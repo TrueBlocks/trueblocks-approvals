@@ -176,7 +176,7 @@ func isDupSeries() func(existing []*Series, newItem *Series) bool {
 	// EXISTING_CODE
 }
 
-func (c *DressesCollection) LoadData(dataFacet types.DataFacet) {
+func (c *DressesCollection) FetchByFacet(dataFacet types.DataFacet) {
 	if !c.NeedsUpdate(dataFacet) {
 		return
 	}
@@ -184,23 +184,23 @@ func (c *DressesCollection) LoadData(dataFacet types.DataFacet) {
 	go func() {
 		switch dataFacet {
 		case DressesGenerator:
-			if err := c.generatorFacet.Load(); err != nil {
+			if err := c.generatorFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case DressesSeries:
-			if err := c.seriesFacet.Load(); err != nil {
+			if err := c.seriesFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case DressesDatabases:
-			if err := c.databasesFacet.Load(); err != nil {
+			if err := c.databasesFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case DressesEvents:
-			if err := c.eventsFacet.Load(); err != nil {
+			if err := c.eventsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case DressesGallery:
-			if err := c.galleryFacet.Load(); err != nil {
+			if err := c.galleryFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		default:

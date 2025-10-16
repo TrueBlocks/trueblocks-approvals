@@ -149,7 +149,7 @@ func isDupTransaction() func(existing []*Transaction, newItem *Transaction) bool
 	// EXISTING_CODE
 }
 
-func (c *ComparitoorCollection) LoadData(dataFacet types.DataFacet) {
+func (c *ComparitoorCollection) FetchByFacet(dataFacet types.DataFacet) {
 	if !c.NeedsUpdate(dataFacet) {
 		return
 	}
@@ -157,23 +157,23 @@ func (c *ComparitoorCollection) LoadData(dataFacet types.DataFacet) {
 	go func() {
 		switch dataFacet {
 		case ComparitoorComparitoor:
-			if err := c.comparitoorFacet.Load(); err != nil {
+			if err := c.comparitoorFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ComparitoorChifra:
-			if err := c.chifraFacet.Load(); err != nil {
+			if err := c.chifraFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ComparitoorEtherScan:
-			if err := c.etherscanFacet.Load(); err != nil {
+			if err := c.etherscanFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ComparitoorCovalent:
-			if err := c.covalentFacet.Load(); err != nil {
+			if err := c.covalentFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ComparitoorAlchemy:
-			if err := c.alchemyFacet.Load(); err != nil {
+			if err := c.alchemyFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		default:

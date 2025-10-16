@@ -171,7 +171,7 @@ func (c *AbisCollection) getSummaryPage(
 	_ = filter
 	// CRITICAL: Ensure underlying raw data is loaded before generating summaries
 	// For summary periods, we need the blockly (raw) data to be loaded first
-	c.LoadData(dataFacet)
+	c.FetchByFacet(dataFacet)
 	if err := c.generateSummariesForPeriod(dataFacet, period); err != nil {
 		return nil, types.NewStoreError("exports", dataFacet, "getSummaryPage", err)
 	}

@@ -328,7 +328,7 @@ func isDupWithdrawal() func(existing []*Withdrawal, newItem *Withdrawal) bool {
 	// EXISTING_CODE
 }
 
-func (c *ExportsCollection) LoadData(dataFacet types.DataFacet) {
+func (c *ExportsCollection) FetchByFacet(dataFacet types.DataFacet) {
 	if !c.NeedsUpdate(dataFacet) {
 		return
 	}
@@ -336,51 +336,51 @@ func (c *ExportsCollection) LoadData(dataFacet types.DataFacet) {
 	go func() {
 		switch dataFacet {
 		case ExportsStatements:
-			if err := c.statementsFacet.Load(); err != nil {
+			if err := c.statementsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsBalances:
-			if err := c.balancesFacet.Load(); err != nil {
+			if err := c.balancesFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsTransfers:
-			if err := c.transfersFacet.Load(); err != nil {
+			if err := c.transfersFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsTransactions:
-			if err := c.transactionsFacet.Load(); err != nil {
+			if err := c.transactionsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsOpenApprovals:
-			if err := c.openApprovalsFacet.Load(); err != nil {
+			if err := c.openApprovalsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsApprovalLogs:
-			if err := c.approvalLogsFacet.Load(); err != nil {
+			if err := c.approvalLogsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsApprovalTxs:
-			if err := c.approvalTxsFacet.Load(); err != nil {
+			if err := c.approvalTxsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsWithdrawals:
-			if err := c.withdrawalsFacet.Load(); err != nil {
+			if err := c.withdrawalsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsAssets:
-			if err := c.assetsFacet.Load(); err != nil {
+			if err := c.assetsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsLogs:
-			if err := c.logsFacet.Load(); err != nil {
+			if err := c.logsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsTraces:
-			if err := c.tracesFacet.Load(); err != nil {
+			if err := c.tracesFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		case ExportsReceipts:
-			if err := c.receiptsFacet.Load(); err != nil {
+			if err := c.receiptsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
 		default:

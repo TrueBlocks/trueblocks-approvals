@@ -15,6 +15,7 @@ import (
 	//
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/crud"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+
 	// EXISTING_CODE
 	"fmt"
 
@@ -52,7 +53,7 @@ func (a *App) GetDressesSummary(payload *types.Payload) types.Summary {
 func (a *App) ReloadDresses(payload *types.Payload) error {
 	collection := dresses.GetDressesCollection(payload)
 	collection.Reset(payload.DataFacet)
-	collection.LoadData(payload.DataFacet)
+	collection.FetchByFacet(payload.DataFacet)
 	return nil
 }
 

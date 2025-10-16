@@ -343,7 +343,7 @@ func (c *ExportsCollection) getSummaryPage(
 	_ = filter
 	// CRITICAL: Ensure underlying raw data is loaded before generating summaries
 	// For summary periods, we need the blockly (raw) data to be loaded first
-	c.LoadData(dataFacet)
+	c.FetchByFacet(dataFacet)
 	if err := c.generateSummariesForPeriod(dataFacet, period); err != nil {
 		return nil, types.NewStoreError("exports", dataFacet, "getSummaryPage", err)
 	}
@@ -393,7 +393,6 @@ func (c *ExportsCollection) getSummaryPage(
 		}
 		page.Statements = valueSlice
 		page.TotalItems = total
-		page.State = types.FacetStateLoaded
 		return page, nil
 
 	case ExportsBalances:
@@ -436,7 +435,6 @@ func (c *ExportsCollection) getSummaryPage(
 
 		page.Balances = valueSlice
 		page.TotalItems = total
-		page.State = types.FacetStateLoaded
 		return page, nil
 
 	// EXISTING_CODE

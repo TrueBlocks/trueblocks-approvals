@@ -14,11 +14,11 @@ var AllStoreStates = []struct {
 	Value  StoreState `json:"value"`
 	TSName string     `json:"tsname"`
 }{
-	{StoreStateStale, "STALE"},
-	{StoreStateFetching, "FETCHING"},
-	{StoreStateLoaded, "LOADED"},
-	{StoreStateError, "ERROR"},
-	{StoreStateCanceled, "CANCELED"},
+	{StoreStateStale, "STORE_STALE"},
+	{StoreStateFetching, "STORE_FETCHING"},
+	{StoreStateLoaded, "STORE_LOADED"},
+	{StoreStateError, "STORE_ERROR"},
+	{StoreStateCanceled, "STORE_CANCELED"},
 }
 
 type FacetState string

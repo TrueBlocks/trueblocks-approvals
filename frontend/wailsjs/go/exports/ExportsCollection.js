@@ -14,6 +14,10 @@ export function ExportData(arg1) {
   return window['go']['exports']['ExportsCollection']['ExportData'](arg1);
 }
 
+export function FetchByFacet(arg1) {
+  return window['go']['exports']['ExportsCollection']['FetchByFacet'](arg1);
+}
+
 export function GetBuckets(arg1) {
   return window['go']['exports']['ExportsCollection']['GetBuckets'](arg1);
 }
@@ -40,10 +44,6 @@ export function GetSummary() {
 
 export function GetSupportedFacets() {
   return window['go']['exports']['ExportsCollection']['GetSupportedFacets']();
-}
-
-export function LoadData(arg1) {
-  return window['go']['exports']['ExportsCollection']['LoadData'](arg1);
 }
 
 export function NeedsUpdate(arg1) {
