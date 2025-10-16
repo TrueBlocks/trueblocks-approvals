@@ -19,14 +19,14 @@ import (
 
 // EXISTING_CODE
 type ChunksPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Blooms        []*Bloom        `json:"blooms"`
-	Index         []*Index        `json:"index"`
-	Manifest      []*Manifest     `json:"manifest"`
-	Stats         []*Stats        `json:"stats"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Blooms        []*Bloom         `json:"blooms"`
+	Index         []*Index         `json:"index"`
+	Manifest      []*Manifest      `json:"manifest"`
+	Stats         []*Stats         `json:"stats"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -43,7 +43,7 @@ func (p *ChunksPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ChunksPage) GetState() types.LoadState {
+func (p *ChunksPage) GetState() types.FacetState {
 	return p.State
 }
 

@@ -9,7 +9,7 @@ interface BaseTabProps<T extends Record<string, unknown>> {
   data: T[];
   columns: FormField<T>[];
   viewStateKey: project.ViewStateKey;
-  state: types.LoadState;
+  state: types.FacetState;
   error: Error | null;
   onSubmit?: (formData: T) => void;
   onDelete?: (rowData: T) => void;

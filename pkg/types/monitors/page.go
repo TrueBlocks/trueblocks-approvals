@@ -21,11 +21,11 @@ import (
 
 // TODO: The slices should be slices to pointers
 type MonitorsPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Monitors      []Monitor       `json:"monitors"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Monitors      []Monitor        `json:"monitors"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -42,7 +42,7 @@ func (p *MonitorsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *MonitorsPage) GetState() types.LoadState {
+func (p *MonitorsPage) GetState() types.FacetState {
 	return p.State
 }
 

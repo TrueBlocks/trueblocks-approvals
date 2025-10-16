@@ -21,23 +21,23 @@ var AllStoreStates = []struct {
 	{StoreStateCanceled, "CANCELED"},
 }
 
-type LoadState string
+type FacetState string
 
 const (
-	FacetStateStale    LoadState = "stale"
-	FacetStateFetching LoadState = "fetching"
-	FacetStatePartial  LoadState = "partial"
-	FacetStateLoaded   LoadState = "loaded"
-	FacetStateError    LoadState = "error"
+	FacetStateStale    FacetState = "stale"
+	FacetStateFetching FacetState = "fetching"
+	FacetStatePartial  FacetState = "partial"
+	FacetStateLoaded   FacetState = "loaded"
+	FacetStateError    FacetState = "error"
 )
 
 var AllFacetStates = []struct {
-	Value  LoadState `json:"value"`
-	TSName string    `json:"tsname"`
+	Value  FacetState `json:"value"`
+	TSName string     `json:"tsname"`
 }{
-	{FacetStateStale, "STALE"},
-	{FacetStateFetching, "FETCHING"},
-	{FacetStatePartial, "PARTIAL"},
-	{FacetStateLoaded, "LOADED"},
-	{FacetStateError, "ERROR"},
+	{FacetStateStale, "FACET_STALE"},
+	{FacetStateFetching, "FACET_FETCHING"},
+	{FacetStatePartial, "FACET_PARTIAL"},
+	{FacetStateLoaded, "FACET_LOADED"},
+	{FacetStateError, "FACET_ERROR"},
 }

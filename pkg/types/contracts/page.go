@@ -19,12 +19,12 @@ import (
 
 // EXISTING_CODE
 type ContractsPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Contracts     []*Contract     `json:"contracts"`
-	Logs          []*Log          `json:"logs"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Contracts     []*Contract      `json:"contracts"`
+	Logs          []*Log           `json:"logs"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -41,7 +41,7 @@ func (p *ContractsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ContractsPage) GetState() types.LoadState {
+func (p *ContractsPage) GetState() types.FacetState {
 	return p.State
 }
 

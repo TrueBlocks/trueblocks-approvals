@@ -24,22 +24,22 @@ import (
 
 // TODO: The slices should be slices to pointers
 type ExportsPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	OpenApprovals []OpenApproval  `json:"openapprovals"`
-	ApprovalLogs  []ApprovalLog   `json:"approvallogs"`
-	ApprovalTxs   []ApprovalTx    `json:"approvaltxs"`
-	Assets        []Asset         `json:"assets"`
-	Balances      []Balance       `json:"balances"`
-	Logs          []Log           `json:"logs"`
-	Receipts      []Receipt       `json:"receipts"`
-	Statements    []Statement     `json:"statements"`
-	Traces        []Trace         `json:"traces"`
-	Transactions  []Transaction   `json:"transactions"`
-	Transfers     []Transfer      `json:"transfers"`
-	Withdrawals   []Withdrawal    `json:"withdrawals"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	OpenApprovals []OpenApproval   `json:"openapprovals"`
+	ApprovalLogs  []ApprovalLog    `json:"approvallogs"`
+	ApprovalTxs   []ApprovalTx     `json:"approvaltxs"`
+	Assets        []Asset          `json:"assets"`
+	Balances      []Balance        `json:"balances"`
+	Logs          []Log            `json:"logs"`
+	Receipts      []Receipt        `json:"receipts"`
+	Statements    []Statement      `json:"statements"`
+	Traces        []Trace          `json:"traces"`
+	Transactions  []Transaction    `json:"transactions"`
+	Transfers     []Transfer       `json:"transfers"`
+	Withdrawals   []Withdrawal     `json:"withdrawals"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -56,7 +56,7 @@ func (p *ExportsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ExportsPage) GetState() types.LoadState {
+func (p *ExportsPage) GetState() types.FacetState {
 	return p.State
 }
 

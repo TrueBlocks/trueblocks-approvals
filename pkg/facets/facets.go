@@ -22,7 +22,7 @@ type DupFunc[T any] func(existing []*T, newItem *T) bool
 type PageResult[T any] struct {
 	Items      []T
 	TotalItems int
-	State      types.LoadState
+	State      types.FacetState
 }
 
 type Facet[T any] struct {
@@ -72,9 +72,9 @@ func (r *Facet[T]) IsLoaded() bool {
 	return r.GetState() == types.FacetStateLoaded
 }
 
-func (r *Facet[T]) GetState() types.LoadState {
+func (r *Facet[T]) GetState() types.FacetState {
 	if state := r.state.Load(); state != nil {
-		return state.(types.LoadState)
+		return state.(types.FacetState)
 	}
 	return types.FacetStateStale
 }

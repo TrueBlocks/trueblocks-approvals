@@ -4,7 +4,7 @@ import { types } from '@models';
 
 interface UsePlaceholderRowsProps {
   data: unknown[] | null | undefined;
-  state: types.LoadState;
+  state: types.FacetState;
 }
 
 export function usePlaceholderRows({ data, state }: UsePlaceholderRowsProps) {
@@ -14,14 +14,14 @@ export function usePlaceholderRows({ data, state }: UsePlaceholderRowsProps) {
   // Determine if we should show placeholders based on state
   const shouldShowPlaceholders = useMemo(() => {
     switch (state) {
-      case types.LoadState.FETCHING:
+      case types.FacetState.FETCHING:
         return data == null || data.length === 0; // Only if no data yet
-      case types.LoadState.STALE:
+      case types.FacetState.STALE:
         return data == null || data.length === 0; // Initial load case
-      case types.LoadState.LOADED:
-      case types.LoadState.ERROR:
+      case types.FacetState.LOADED:
+      case types.FacetState.ERROR:
         return false; // Never show placeholders - we have final answer
-      case types.LoadState.PARTIAL:
+      case types.FacetState.PARTIAL:
         return false; // We have some data, show it
       default:
         return false;

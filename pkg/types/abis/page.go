@@ -21,12 +21,12 @@ import (
 
 // TODO: The slices should be slices to pointers
 type AbisPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Abis          []Abi           `json:"abis"`
-	Functions     []Function      `json:"functions"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Abis          []Abi            `json:"abis"`
+	Functions     []Function       `json:"functions"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -43,7 +43,7 @@ func (p *AbisPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *AbisPage) GetState() types.LoadState {
+func (p *AbisPage) GetState() types.FacetState {
 	return p.State
 }
 

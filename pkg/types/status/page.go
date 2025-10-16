@@ -19,13 +19,13 @@ import (
 
 // EXISTING_CODE
 type StatusPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Caches        []*Cache        `json:"caches"`
-	Chains        []*Chain        `json:"chains"`
-	Status        []*Status       `json:"status"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Caches        []*Cache         `json:"caches"`
+	Chains        []*Chain         `json:"chains"`
+	Status        []*Status        `json:"status"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -42,7 +42,7 @@ func (p *StatusPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *StatusPage) GetState() types.LoadState {
+func (p *StatusPage) GetState() types.FacetState {
 	return p.State
 }
 

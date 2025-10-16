@@ -29,7 +29,7 @@ import './Table.css';
 export interface TableProps<T extends Record<string, unknown>> {
   columns: FormField<T>[];
   data: T[];
-  state: types.LoadState;
+  state: types.FacetState;
   viewStateKey: project.ViewStateKey;
   onSubmit?: (data: T) => void;
   onDelete?: (rowData: T) => void;
@@ -194,7 +194,7 @@ export const Table = <T extends Record<string, unknown>>({
   };
 
   useEffect(() => {
-    if (data.length > 0 && state !== types.LoadState.FETCHING) {
+    if (data.length > 0 && state !== types.FacetState.FETCHING) {
       const safeFocusTable = () => {
         // Check if table's own modal is open
         if (isModalOpenRef.current) {
@@ -353,7 +353,7 @@ export const Table = <T extends Record<string, unknown>>({
           <Header columns={displayColumns} viewStateKey={viewStateKey} />
           <tbody className={getDebugClass(5)}>
             {data.length === 0 ? (
-              state === types.LoadState.FETCHING ? (
+              state === types.FacetState.FETCHING ? (
                 <tr>
                   <td
                     colSpan={displayColumns.length}
@@ -401,7 +401,7 @@ export const Table = <T extends Record<string, unknown>>({
                 selectedRowIndex={selectedRowIndex}
                 handleRowClick={handleRowClick}
                 noDataMessage={
-                  state === types.LoadState.FETCHING
+                  state === types.FacetState.FETCHING
                     ? 'Loading...'
                     : 'No data found.'
                 }

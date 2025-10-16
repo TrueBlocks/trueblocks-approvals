@@ -4,40 +4,40 @@ import { Badge, Flex, Text } from '@mantine/core';
 import { types } from '@models';
 
 interface StateDisplayProps {
-  state: types.LoadState;
+  state: types.FacetState;
   facetName: string;
   totalItems?: number;
   style?: CSSProperties;
 }
 
-const getStateColor = (state: types.LoadState) => {
+const getStateColor = (state: types.FacetState) => {
   switch (state) {
-    case types.LoadState.STALE:
+    case types.FacetState.STALE:
       return 'gray';
-    case types.LoadState.FETCHING:
+    case types.FacetState.FETCHING:
       return 'blue';
-    case types.LoadState.PARTIAL:
+    case types.FacetState.PARTIAL:
       return 'yellow';
-    case types.LoadState.LOADED:
+    case types.FacetState.LOADED:
       return 'green';
-    case types.LoadState.ERROR:
+    case types.FacetState.ERROR:
       return 'red';
     default:
       return 'gray';
   }
 };
 
-const getStateLabel = (state: types.LoadState) => {
+const getStateLabel = (state: types.FacetState) => {
   switch (state) {
-    case types.LoadState.STALE:
+    case types.FacetState.STALE:
       return 'Stale';
-    case types.LoadState.FETCHING:
+    case types.FacetState.FETCHING:
       return 'Fetching...';
-    case types.LoadState.PARTIAL:
+    case types.FacetState.PARTIAL:
       return 'Partial';
-    case types.LoadState.LOADED:
+    case types.FacetState.LOADED:
       return 'Loaded';
-    case types.LoadState.ERROR:
+    case types.FacetState.ERROR:
       return 'Error';
     default:
       return 'Unknown';

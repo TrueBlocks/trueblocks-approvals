@@ -22,11 +22,11 @@ import (
 
 // EXISTING_CODE
 type ComparitoorPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Transaction   []*Transaction  `json:"transaction"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Transaction   []*Transaction   `json:"transaction"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// Per-source arrays and counts
 	Chifra         []*Transaction `json:"chifra"`
@@ -58,7 +58,7 @@ func (p *ComparitoorPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ComparitoorPage) GetState() types.LoadState {
+func (p *ComparitoorPage) GetState() types.FacetState {
 	return p.State
 }
 

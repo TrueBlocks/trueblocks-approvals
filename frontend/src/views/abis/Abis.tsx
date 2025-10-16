@@ -238,7 +238,7 @@ export const Abis = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        state={pageData?.state || types.LoadState.STALE}
+        state={pageData?.state || types.FacetState.STALE}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -286,7 +286,7 @@ export const Abis = () => {
         rowActions={config.rowActions}
         headerActions={config.headerActions}
         count={++renderCnt.current}
-        state={pageData?.state || types.LoadState.STALE}
+        state={pageData?.state || types.FacetState.STALE}
         totalItems={pageData?.totalItems}
       />
       <ConfirmModal

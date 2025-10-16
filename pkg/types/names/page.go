@@ -19,11 +19,11 @@ import (
 
 // EXISTING_CODE
 type NamesPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	Names         []*Name         `json:"names"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	Names         []*Name          `json:"names"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -40,7 +40,7 @@ func (p *NamesPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *NamesPage) GetState() types.LoadState {
+func (p *NamesPage) GetState() types.FacetState {
 	return p.State
 }
 

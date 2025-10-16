@@ -23,7 +23,7 @@ interface DebuggerProps {
   rowActions: ActionDefinition[];
   headerActions: ActionDefinition[];
   count: number;
-  state: types.LoadState;
+  state: types.FacetState;
   totalItems?: number;
 }
 

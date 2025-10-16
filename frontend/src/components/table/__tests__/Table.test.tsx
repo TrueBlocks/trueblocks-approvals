@@ -54,7 +54,7 @@ const mockViewStateKey: project.ViewStateKey = {
 const defaultProps: TableProps<TestRow> = {
   columns: mockColumns,
   data: mockData,
-  state: types.LoadState.LOADED,
+  state: types.FacetState.LOADED,
   viewStateKey: mockViewStateKey,
   onSubmit: vi.fn(),
   detailPanel: () => null,
@@ -107,7 +107,7 @@ describe('Table', () => {
   // Group 2: State handling tests
   describe('State handling', () => {
     it('shows placeholder data when data is empty', () => {
-      setupTest({ data: [], state: types.LoadState.STALE });
+      setupTest({ data: [], state: types.FacetState.STALE });
       // Just check that the table exists
       expect(screen.getByRole('table')).toBeInTheDocument();
     });

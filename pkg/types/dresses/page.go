@@ -21,14 +21,14 @@ import (
 
 // EXISTING_CODE
 type DressesPage struct {
-	Facet         types.DataFacet `json:"facet"`
-	DalleDress    []*DalleDress   `json:"dalledress"`
-	Databases     []*Database     `json:"databases"`
-	Logs          []*Log          `json:"logs"`
-	Series        []*Series       `json:"series"`
-	TotalItems    int             `json:"totalItems"`
-	ExpectedTotal int             `json:"expectedTotal"`
-	State         types.LoadState `json:"state"`
+	Facet         types.DataFacet  `json:"facet"`
+	DalleDress    []*DalleDress    `json:"dalledress"`
+	Databases     []*Database      `json:"databases"`
+	Logs          []*Log           `json:"logs"`
+	Series        []*Series        `json:"series"`
+	TotalItems    int              `json:"totalItems"`
+	ExpectedTotal int              `json:"expectedTotal"`
+	State         types.FacetState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -45,7 +45,7 @@ func (p *DressesPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *DressesPage) GetState() types.LoadState {
+func (p *DressesPage) GetState() types.FacetState {
 	return p.State
 }
 

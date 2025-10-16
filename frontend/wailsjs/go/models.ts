@@ -6,7 +6,7 @@ export namespace abis {
 	    functions: types.Function[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new AbisPage(source);
@@ -101,7 +101,7 @@ export namespace chunks {
 	    stats: types.ChunkStats[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ChunksPage(source);
@@ -226,7 +226,7 @@ export namespace comparitoor {
 	    transaction: AnnotatedTransaction[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	    chifra: AnnotatedTransaction[];
 	    chifraCount: number;
 	    etherscan: AnnotatedTransaction[];
@@ -294,7 +294,7 @@ export namespace contracts {
 	    logs: types.Log[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ContractsPage(source);
@@ -405,7 +405,7 @@ export namespace dresses {
 	    series: dalle.Series[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new DressesPage(source);
@@ -462,7 +462,7 @@ export namespace exports {
 	    withdrawals: types.Withdrawal[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ExportsPage(source);
@@ -736,7 +736,7 @@ export namespace monitors {
 	    monitors: types.Monitor[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new MonitorsPage(source);
@@ -799,7 +799,7 @@ export namespace names {
 	    names: types.Name[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new NamesPage(source);
@@ -1246,7 +1246,7 @@ export namespace status {
 	    status: types.Status[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.LoadState;
+	    state: types.FacetState;
 	
 	    static createFrom(source: any = {}) {
 	        return new StatusPage(source);
@@ -1286,13 +1286,6 @@ export namespace status {
 
 export namespace types {
 	
-	export enum StoreState {
-	    STALE = 0,
-	    FETCHING = 1,
-	    LOADED = 2,
-	    ERROR = 3,
-	    CANCELED = 4,
-	}
 	export enum DataFacet {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",
@@ -1335,12 +1328,19 @@ export namespace types {
 	    DATABASES = "databases",
 	    GALLERY = "gallery",
 	}
-	export enum LoadState {
+	export enum FacetState {
 	    STALE = "stale",
 	    FETCHING = "fetching",
 	    PARTIAL = "partial",
 	    LOADED = "loaded",
 	    ERROR = "error",
+	}
+	export enum StoreState {
+	    STALE = 0,
+	    FETCHING = 1,
+	    LOADED = 2,
+	    ERROR = 3,
+	    CANCELED = 4,
 	}
 	export class AbiCalcs {
 	    name?: string;
