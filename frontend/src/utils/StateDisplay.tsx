@@ -32,7 +32,7 @@ const getStateLabel = (state: types.LoadState) => {
     case types.LoadState.STALE:
       return 'Stale';
     case types.LoadState.FETCHING:
-      return 'Loading...';
+      return 'Fetching...';
     case types.LoadState.PARTIAL:
       return 'Partial';
     case types.LoadState.LOADED:
