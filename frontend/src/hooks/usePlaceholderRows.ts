@@ -13,16 +13,18 @@ export function usePlaceholderRows({ data, state }: UsePlaceholderRowsProps) {
 
   // Determine if we should show placeholders based on state
   const shouldShowPlaceholders = useMemo(() => {
+    if (data != null && data.length > 0) {
+      return false;
+    }
+
     switch (state) {
       case types.FacetState.FACET_FETCHING:
-        return data == null || data.length === 0; // Only if no data yet
+        return true; // Show placeholders while fetching if no data
       case types.FacetState.FACET_STALE:
-        return data == null || data.length === 0; // Initial load case
+        return true; // Show placeholders for initial load
       case types.FacetState.FACET_LOADED:
       case types.FacetState.FACET_ERROR:
         return false; // Never show placeholders - we have final answer
-      case types.FacetState.FACET_PARTIAL:
-        return false; // We have some data, show it
       default:
         return false;
     }

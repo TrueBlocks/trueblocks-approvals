@@ -93,12 +93,6 @@ func (r *Facet[T]) StartFetching() bool {
 	return true
 }
 
-func (r *Facet[T]) SetPartial() {
-	if r.GetState() == types.FacetStateFetching {
-		r.state.Store(types.FacetStatePartial)
-	}
-}
-
 func (r *Facet[T]) Reset() {
 	r.mutex.Lock()
 	r.view = r.view[:0]
@@ -331,9 +325,6 @@ func (r *Facet[T]) OnNewItem(item *T, index int) {
 	r.mutex.Unlock()
 
 	r.progress.Tick(currentCount, expectedTotal)
-	if currentCount > 0 {
-		r.SetPartial()
-	}
 }
 
 func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
@@ -392,11 +383,10 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 		hasData := len(r.view) > 0
 		currentCount := len(r.view)
 		r.mutex.RUnlock()
+		r.state.Store(types.FacetStateError)
 		if hasData {
-			r.state.Store(types.FacetStatePartial)
-			msgs.EmitStatus(fmt.Sprintf("partial load: %d items (error: %s)", currentCount, reason))
+			msgs.EmitStatus(fmt.Sprintf("load failed with partial data: %d items (error: %s)", currentCount, reason))
 		} else {
-			r.state.Store(types.FacetStateError)
 			msgs.EmitError(fmt.Sprintf("load failed: %s", reason), errors.New(reason))
 		}
 

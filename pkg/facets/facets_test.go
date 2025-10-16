@@ -38,9 +38,6 @@ func TestFacetStateTransitions(t *testing.T) {
 	assert.Equal(t, types.FacetStateFetching, facet.GetState(), "Expected state to be StateFetching")
 	assert.False(t, facet.StartFetching(), "StartFetching should return false when already fetching")
 
-	facet.SetPartial()
-	assert.Equal(t, types.FacetStatePartial, facet.GetState(), "Expected state to be StatePartial")
-
 	facet.Reset()
 	assert.Equal(t, types.FacetStateStale, facet.GetState(), "Expected state to be StateStale after reset")
 	assert.Equal(t, 0, facet.Count(), "Expected count to be 0 after reset")
@@ -263,10 +260,10 @@ func TestFacetObserverInterface(t *testing.T) {
 	facet.OnStateChanged(types.StoreStateError, "Test error")
 	assert.Equal(types.FacetStateError, facet.GetState(), "Expected state to be StateError")
 
-	// Test partial state with existing data
+	// Test error state with existing data - now goes to ERROR regardless of data
 	facet.OnNewItem(&TestItem{ID: 1, Name: "Test", Value: 100}, 0)
-	facet.OnStateChanged(types.StoreStateError, "Test partial error")
-	assert.Equal(types.FacetStatePartial, facet.GetState(), "Expected state to be StatePartial when error occurs with existing data")
+	facet.OnStateChanged(types.StoreStateError, "Test error with existing data")
+	assert.Equal(types.FacetStateError, facet.GetState(), "Expected state to be StateError even when error occurs with existing data")
 
 	facet.OnStateChanged(types.StoreStateCanceled, "Test canceled")
 	assert.Equal(types.FacetStateStale, facet.GetState(), "Expected state to be StateStale after cancel")

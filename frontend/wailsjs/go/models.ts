@@ -1289,7 +1289,6 @@ export namespace types {
 	export enum FacetState {
 	    FACET_STALE = "stale",
 	    FACET_FETCHING = "fetching",
-	    FACET_PARTIAL = "partial",
 	    FACET_LOADED = "loaded",
 	    FACET_ERROR = "error",
 	}

@@ -16,8 +16,6 @@ const getStateColor = (state: types.FacetState) => {
       return 'gray';
     case types.FacetState.FACET_FETCHING:
       return 'blue';
-    case types.FacetState.FACET_PARTIAL:
-      return 'yellow';
     case types.FacetState.FACET_LOADED:
       return 'green';
     case types.FacetState.FACET_ERROR:
@@ -33,8 +31,6 @@ const getStateLabel = (state: types.FacetState) => {
       return 'Stale';
     case types.FacetState.FACET_FETCHING:
       return 'Fetching...';
-    case types.FacetState.FACET_PARTIAL:
-      return 'Partial';
     case types.FacetState.FACET_LOADED:
       return 'Loaded';
     case types.FacetState.FACET_ERROR:

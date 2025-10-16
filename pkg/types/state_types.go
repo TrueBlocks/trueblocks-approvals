@@ -26,7 +26,6 @@ type FacetState string
 const (
 	FacetStateStale    FacetState = "stale"
 	FacetStateFetching FacetState = "fetching"
-	FacetStatePartial  FacetState = "partial"
 	FacetStateLoaded   FacetState = "loaded"
 	FacetStateError    FacetState = "error"
 )
@@ -37,7 +36,6 @@ var AllFacetStates = []struct {
 }{
 	{FacetStateStale, "FACET_STALE"},
 	{FacetStateFetching, "FACET_FETCHING"},
-	{FacetStatePartial, "FACET_PARTIAL"},
 	{FacetStateLoaded, "FACET_LOADED"},
 	{FacetStateError, "FACET_ERROR"},
 }
