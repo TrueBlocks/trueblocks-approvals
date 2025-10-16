@@ -6,7 +6,7 @@ export namespace abis {
 	    functions: types.Function[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new AbisPage(source);
@@ -101,7 +101,7 @@ export namespace chunks {
 	    stats: types.ChunkStats[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ChunksPage(source);
@@ -226,7 +226,7 @@ export namespace comparitoor {
 	    transaction: AnnotatedTransaction[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	    chifra: AnnotatedTransaction[];
 	    chifraCount: number;
 	    etherscan: AnnotatedTransaction[];
@@ -294,7 +294,7 @@ export namespace contracts {
 	    logs: types.Log[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ContractsPage(source);
@@ -405,7 +405,7 @@ export namespace dresses {
 	    series: dalle.Series[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new DressesPage(source);
@@ -462,7 +462,7 @@ export namespace exports {
 	    withdrawals: types.Withdrawal[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new ExportsPage(source);
@@ -736,7 +736,7 @@ export namespace monitors {
 	    monitors: types.Monitor[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new MonitorsPage(source);
@@ -799,7 +799,7 @@ export namespace names {
 	    names: types.Name[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new NamesPage(source);
@@ -1246,7 +1246,7 @@ export namespace status {
 	    status: types.Status[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    state: types.FacetState;
+	    state: types.StoreState;
 	
 	    static createFrom(source: any = {}) {
 	        return new StatusPage(source);
@@ -1328,18 +1328,11 @@ export namespace types {
 	    DATABASES = "databases",
 	    GALLERY = "gallery",
 	}
-	export enum FacetState {
-	    FACET_STALE = "stale",
-	    FACET_FETCHING = "fetching",
-	    FACET_LOADED = "loaded",
-	    FACET_ERROR = "error",
-	}
 	export enum StoreState {
-	    STORE_STALE = 0,
-	    STORE_FETCHING = 1,
-	    STORE_LOADED = 2,
-	    STORE_ERROR = 3,
-	    STORE_CANCELED = 4,
+	    STORE_STALE = "stale",
+	    STORE_FETCHING = "fetching",
+	    STORE_LOADED = "loaded",
+	    STORE_ERROR = "error",
 	}
 	export class AbiCalcs {
 	    name?: string;

@@ -8,7 +8,7 @@ type Page interface {
 	GetFacet() DataFacet
 	GetTotalItems() int
 	GetExpectedTotal() int
-	GetState() FacetState
+	GetState() StoreState
 }
 
 type Collection interface {

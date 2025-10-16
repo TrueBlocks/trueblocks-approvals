@@ -29,7 +29,7 @@ type DataLoadedPayload struct {
 	Payload
 	CurrentCount  int        `json:"currentCount"`
 	ExpectedTotal int        `json:"expectedTotal"`
-	State         FacetState `json:"state"`
+	State         StoreState `json:"state"`
 	Summary       Summary    `json:"summary"`
 	Error         string     `json:"error,omitempty"`
 	Timestamp     int64      `json:"timestamp"`

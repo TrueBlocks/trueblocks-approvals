@@ -17,6 +17,10 @@ vi.mock('@hooks', async (importOriginal) => {
       setMenuCollapsed: vi.fn(),
       setHelpCollapsed: vi.fn(),
     }),
+    usePlaceholderRows: () => ({
+      placeholderCount: 0,
+      cyclingRowIndex: 0,
+    }),
   };
 });
 
@@ -54,7 +58,7 @@ const mockViewStateKey: project.ViewStateKey = {
 const defaultProps: TableProps<TestRow> = {
   columns: mockColumns,
   data: mockData,
-  state: types.FacetState.FACET_LOADED,
+  state: types.StoreState.STORE_LOADED,
   viewStateKey: mockViewStateKey,
   onSubmit: vi.fn(),
   detailPanel: () => null,
@@ -107,7 +111,7 @@ describe('Table', () => {
   // Group 2: State handling tests
   describe('State handling', () => {
     it('shows placeholder data when data is empty', () => {
-      setupTest({ data: [], state: types.FacetState.FACET_STALE });
+      setupTest({ data: [], state: types.StoreState.STORE_STALE });
       // Just check that the table exists
       expect(screen.getByRole('table')).toBeInTheDocument();
     });

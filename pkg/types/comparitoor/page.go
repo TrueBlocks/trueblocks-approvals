@@ -26,7 +26,7 @@ type ComparitoorPage struct {
 	Transaction   []*Transaction   `json:"transaction"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// Per-source arrays and counts
 	Chifra         []*Transaction `json:"chifra"`
@@ -58,7 +58,7 @@ func (p *ComparitoorPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ComparitoorPage) GetState() types.FacetState {
+func (p *ComparitoorPage) GetState() types.StoreState {
 	return p.State
 }
 

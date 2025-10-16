@@ -24,7 +24,7 @@ type ContractsPage struct {
 	Logs          []*Log           `json:"logs"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -41,7 +41,7 @@ func (p *ContractsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ContractsPage) GetState() types.FacetState {
+func (p *ContractsPage) GetState() types.StoreState {
 	return p.State
 }
 

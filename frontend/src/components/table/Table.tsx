@@ -29,7 +29,7 @@ import './Table.css';
 export interface TableProps<T extends Record<string, unknown>> {
   columns: FormField<T>[];
   data: T[];
-  state: types.FacetState;
+  state: types.StoreState;
   viewStateKey: project.ViewStateKey;
   onSubmit?: (data: T) => void;
   onDelete?: (rowData: T) => void;
@@ -62,7 +62,10 @@ export const Table = <T extends Record<string, unknown>>({
   const [currentRowData, setCurrentRowData] = useState<T | null>(null);
 
   const { detailCollapsed, setDetailCollapsed } = usePreferences();
-  const { placeholderCount } = usePlaceholderRows({ data, state });
+  const { placeholderCount, cyclingRowIndex } = usePlaceholderRows({
+    data,
+    state,
+  });
 
   const processedColumns = processColumns(columns);
 
@@ -194,7 +197,7 @@ export const Table = <T extends Record<string, unknown>>({
   };
 
   useEffect(() => {
-    if (data.length > 0 && state !== types.FacetState.FACET_FETCHING) {
+    if (data.length > 0) {
       const safeFocusTable = () => {
         // Check if table's own modal is open
         if (isModalOpenRef.current) {
@@ -353,7 +356,7 @@ export const Table = <T extends Record<string, unknown>>({
           <Header columns={displayColumns} viewStateKey={viewStateKey} />
           <tbody className={getDebugClass(5)}>
             {data.length === 0 ? (
-              state === types.FacetState.FACET_FETCHING ? (
+              state === types.StoreState.STORE_FETCHING ? (
                 <tr>
                   <td
                     colSpan={displayColumns.length}
@@ -368,17 +371,14 @@ export const Table = <T extends Record<string, unknown>>({
                 </tr>
               ) : (placeholderCount ?? 0) > 0 ? (
                 <>
-                  {Array.from(
-                    { length: Math.min(placeholderCount ?? 0, 5) },
-                    (_, index) => (
-                      <PlaceholderRow
-                        key={`skeleton-${index}`}
-                        index={index + 1}
-                        columns={displayColumns}
-                        isActive={index === ((placeholderCount ?? 0) - 1) % 5}
-                      />
-                    ),
-                  )}
+                  {Array.from({ length: placeholderCount ?? 0 }, (_, index) => (
+                    <PlaceholderRow
+                      key={`skeleton-${index}`}
+                      index={index + 1}
+                      columns={displayColumns}
+                      isActive={index === cyclingRowIndex}
+                    />
+                  ))}
                 </>
               ) : (
                 <tr>
@@ -401,7 +401,7 @@ export const Table = <T extends Record<string, unknown>>({
                 selectedRowIndex={selectedRowIndex}
                 handleRowClick={handleRowClick}
                 noDataMessage={
-                  state === types.FacetState.FACET_FETCHING
+                  state === types.StoreState.STORE_FETCHING
                     ? 'Loading...'
                     : 'No data found.'
                 }

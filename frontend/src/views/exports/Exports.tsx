@@ -84,6 +84,7 @@ export const Exports = () => {
     } catch (err: unknown) {
       handleError(err, `Failed to fetch ${getCurrentDataFacet()}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     clearError,
     createPayload,
@@ -92,8 +93,8 @@ export const Exports = () => {
     pagination.pageSize,
     sort,
     filter,
-    setTotalItems,
     handleError,
+    // setTotalItems is intentionally excluded to prevent infinite loops
   ]);
 
   const currentData = useMemo(() => {
@@ -248,7 +249,7 @@ export const Exports = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        state={pageData?.state || types.FacetState.FACET_STALE}
+        state={pageData?.state || types.StoreState.STORE_STALE}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -294,7 +295,7 @@ export const Exports = () => {
         rowActions={config.rowActions}
         headerActions={config.headerActions}
         count={++renderCnt.current}
-        state={pageData?.state || types.FacetState.FACET_STALE}
+        state={pageData?.state || types.StoreState.STORE_STALE}
         totalItems={pageData?.totalItems}
       />
       <ConfirmModal

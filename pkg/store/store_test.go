@@ -277,7 +277,7 @@ func TestStoreFetchWithCancellation(t *testing.T) {
 	err := store.Fetch()
 	assert.Error(t, err)
 	assert.Equal(t, context.Canceled, err)
-	assert.Equal(t, types.StoreStateCanceled, store.GetState())
+	assert.Equal(t, types.StoreStateLoaded, store.GetState())
 }
 
 func TestStoreFetchWithStaleData(t *testing.T) {

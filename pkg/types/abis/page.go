@@ -26,7 +26,7 @@ type AbisPage struct {
 	Functions     []Function       `json:"functions"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -43,7 +43,7 @@ func (p *AbisPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *AbisPage) GetState() types.FacetState {
+func (p *AbisPage) GetState() types.StoreState {
 	return p.State
 }
 

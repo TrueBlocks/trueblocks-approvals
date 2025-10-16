@@ -125,7 +125,7 @@ func (c *DressesCollection) seriesCrud(
 		Payload:       types.Payload{Collection: "dresses", DataFacet: DressesSeries},
 		CurrentCount:  currentCount,
 		ExpectedTotal: currentCount,
-		State:         types.FacetStateLoaded,
+		State:         types.StoreStateLoaded,
 		Summary:       payloadSummary,
 		Timestamp:     time.Now().Unix(),
 		EventPhase:    "complete",

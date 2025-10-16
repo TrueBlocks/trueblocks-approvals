@@ -1,77 +1,83 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { types } from '@models';
 
 interface UsePlaceholderRowsProps {
-  data: unknown[] | null | undefined;
-  state: types.FacetState;
+  data?: unknown[];
+  state: types.StoreState;
 }
 
-export function usePlaceholderRows({ data, state }: UsePlaceholderRowsProps) {
-  const [cycleIndex, setCycleIndex] = useState(0);
+export const usePlaceholderRows = ({
+  data,
+  state,
+}: UsePlaceholderRowsProps) => {
+  const [placeholderCount, setPlaceholderCount] = useState(0);
+  const [cyclingRowIndex, setCyclingRowIndex] = useState(0);
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
-  // Determine if we should show placeholders based on state
-  const shouldShowPlaceholders = useMemo(() => {
-    if (data != null && data.length > 0) {
-      return false;
-    }
-
-    switch (state) {
-      case types.FacetState.FACET_FETCHING:
-        return true; // Show placeholders while fetching if no data
-      case types.FacetState.FACET_STALE:
-        return true; // Show placeholders for initial load
-      case types.FacetState.FACET_LOADED:
-      case types.FacetState.FACET_ERROR:
-        return false; // Never show placeholders - we have final answer
-      default:
-        return false;
-    }
-  }, [state, data]);
-
-  // Clear all timers helper
-  const clearAllTimers = () => {
+  const clearAllTimers = useCallback(() => {
     timersRef.current.forEach((timer) => clearTimeout(timer));
     timersRef.current.clear();
-  };
+  }, []);
 
   useEffect(() => {
-    // Clear timers if we shouldn't show placeholders
-    if (!shouldShowPlaceholders) {
-      clearAllTimers();
-      setCycleIndex(0);
+    clearAllTimers();
+
+    if (data && data.length > 0) {
+      setPlaceholderCount(0);
+      setCyclingRowIndex(0);
       return;
     }
 
-    // Start after 1 second delay if we should show placeholders
-    const delayTimer = setTimeout(() => {
-      setCycleIndex(0); // Start cycling
+    if (state === types.StoreState.STORE_FETCHING) {
+      // Start with a 2-second delay
+      const delayTimer = setTimeout(() => {
+        let currentCount = 0;
+        const maxRows = 6;
 
-      // Start interval timer for cycling through [3, 5, 7] counts
-      const intervalTimer = setInterval(() => {
-        setCycleIndex((prev) => (prev + 1) % 3);
-      }, 1000);
+        const addRow = () => {
+          if (currentCount < maxRows) {
+            currentCount++;
+            setPlaceholderCount(currentCount);
 
-      timersRef.current.add(intervalTimer);
-    }, 1000); // 1 second delay
+            if (currentCount < maxRows) {
+              // Schedule next row addition
+              const nextRowTimer = setTimeout(addRow, 1000);
+              timersRef.current.add(nextRowTimer);
+            } else {
+              // Start cycling through rows
+              let cycleIndex = 0;
+              setCyclingRowIndex(0);
 
-    timersRef.current.add(delayTimer);
+              const cycleRows = () => {
+                cycleIndex = (cycleIndex + 1) % maxRows;
+                setCyclingRowIndex(cycleIndex);
+              };
 
-    // Cleanup function
-    return () => {
-      clearAllTimers();
-    };
-  }, [shouldShowPlaceholders]);
+              const cycleTimer = setInterval(cycleRows, 1000);
+              timersRef.current.add(
+                cycleTimer as unknown as ReturnType<typeof setTimeout>,
+              );
+            }
+          }
+        };
 
-  // Cleanup on unmount
+        // Start adding rows
+        addRow();
+      }, 2000);
+
+      timersRef.current.add(delayTimer);
+    } else {
+      setPlaceholderCount(0);
+      setCyclingRowIndex(0);
+    }
+
+    return clearAllTimers;
+  }, [data, state, clearAllTimers]);
+
   useEffect(() => {
-    return () => {
-      clearAllTimers();
-    };
-  }, []);
+    return clearAllTimers;
+  }, [clearAllTimers]);
 
-  const placeholderCount = shouldShowPlaceholders ? [3, 5, 7][cycleIndex] : 0;
-
-  return { placeholderCount };
-}
+  return { placeholderCount, cyclingRowIndex };
+};

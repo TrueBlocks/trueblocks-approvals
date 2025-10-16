@@ -39,7 +39,7 @@ type ExportsPage struct {
 	Withdrawals   []Withdrawal     `json:"withdrawals"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -56,7 +56,7 @@ func (p *ExportsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ExportsPage) GetState() types.FacetState {
+func (p *ExportsPage) GetState() types.StoreState {
 	return p.State
 }
 

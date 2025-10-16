@@ -4,39 +4,39 @@ import { Badge, Flex, Text } from '@mantine/core';
 import { types } from '@models';
 
 interface StateDisplayProps {
-  state: types.FacetState;
+  state: types.StoreState;
   facetName: string;
   totalItems?: number;
   style?: CSSProperties;
 }
 
-const getStateColor = (state: types.FacetState) => {
+const getStateColor = (state: types.StoreState) => {
   switch (state) {
-    case types.FacetState.FACET_STALE:
+    case types.StoreState.STORE_STALE:
       return 'gray';
-    case types.FacetState.FACET_FETCHING:
+    case types.StoreState.STORE_FETCHING:
       return 'blue';
-    case types.FacetState.FACET_LOADED:
+    case types.StoreState.STORE_LOADED:
       return 'green';
-    case types.FacetState.FACET_ERROR:
+    case types.StoreState.STORE_ERROR:
       return 'red';
     default:
       return 'gray';
   }
 };
 
-const getStateLabel = (state: types.FacetState) => {
+const getStateLabel = (state: types.StoreState) => {
   switch (state) {
-    case types.FacetState.FACET_STALE:
+    case types.StoreState.STORE_STALE:
       return 'Stale';
-    case types.FacetState.FACET_FETCHING:
+    case types.StoreState.STORE_FETCHING:
       return 'Fetching...';
-    case types.FacetState.FACET_LOADED:
+    case types.StoreState.STORE_LOADED:
       return 'Loaded';
-    case types.FacetState.FACET_ERROR:
+    case types.StoreState.STORE_ERROR:
       return 'Error';
     default:
-      return 'Unknown';
+      return 'Unknown' + String(state);
   }
 };
 

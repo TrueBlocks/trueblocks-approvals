@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
@@ -277,7 +278,8 @@ func (s *Store[T]) Fetch() error {
 			continue
 
 		case <-renderCtx.Ctx.Done():
-			s.ChangeState(0, types.StoreStateCanceled, "User cancelled operation")
+			msgs.EmitStatus("loading canceled")
+			s.ChangeState(0, types.StoreStateLoaded, "User cancelled operation")
 			return renderCtx.Ctx.Err()
 		}
 	}
@@ -330,11 +332,18 @@ func (s *Store[T]) Reset() {
 	s.summaryManager.Reset()
 	s.expectedTotalItems.Store(0)
 	s.dataGeneration.Add(1)
-	newState := types.StoreStateStale
-	reason := "Store reset"
+
+	s.state = types.StoreStateStale
+	s.stateReason = "Store reset"
+
+	currentObservers := make([]FacetObserver[T], len(s.observers))
+	copy(currentObservers, s.observers)
 	s.mutex.Unlock()
 
-	s.ChangeState(0, newState, reason)
+	// Notify observers of state change
+	for _, observer := range currentObservers {
+		observer.OnStateChanged(types.StoreStateStale, "Store reset")
+	}
 }
 
 func (s *Store[T]) UpdateData(updateFunc func(data []*T) []*T) {

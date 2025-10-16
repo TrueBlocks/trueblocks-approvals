@@ -26,7 +26,7 @@ type ChunksPage struct {
 	Stats         []*Stats         `json:"stats"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -43,7 +43,7 @@ func (p *ChunksPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *ChunksPage) GetState() types.FacetState {
+func (p *ChunksPage) GetState() types.StoreState {
 	return p.State
 }
 

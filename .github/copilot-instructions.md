@@ -97,7 +97,7 @@ views/[viewname]/
 - Backend functions in `app/api_*.go` are auto-bound to frontend as `@app` imports
 - Page data fetched via functions like `GetMonitorsPage(payload)`
 - CRUD operations via `*Crud(action, data)` functions
-- Error handling through `types.FacetState` enum
+- Error handling through `types.StoreState` enum
 
 ### Auto-Generated Models
 - TypeScript types generated from Go structs in `frontend/wailsjs/go/models.ts`
@@ -135,7 +135,7 @@ yarn test-dalle        # Dalle module tests
     data={pageData?.monitors || []}
     columns={getColumns(getCurrentDataFacet())}
     viewStateKey={viewStateKey}
-    loading={pageData?.state === types.FacetState.FACET_FETCHING || false}
+    loading={pageData?.state === types.StoreState.STORE_FETCHING || false}
     error={error}
     onSubmit={handleSubmit}
     onDelete={handleDelete}

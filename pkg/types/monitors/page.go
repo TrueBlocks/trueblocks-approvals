@@ -25,7 +25,7 @@ type MonitorsPage struct {
 	Monitors      []Monitor        `json:"monitors"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
-	State         types.FacetState `json:"state"`
+	State         types.StoreState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
 }
@@ -42,7 +42,7 @@ func (p *MonitorsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
 }
 
-func (p *MonitorsPage) GetState() types.FacetState {
+func (p *MonitorsPage) GetState() types.StoreState {
 	return p.State
 }
 
