@@ -12,6 +12,7 @@ export * from './useEvent';
 export * from './getViewConfig';
 export * from './useIconSets';
 export * from './usePayload';
+export * from './usePlaceholderRows';
 export * from './useSilencedDialog';
 export * from './useStaggeredLoading';
 export * from './useWallet';

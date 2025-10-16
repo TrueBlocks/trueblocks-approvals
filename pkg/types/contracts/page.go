@@ -24,7 +24,6 @@ type ContractsPage struct {
 	Logs          []*Log          `json:"logs"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -40,10 +39,6 @@ func (p *ContractsPage) GetTotalItems() int {
 
 func (p *ContractsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *ContractsPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *ContractsPage) GetState() types.LoadState {
@@ -89,7 +84,6 @@ func (c *ContractsCollection) GetPage(
 			}
 			page.Contracts, page.TotalItems, page.State = dashboard, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ContractsExecute:
 		facet := c.executeFacet
@@ -111,7 +105,6 @@ func (c *ContractsCollection) GetPage(
 			}
 			page.Contracts, page.TotalItems, page.State = execute, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ContractsEvents:
 		facet := c.eventsFacet
@@ -133,7 +126,6 @@ func (c *ContractsCollection) GetPage(
 			}
 			page.Logs, page.TotalItems, page.State = event, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("contracts", dataFacet, "GetPage",

@@ -25,7 +25,6 @@ type StatusPage struct {
 	Status        []*Status       `json:"status"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -41,10 +40,6 @@ func (p *StatusPage) GetTotalItems() int {
 
 func (p *StatusPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *StatusPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *StatusPage) GetState() types.LoadState {
@@ -90,7 +85,6 @@ func (c *StatusCollection) GetPage(
 			}
 			page.Status, page.TotalItems, page.State = status, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case StatusCaches:
 		facet := c.cachesFacet
@@ -112,7 +106,6 @@ func (c *StatusCollection) GetPage(
 			}
 			page.Caches, page.TotalItems, page.State = cache, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case StatusChains:
 		facet := c.chainsFacet
@@ -134,7 +127,6 @@ func (c *StatusCollection) GetPage(
 			}
 			page.Chains, page.TotalItems, page.State = chain, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("status", dataFacet, "GetPage",

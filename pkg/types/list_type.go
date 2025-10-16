@@ -7,7 +7,6 @@ const (
 	StateFetching LoadState = "fetching"
 	StatePartial  LoadState = "partial"
 	StateLoaded   LoadState = "loaded"
-	StatePending  LoadState = "pending"
 	StateError    LoadState = "error"
 )
 
@@ -19,6 +18,5 @@ var AllStates = []struct {
 	{StateFetching, "FETCHING"},
 	{StatePartial, "PARTIAL"},
 	{StateLoaded, "LOADED"},
-	{StatePending, "PENDING"},
 	{StateError, "ERROR"},
 }

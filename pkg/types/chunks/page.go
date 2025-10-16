@@ -26,7 +26,6 @@ type ChunksPage struct {
 	Stats         []*Stats        `json:"stats"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -42,10 +41,6 @@ func (p *ChunksPage) GetTotalItems() int {
 
 func (p *ChunksPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *ChunksPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *ChunksPage) GetState() types.LoadState {
@@ -91,7 +86,6 @@ func (c *ChunksCollection) GetPage(
 			}
 			page.Stats, page.TotalItems, page.State = stats, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ChunksIndex:
 		facet := c.indexFacet
@@ -113,7 +107,6 @@ func (c *ChunksCollection) GetPage(
 			}
 			page.Index, page.TotalItems, page.State = index, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ChunksBlooms:
 		facet := c.bloomsFacet
@@ -135,7 +128,6 @@ func (c *ChunksCollection) GetPage(
 			}
 			page.Blooms, page.TotalItems, page.State = bloom, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ChunksManifest:
 		facet := c.manifestFacet
@@ -157,7 +149,6 @@ func (c *ChunksCollection) GetPage(
 			}
 			page.Manifest, page.TotalItems, page.State = manifest, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("chunks", dataFacet, "GetPage",

@@ -39,7 +39,6 @@ type ExportsPage struct {
 	Withdrawals   []Withdrawal    `json:"withdrawals"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -55,10 +54,6 @@ func (p *ExportsPage) GetTotalItems() int {
 
 func (p *ExportsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *ExportsPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *ExportsPage) GetState() types.LoadState {
@@ -113,7 +108,6 @@ func (c *ExportsCollection) GetPage(
 			}
 			page.Statements, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsBalances:
 		facet := c.balancesFacet
@@ -132,7 +126,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Balances, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsTransfers:
 		facet := c.transfersFacet
@@ -151,7 +144,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Transfers, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsTransactions:
 		facet := c.transactionsFacet
@@ -170,7 +162,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Transactions, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsOpenApprovals:
 		facet := c.openApprovalsFacet
@@ -189,7 +180,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.OpenApprovals, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsApprovalLogs:
 		facet := c.approvalLogsFacet
@@ -208,7 +198,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.ApprovalLogs, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsApprovalTxs:
 		facet := c.approvalTxsFacet
@@ -227,7 +216,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.ApprovalTxs, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsWithdrawals:
 		facet := c.withdrawalsFacet
@@ -246,7 +234,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Withdrawals, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsAssets:
 		facet := c.assetsFacet
@@ -265,7 +252,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Assets, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsLogs:
 		facet := c.logsFacet
@@ -284,7 +270,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Logs, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsTraces:
 		facet := c.tracesFacet
@@ -303,7 +288,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Traces, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsReceipts:
 		facet := c.receiptsFacet
@@ -322,7 +306,6 @@ func (c *ExportsCollection) GetPage(
 
 			page.Receipts, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("exports", dataFacet, "GetPage",

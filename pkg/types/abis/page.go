@@ -26,7 +26,6 @@ type AbisPage struct {
 	Functions     []Function      `json:"functions"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -42,10 +41,6 @@ func (p *AbisPage) GetTotalItems() int {
 
 func (p *AbisPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *AbisPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *AbisPage) GetState() types.LoadState {
@@ -88,7 +83,6 @@ func (c *AbisCollection) GetPage(
 
 			page.Abis, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case AbisKnown:
 		facet := c.knownFacet
@@ -107,7 +101,6 @@ func (c *AbisCollection) GetPage(
 
 			page.Abis, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case AbisFunctions:
 		facet := c.functionsFacet
@@ -126,7 +119,6 @@ func (c *AbisCollection) GetPage(
 
 			page.Functions, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case AbisEvents:
 		facet := c.eventsFacet
@@ -145,7 +137,6 @@ func (c *AbisCollection) GetPage(
 
 			page.Functions, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("abis", dataFacet, "GetPage",

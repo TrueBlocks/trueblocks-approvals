@@ -14,9 +14,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/facets"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
@@ -26,7 +26,6 @@ type ComparitoorPage struct {
 	Transaction   []*Transaction  `json:"transaction"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// Per-source arrays and counts
@@ -57,10 +56,6 @@ func (p *ComparitoorPage) GetTotalItems() int {
 
 func (p *ComparitoorPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *ComparitoorPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *ComparitoorPage) GetState() types.LoadState {
@@ -210,7 +205,6 @@ func (c *ComparitoorCollection) GetPage(
 			page.Transaction = buildAnnotated(result.Items)
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ComparitoorChifra:
 		facet := c.chifraFacet
@@ -229,7 +223,6 @@ func (c *ComparitoorCollection) GetPage(
 			page.Transaction = buildAnnotated(result.Items)
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ComparitoorEtherScan:
 		facet := c.etherscanFacet
@@ -248,7 +241,6 @@ func (c *ComparitoorCollection) GetPage(
 			page.Transaction = buildAnnotated(result.Items)
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ComparitoorCovalent:
 		facet := c.covalentFacet
@@ -267,7 +259,6 @@ func (c *ComparitoorCollection) GetPage(
 			page.Transaction = buildAnnotated(result.Items)
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ComparitoorAlchemy:
 		facet := c.alchemyFacet
@@ -286,7 +277,6 @@ func (c *ComparitoorCollection) GetPage(
 			page.Transaction = buildAnnotated(result.Items)
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("comparitoor", dataFacet, "GetPage",

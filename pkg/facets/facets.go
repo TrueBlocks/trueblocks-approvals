@@ -72,10 +72,6 @@ func (r *Facet[T]) IsLoaded() bool {
 	return r.GetState() == types.StateLoaded
 }
 
-func (r *Facet[T]) IsFetching() bool {
-	return r.GetState() == types.StateFetching
-}
-
 func (r *Facet[T]) GetState() types.LoadState {
 	if state := r.state.Load(); state != nil {
 		return state.(types.LoadState)

@@ -28,7 +28,6 @@ type {{.Class}}Page struct {
 {{end -}}
 	TotalItems    int                  `json:"totalItems"`
 	ExpectedTotal int                  `json:"expectedTotal"`
-	IsFetching    bool                 `json:"isFetching"`
 	State         types.LoadState      `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -44,10 +43,6 @@ func (p *{{.Class}}Page) GetTotalItems() int {
 
 func (p *{{.Class}}Page) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *{{.Class}}Page) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *{{.Class}}Page) GetState() types.LoadState {
@@ -95,7 +90,6 @@ func (c *{{.Class}}Collection) GetPage(
 			}{{end}}
 			page.{{.Store}}, page.TotalItems, page.State = {{if $isPtr}}{{toLower $sing}}{{else}}result.Items{{end}}, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 {{- end}}
 	default:

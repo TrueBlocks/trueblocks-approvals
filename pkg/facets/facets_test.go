@@ -27,7 +27,6 @@ func TestNewFacet(t *testing.T) {
 	assert.Equal(t, 0, facet.Count(), "Expected initial count to be 0")
 	assert.True(t, facet.NeedsUpdate(), "New facet should need update")
 	assert.False(t, facet.IsLoaded(), "New facet should not be loaded")
-	assert.False(t, facet.IsFetching(), "New facet should not be fetching initially")
 	assert.Equal(t, testStore, facet.GetStore(), "Facet should reference the provided store")
 }
 

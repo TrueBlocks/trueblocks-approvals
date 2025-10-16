@@ -25,7 +25,6 @@ type MonitorsPage struct {
 	Monitors      []Monitor       `json:"monitors"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -41,10 +40,6 @@ func (p *MonitorsPage) GetTotalItems() int {
 
 func (p *MonitorsPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *MonitorsPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *MonitorsPage) GetState() types.LoadState {
@@ -87,7 +82,6 @@ func (c *MonitorsCollection) GetPage(
 
 			page.Monitors, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("monitors", dataFacet, "GetPage",

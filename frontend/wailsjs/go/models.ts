@@ -6,7 +6,6 @@ export namespace abis {
 	    functions: types.Function[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -20,7 +19,6 @@ export namespace abis {
 	        this.functions = this.convertValues(source["functions"], types.Function);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -103,7 +101,6 @@ export namespace chunks {
 	    stats: types.ChunkStats[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -119,7 +116,6 @@ export namespace chunks {
 	        this.stats = this.convertValues(source["stats"], types.ChunkStats);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -230,7 +226,6 @@ export namespace comparitoor {
 	    transaction: AnnotatedTransaction[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	    chifra: AnnotatedTransaction[];
 	    chifraCount: number;
@@ -255,7 +250,6 @@ export namespace comparitoor {
 	        this.transaction = this.convertValues(source["transaction"], AnnotatedTransaction);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	        this.chifra = this.convertValues(source["chifra"], AnnotatedTransaction);
 	        this.chifraCount = source["chifraCount"];
@@ -300,7 +294,6 @@ export namespace contracts {
 	    logs: types.Log[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -314,7 +307,6 @@ export namespace contracts {
 	        this.logs = this.convertValues(source["logs"], types.Log);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -413,7 +405,6 @@ export namespace dresses {
 	    series: dalle.Series[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -429,7 +420,6 @@ export namespace dresses {
 	        this.series = this.convertValues(source["series"], dalle.Series);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -472,7 +462,6 @@ export namespace exports {
 	    withdrawals: types.Withdrawal[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -496,7 +485,6 @@ export namespace exports {
 	        this.withdrawals = this.convertValues(source["withdrawals"], types.Withdrawal);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -748,7 +736,6 @@ export namespace monitors {
 	    monitors: types.Monitor[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -761,7 +748,6 @@ export namespace monitors {
 	        this.monitors = this.convertValues(source["monitors"], types.Monitor);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -813,7 +799,6 @@ export namespace names {
 	    names: types.Name[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -826,7 +811,6 @@ export namespace names {
 	        this.names = this.convertValues(source["names"], types.Name);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -1262,7 +1246,6 @@ export namespace status {
 	    status: types.Status[];
 	    totalItems: number;
 	    expectedTotal: number;
-	    isFetching: boolean;
 	    state: types.LoadState;
 	
 	    static createFrom(source: any = {}) {
@@ -1277,7 +1260,6 @@ export namespace status {
 	        this.status = this.convertValues(source["status"], types.Status);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
-	        this.isFetching = source["isFetching"];
 	        this.state = source["state"];
 	    }
 	
@@ -1351,7 +1333,6 @@ export namespace types {
 	    FETCHING = "fetching",
 	    PARTIAL = "partial",
 	    LOADED = "loaded",
-	    PENDING = "pending",
 	    ERROR = "error",
 	}
 	export class AbiCalcs {

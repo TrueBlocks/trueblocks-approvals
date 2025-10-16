@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	dalle "github.com/TrueBlocks/trueblocks-dalle/v2"
 	"github.com/TrueBlocks/trueblocks-dalle/v2/pkg/model"
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
@@ -28,7 +28,6 @@ type DressesPage struct {
 	Series        []*Series       `json:"series"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -44,10 +43,6 @@ func (p *DressesPage) GetTotalItems() int {
 
 func (p *DressesPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *DressesPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *DressesPage) GetState() types.LoadState {
@@ -112,7 +107,6 @@ func (c *DressesCollection) GetPage(
 			}
 			page.DalleDress, page.TotalItems, page.State = generator, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case DressesSeries:
 		facet := c.seriesFacet
@@ -134,7 +128,6 @@ func (c *DressesCollection) GetPage(
 			}
 			page.Series, page.TotalItems, page.State = series, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case DressesDatabases:
 		facet := c.databasesFacet
@@ -156,7 +149,6 @@ func (c *DressesCollection) GetPage(
 			}
 			page.Databases, page.TotalItems, page.State = database, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case DressesEvents:
 		facet := c.eventsFacet
@@ -178,7 +170,6 @@ func (c *DressesCollection) GetPage(
 			}
 			page.Logs, page.TotalItems, page.State = event, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case DressesGallery:
 		facet := c.galleryFacet
@@ -211,7 +202,6 @@ func (c *DressesCollection) GetPage(
 			}
 			page.DalleDress, page.TotalItems, page.State = gallery, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("dresses", dataFacet, "GetPage",

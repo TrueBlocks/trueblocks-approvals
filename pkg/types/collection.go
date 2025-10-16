@@ -8,7 +8,6 @@ type Page interface {
 	GetFacet() DataFacet
 	GetTotalItems() int
 	GetExpectedTotal() int
-	GetIsFetching() bool
 	GetState() LoadState
 }
 

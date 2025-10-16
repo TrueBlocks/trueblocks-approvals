@@ -252,7 +252,7 @@ export const Monitors = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        loading={!!pageData?.isFetching}
+        state={pageData?.state || types.LoadState.STALE}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -265,7 +265,7 @@ export const Monitors = () => {
   }, [
     currentData,
     currentColumns,
-    pageData?.isFetching,
+    pageData?.state,
     error,
     viewStateKey,
     isForm,

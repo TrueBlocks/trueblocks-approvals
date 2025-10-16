@@ -296,7 +296,7 @@ export const {{$class}} = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        loading={!!pageData?.isFetching}
+        loading={!!pageData?.pageData?.state === types.LoadState.FETCHING}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -316,7 +316,7 @@ export const {{$class}} = () => {
   }, [
     currentData,
     currentColumns,
-    pageData?.isFetching,
+    pageData?.state,
     error,
     viewStateKey,
     isForm,

@@ -8,8 +8,8 @@ import {
 } from '@components';
 import { Form, FormField } from '@components';
 import { useFiltering, useViewContext } from '@contexts';
-import { usePreferences } from '@hooks';
-import { project } from '@models';
+import { usePlaceholderRows, usePreferences } from '@hooks';
+import { project, types } from '@models';
 import { getDebugClass } from '@utils';
 
 import {
@@ -18,6 +18,7 @@ import {
   Header,
   Pagination,
   PerPage,
+  PlaceholderRow,
   Stats,
   processColumns,
   usePagination,
@@ -28,7 +29,7 @@ import './Table.css';
 export interface TableProps<T extends Record<string, unknown>> {
   columns: FormField<T>[];
   data: T[];
-  loading: boolean;
+  state: types.LoadState;
   viewStateKey: project.ViewStateKey;
   onSubmit?: (data: T) => void;
   onDelete?: (rowData: T) => void;
@@ -46,7 +47,7 @@ export interface TableProps<T extends Record<string, unknown>> {
 export const Table = <T extends Record<string, unknown>>({
   columns,
   data,
-  loading,
+  state,
   viewStateKey,
   onSubmit,
   onDelete,
@@ -61,6 +62,7 @@ export const Table = <T extends Record<string, unknown>>({
   const [currentRowData, setCurrentRowData] = useState<T | null>(null);
 
   const { detailCollapsed, setDetailCollapsed } = usePreferences();
+  const { placeholderCount } = usePlaceholderRows({ data, state });
 
   const processedColumns = processColumns(columns);
 
@@ -192,7 +194,7 @@ export const Table = <T extends Record<string, unknown>>({
   };
 
   useEffect(() => {
-    if (data.length > 0 && !loading) {
+    if (data.length > 0 && state !== types.LoadState.FETCHING) {
       const safeFocusTable = () => {
         // Check if table's own modal is open
         if (isModalOpenRef.current) {
@@ -225,7 +227,7 @@ export const Table = <T extends Record<string, unknown>>({
 
       return () => clearTimeout(timer);
     }
-  }, [data, loading, focusTable]);
+  }, [data, state, focusTable]);
 
   const handleFormKeyDown = (e: React.KeyboardEvent) => {
     const navigationKeys = [
@@ -351,27 +353,58 @@ export const Table = <T extends Record<string, unknown>>({
           <Header columns={displayColumns} viewStateKey={viewStateKey} />
           <tbody className={getDebugClass(5)}>
             {data.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={displayColumns.length}
-                  style={{
-                    textAlign: 'left',
-                    padding: '20px',
-                    color: loading
-                      ? 'var(--mantine-color-primary-6)'
-                      : 'var(--mantine-color-dimmed)',
-                  }}
-                >
-                  {loading ? 'Loading...' : 'No data found.'}
-                </td>
-              </tr>
+              state === types.LoadState.FETCHING ? (
+                <tr>
+                  <td
+                    colSpan={displayColumns.length}
+                    style={{
+                      textAlign: 'left',
+                      padding: '20px',
+                      color: 'var(--mantine-color-dimmed)',
+                    }}
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : (placeholderCount ?? 0) > 0 ? (
+                <>
+                  {Array.from(
+                    { length: Math.min(placeholderCount ?? 0, 5) },
+                    (_, index) => (
+                      <PlaceholderRow
+                        key={`skeleton-${index}`}
+                        index={index + 1}
+                        columns={displayColumns}
+                        isActive={index === ((placeholderCount ?? 0) - 1) % 5}
+                      />
+                    ),
+                  )}
+                </>
+              ) : (
+                <tr>
+                  <td
+                    colSpan={displayColumns.length}
+                    style={{
+                      textAlign: 'left',
+                      padding: '20px',
+                      color: 'var(--mantine-color-dimmed)',
+                    }}
+                  >
+                    No data found.
+                  </td>
+                </tr>
+              )
             ) : (
               <Body
                 columns={displayColumns}
                 data={data}
                 selectedRowIndex={selectedRowIndex}
                 handleRowClick={handleRowClick}
-                noDataMessage={loading ? 'Loading...' : 'No data found.'}
+                noDataMessage={
+                  state === types.LoadState.FETCHING
+                    ? 'Loading...'
+                    : 'No data found.'
+                }
               />
             )}
           </tbody>

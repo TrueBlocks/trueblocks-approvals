@@ -23,7 +23,6 @@ type NamesPage struct {
 	Names         []*Name         `json:"names"`
 	TotalItems    int             `json:"totalItems"`
 	ExpectedTotal int             `json:"expectedTotal"`
-	IsFetching    bool            `json:"isFetching"`
 	State         types.LoadState `json:"state"`
 	// EXISTING_CODE
 	// EXISTING_CODE
@@ -39,10 +38,6 @@ func (p *NamesPage) GetTotalItems() int {
 
 func (p *NamesPage) GetExpectedTotal() int {
 	return p.ExpectedTotal
-}
-
-func (p *NamesPage) GetIsFetching() bool {
-	return p.IsFetching
 }
 
 func (p *NamesPage) GetState() types.LoadState {
@@ -88,7 +83,6 @@ func (c *NamesCollection) GetPage(
 			}
 			page.Names, page.TotalItems, page.State = all, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesCustom:
 		facet := c.customFacet
@@ -110,7 +104,6 @@ func (c *NamesCollection) GetPage(
 			}
 			page.Names, page.TotalItems, page.State = custom, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesPrefund:
 		facet := c.prefundFacet
@@ -132,7 +125,6 @@ func (c *NamesCollection) GetPage(
 			}
 			page.Names, page.TotalItems, page.State = prefund, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesRegular:
 		facet := c.regularFacet
@@ -154,7 +146,6 @@ func (c *NamesCollection) GetPage(
 			}
 			page.Names, page.TotalItems, page.State = regular, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesBaddress:
 		facet := c.baddressFacet
@@ -176,7 +167,6 @@ func (c *NamesCollection) GetPage(
 			}
 			page.Names, page.TotalItems, page.State = baddress, result.TotalItems, result.State
 		}
-		page.IsFetching = facet.IsFetching()
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
 		return nil, types.NewValidationError("names", dataFacet, "GetPage",
