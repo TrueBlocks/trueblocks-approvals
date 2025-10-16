@@ -34,7 +34,7 @@
         "balances": true,
         "transfers": true,
         "withdrawals": true,
-        "transactions": true,
+        "transactions": false,
         "traces": true,
         "logs": true,
         "receipts": true
