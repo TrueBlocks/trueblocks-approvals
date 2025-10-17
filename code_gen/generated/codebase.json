@@ -1270,8 +1270,8 @@
                             "disabled": false
                         },
                         {
-                            "name": "Approvals",
-                            "store": "Approvals",
+                            "name": "OpenApprovals",
+                            "store": "OpenApprovals",
                             "actions": [
                                 "export"
                             ],
@@ -1281,8 +1281,19 @@
                             "disabled": false
                         },
                         {
-                            "name": "Approves",
-                            "store": "Approves",
+                            "name": "ApprovalLogs",
+                            "store": "ApprovalLogs",
+                            "actions": [
+                                "export"
+                            ],
+                            "viewType": "",
+                            "renderer": "",
+                            "attributes": "",
+                            "disabled": false
+                        },
+                        {
+                            "name": "ApprovalTxs",
+                            "store": "ApprovalTxs",
                             "actions": [
                                 "export"
                             ],
@@ -2070,8 +2081,8 @@
                     "disabled": false
                 },
                 {
-                    "name": "Approvals",
-                    "store": "Approvals",
+                    "name": "OpenApprovals",
+                    "store": "OpenApprovals",
                     "actions": [
                         "export"
                     ],
@@ -2081,8 +2092,19 @@
                     "disabled": false
                 },
                 {
-                    "name": "Approves",
-                    "store": "Approves",
+                    "name": "ApprovalLogs",
+                    "store": "ApprovalLogs",
+                    "actions": [
+                        "export"
+                    ],
+                    "viewType": "",
+                    "renderer": "",
+                    "attributes": "",
+                    "disabled": false
+                },
+                {
+                    "name": "ApprovalTxs",
+                    "store": "ApprovalTxs",
                     "actions": [
                         "export"
                     ],
@@ -2651,9 +2673,9 @@
             ]
         },
         {
-            "class": "Approvals",
+            "class": "OpenApprovals",
             "doc_group": "01-Accounts",
-            "doc_route": "122-approvals",
+            "doc_route": "122-openapprovals",
             "doc_descr": "an ERC-20 token approval granting spending permission from owner to spender",
             "produced_by": "tokens",
             "disable_go": true,
@@ -4065,9 +4087,9 @@
             ]
         },
         {
-            "class": "Approves",
+            "class": "ApprovalLogs",
             "doc_group": "02-Chain Data",
-            "doc_route": "216-approves",
+            "doc_route": "216-approvalLogs",
             "doc_descr": "approval transaction data filtered from regular transactions",
             "produced_by": "transactions,export",
             "contained_by": "block",
@@ -4188,6 +4210,214 @@
                     "docOrder": 14,
                     "description": "true if the log is an NFT transfer",
                     "num": 14
+                }
+            ]
+        },
+        {
+            "class": "ApprovalTxs",
+            "doc_group": "02-Chain Data",
+            "doc_route": "216-approvaltxs",
+            "doc_descr": "approval transaction data filtered from regular transactions",
+            "produced_by": "transactions,export",
+            "contained_by": "block",
+            "cache_by": "tx",
+            "cache_type": "cacheable",
+            "disable_go": true,
+            "members": [
+                {
+                    "name": "chainId",
+                    "type": "string",
+                    "attributes": "noui|removed",
+                    "num": 1
+                },
+                {
+                    "name": "hash",
+                    "type": "hash",
+                    "attributes": "noui",
+                    "docOrder": 1,
+                    "description": "the hash of the transaction",
+                    "num": 6
+                },
+                {
+                    "name": "blockHash",
+                    "type": "hash",
+                    "attributes": "noui",
+                    "docOrder": 2,
+                    "description": "the hash of the block containing this transaction",
+                    "num": 7
+                },
+                {
+                    "name": "blockNumber",
+                    "type": "blknum",
+                    "attributes": "noui",
+                    "docOrder": 3,
+                    "description": "the number of the block",
+                    "num": 2
+                },
+                {
+                    "name": "transactionIndex",
+                    "type": "txnum",
+                    "attributes": "noui",
+                    "docOrder": 4,
+                    "description": "the zero-indexed position of the transaction in the block",
+                    "num": 3
+                },
+                {
+                    "name": "nonce",
+                    "type": "value",
+                    "docOrder": 5,
+                    "description": "sequence number of the transactions sent by the sender",
+                    "num": 10
+                },
+                {
+                    "name": "timestamp",
+                    "type": "timestamp",
+                    "attributes": "noui",
+                    "docOrder": 6,
+                    "description": "the Unix timestamp of the object",
+                    "num": 4
+                },
+                {
+                    "name": "date",
+                    "type": "datetime",
+                    "attributes": "calc|width=120px",
+                    "docOrder": 7,
+                    "description": "the timestamp as a date",
+                    "num": 5
+                },
+                {
+                    "name": "from",
+                    "type": "address",
+                    "attributes": "readOnly",
+                    "docOrder": 8,
+                    "description": "address from which the transaction was sent",
+                    "num": 8
+                },
+                {
+                    "name": "to",
+                    "type": "address",
+                    "attributes": "readOnly",
+                    "docOrder": 9,
+                    "description": "address to which the transaction was sent",
+                    "num": 9
+                },
+                {
+                    "name": "value",
+                    "type": "wei",
+                    "docOrder": 10,
+                    "description": "the amount of wei sent with this transactions",
+                    "num": 11
+                },
+                {
+                    "name": "ether",
+                    "type": "ether",
+                    "attributes": "calc",
+                    "docOrder": 11,
+                    "description": "if --ether is specified, the value in ether",
+                    "num": 12
+                },
+                {
+                    "name": "gas",
+                    "type": "gas",
+                    "docOrder": 12,
+                    "description": "the maximum number of gas allowed for this transaction",
+                    "num": 13
+                },
+                {
+                    "name": "traces",
+                    "type": "Traces",
+                    "attributes": "noui",
+                    "num": 22,
+                    "isArray": true
+                },
+                {
+                    "name": "gasCost",
+                    "type": "gas",
+                    "attributes": "calc",
+                    "docOrder": 13,
+                    "description": "the number of wei per unit of gas the sender is willing to spend",
+                    "num": 15
+                },
+                {
+                    "name": "maxFeePerGas",
+                    "type": "gas",
+                    "num": 16
+                },
+                {
+                    "name": "maxPriorityFeePerGas",
+                    "type": "gas",
+                    "num": 17
+                },
+                {
+                    "name": "gasPrice",
+                    "type": "gas",
+                    "docOrder": 13,
+                    "description": "the number of wei per unit of gas the sender is willing to spend",
+                    "num": 14
+                },
+                {
+                    "name": "input",
+                    "type": "bytes",
+                    "docOrder": 14,
+                    "description": "byte data either containing a message or funcational data for a smart contracts. See the --articulate",
+                    "num": 18
+                },
+                {
+                    "name": "receipt",
+                    "type": "Receipt",
+                    "attributes": "noui",
+                    "docOrder": 15,
+                    "num": 21,
+                    "isPointer": true
+                },
+                {
+                    "name": "statements",
+                    "type": "Statements",
+                    "attributes": "noui|calc",
+                    "docOrder": 16,
+                    "description": "array of reconciliation statements",
+                    "num": 25,
+                    "isArray": true
+                },
+                {
+                    "name": "articulatedTx",
+                    "type": "Function",
+                    "attributes": "noui",
+                    "docOrder": 17,
+                    "num": 23,
+                    "isPointer": true
+                },
+                {
+                    "name": "hasToken",
+                    "type": "bool",
+                    "docOrder": 18,
+                    "description": "`true` if the transaction is token related, `false` otherwise",
+                    "num": 20
+                },
+                {
+                    "name": "isError",
+                    "type": "bool",
+                    "docOrder": 19,
+                    "description": "`true` if the transaction ended in error, `false` otherwise",
+                    "num": 19
+                },
+                {
+                    "name": "compressedTx",
+                    "type": "string",
+                    "attributes": "calc",
+                    "docOrder": 20,
+                    "description": "truncated, more readable version of the articulation",
+                    "num": 24
+                },
+                {
+                    "name": "gasUsed",
+                    "type": "gas",
+                    "num": 26
+                },
+                {
+                    "name": "type",
+                    "type": "string",
+                    "num": 27
                 }
             ]
         },

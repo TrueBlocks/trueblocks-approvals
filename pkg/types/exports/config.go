@@ -56,31 +56,31 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			RendererTypes: "",
 		},
 		"openapprovals": {
-			Name:          "Open Approvals",
+			Name:          "Openapprovals",
 			Store:         "openapprovals",
 			IsForm:        false,
 			DividerBefore: false,
-			Fields:        getOpenApprovalsFields(),
+			Fields:        getOpenapprovalsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "panel",
 		},
 		"approvallogs": {
-			Name:          "Approval Logs",
+			Name:          "Approvallogs",
 			Store:         "approvallogs",
 			IsForm:        false,
 			DividerBefore: false,
-			Fields:        getApprovalLogsFields(),
+			Fields:        getApprovallogsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
 		},
 		"approvaltxs": {
-			Name:          "Approval Transactions",
+			Name:          "Approvaltxs",
 			Store:         "approvaltxs",
 			IsForm:        false,
 			DividerBefore: false,
-			Fields:        getApprovalTxsFields(),
+			Fields:        getApprovaltxsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
@@ -152,27 +152,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
-func getOpenApprovalsFields() []types.FieldConfig {
-	ret := []types.FieldConfig{
-		// EXISTING_CODE
-		{Section: "Context", Key: "timestamp", Formatter: "datetime", NoTable: true},
-		{Section: "Context", Key: "blockNumber", Formatter: "number", NoTable: true},
-		{Section: "Details", Key: "owner", Formatter: "address"},
-		{Section: "Details", Key: "token", Formatter: "address"},
-		{Section: "Details", Key: "spender", Formatter: "address"},
-		{Section: "Details", Key: "allowance", Formatter: "wei"},
-		{Section: "Data", Key: "lastAppBlock", Formatter: "number", NoTable: true},
-		{Section: "Data", Key: "lastAppLogID", Formatter: "number", NoTable: true},
-		{Section: "Data", Key: "lastAppTs"},
-		{Section: "Data", Key: "lastAppTxID", Formatter: "number", NoTable: true},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
-		// EXISTING_CODE
-	}
-	types.NormalizeFields(ret)
-	return ret
-}
-
-func getApprovalLogsFields() []types.FieldConfig {
+func getApprovallogsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		// EXISTING_CODE
 		{Section: "Context", Key: "blockNumber"},
@@ -196,9 +176,9 @@ func getApprovalLogsFields() []types.FieldConfig {
 	return ret
 }
 
-func getApprovalTxsFields() []types.FieldConfig {
+func getApprovaltxsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		// EXISTING_CODE - Use transaction fields since ApprovalTx = sdk.Transaction
+		// EXISTING_CODE
 		{Section: "Context", Key: "blockNumber"},
 		{Section: "Context", Key: "transactionIndex"},
 		{Section: "Overview", Key: "hash"},
@@ -292,6 +272,26 @@ func getLogsFields() []types.FieldConfig {
 		{Section: "Articulation", Key: "articulatedLog", Formatter: "json", NoTable: true},
 		{Section: "Articulation", Key: "compressedLog", NoTable: true},
 		{Section: "", Key: "actions", NoDetail: true},
+		// EXISTING_CODE
+	}
+	types.NormalizeFields(ret)
+	return ret
+}
+
+func getOpenapprovalsFields() []types.FieldConfig {
+	ret := []types.FieldConfig{
+		// EXISTING_CODE
+		{Section: "Context", Key: "timestamp", Formatter: "datetime", NoTable: true},
+		{Section: "Context", Key: "blockNumber", Formatter: "number", NoTable: true},
+		{Section: "Details", Key: "owner", Formatter: "address"},
+		{Section: "Details", Key: "token", Formatter: "address"},
+		{Section: "Details", Key: "spender", Formatter: "address"},
+		{Section: "Details", Key: "allowance", Formatter: "wei"},
+		{Section: "Data", Key: "lastAppBlock", Formatter: "number", NoTable: true},
+		{Section: "Data", Key: "lastAppLogID", Formatter: "number", NoTable: true},
+		{Section: "Data", Key: "lastAppTs"},
+		{Section: "Data", Key: "lastAppTxID", Formatter: "number", NoTable: true},
+		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
 		// EXISTING_CODE
 	}
 	types.NormalizeFields(ret)

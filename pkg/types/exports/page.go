@@ -25,12 +25,12 @@ import (
 // TODO: The slices should be slices to pointers
 type ExportsPage struct {
 	Facet         types.DataFacet  `json:"facet"`
-	OpenApprovals []OpenApproval   `json:"openapprovals"`
 	ApprovalLogs  []ApprovalLog    `json:"approvallogs"`
 	ApprovalTxs   []ApprovalTx     `json:"approvaltxs"`
 	Assets        []Asset          `json:"assets"`
 	Balances      []Balance        `json:"balances"`
 	Logs          []Log            `json:"logs"`
+	OpenApprovals []OpenApproval   `json:"openapprovals"`
 	Receipts      []Receipt        `json:"receipts"`
 	Statements    []Statement      `json:"statements"`
 	Traces        []Trace          `json:"traces"`
@@ -164,7 +164,7 @@ func (c *ExportsCollection) GetPage(
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsOpenApprovals:
-		facet := c.openApprovalsFacet
+		facet := c.openapprovalsFacet
 		var filterFunc func(*OpenApproval) bool
 		if filter != "" {
 			filterFunc = func(item *OpenApproval) bool {
@@ -182,7 +182,7 @@ func (c *ExportsCollection) GetPage(
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsApprovalLogs:
-		facet := c.approvalLogsFacet
+		facet := c.approvallogsFacet
 		var filterFunc func(*ApprovalLog) bool
 		if filter != "" {
 			filterFunc = func(item *ApprovalLog) bool {
@@ -200,7 +200,7 @@ func (c *ExportsCollection) GetPage(
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case ExportsApprovalTxs:
-		facet := c.approvalTxsFacet
+		facet := c.approvaltxsFacet
 		var filterFunc func(*ApprovalTx) bool
 		if filter != "" {
 			filterFunc = func(item *ApprovalTx) bool {

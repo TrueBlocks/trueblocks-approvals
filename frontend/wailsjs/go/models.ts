@@ -448,12 +448,12 @@ export namespace exports {
 	
 	export class ExportsPage {
 	    facet: types.DataFacet;
-	    openapprovals: types.Approval[];
 	    approvallogs: types.Log[];
 	    approvaltxs: types.Transaction[];
 	    assets: types.Name[];
 	    balances: types.Token[];
 	    logs: types.Log[];
+	    openapprovals: types.Approval[];
 	    receipts: types.Receipt[];
 	    statements: types.Statement[];
 	    traces: types.Trace[];
@@ -471,12 +471,12 @@ export namespace exports {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.facet = source["facet"];
-	        this.openapprovals = this.convertValues(source["openapprovals"], types.Approval);
 	        this.approvallogs = this.convertValues(source["approvallogs"], types.Log);
 	        this.approvaltxs = this.convertValues(source["approvaltxs"], types.Transaction);
 	        this.assets = this.convertValues(source["assets"], types.Name);
 	        this.balances = this.convertValues(source["balances"], types.Token);
 	        this.logs = this.convertValues(source["logs"], types.Log);
+	        this.openapprovals = this.convertValues(source["openapprovals"], types.Approval);
 	        this.receipts = this.convertValues(source["receipts"], types.Receipt);
 	        this.statements = this.convertValues(source["statements"], types.Statement);
 	        this.traces = this.convertValues(source["traces"], types.Trace);

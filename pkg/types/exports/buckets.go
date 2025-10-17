@@ -15,11 +15,11 @@ func (c *ExportsCollection) GetBuckets(payload *types.Payload) (*types.Buckets, 
 	case ExportsTransactions:
 		facet = c.transactionsFacet
 	case ExportsOpenApprovals:
-		facet = c.openApprovalsFacet
+		facet = c.openapprovalsFacet
 	case ExportsApprovalLogs:
-		facet = c.approvalLogsFacet
+		facet = c.approvallogsFacet
 	case ExportsApprovalTxs:
-		facet = c.approvalTxsFacet
+		facet = c.approvaltxsFacet
 	case ExportsWithdrawals:
 		facet = c.withdrawalsFacet
 	case ExportsAssets:

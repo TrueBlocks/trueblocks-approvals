@@ -93,6 +93,7 @@ export const Exports = () => {
     pagination.pageSize,
     sort,
     filter,
+    // setTotalItems,
     handleError,
     // setTotalItems is intentionally excluded to prevent infinite loops
   ]);

@@ -33,15 +33,21 @@ actions = ["export"]
 viewType = ""
 
 [[facets]]
-name = "Approvals"
-store = "Approvals"
+name = "OpenApprovals"
+store = "OpenApprovals"
 actions = ["export"]
 viewType = ""
 renderer = "panel"
 
 [[facets]]
-name = "Approves"
-store = "Approves"
+name = "ApprovalLogs"
+store = "ApprovalLogs"
+actions = ["export"]
+viewType = ""
+
+[[facets]]
+name = "ApprovalTxs"
+store = "ApprovalTxs"
 actions = ["export"]
 viewType = ""
 

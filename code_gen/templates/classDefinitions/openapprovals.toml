@@ -1,8 +1,8 @@
 [settings]
-class = "Approvals"
+class = "OpenApprovals"
 doc_group = "01-Accounts"
 doc_descr = "an ERC-20 token approval granting spending permission from owner to spender"
-doc_route = "122-approvals"
+doc_route = "122-openapprovals"
 attributes = ""
 produced_by = "tokens"
 disable_go = true
