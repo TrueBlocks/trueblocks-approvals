@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { types } from '@models';
 
-import { getReadFunctions } from './facetGeneration';
+import { getReadFunctions } from './facetCreation';
 
 interface ContractDashboardProps {
   contractState: types.Contract;

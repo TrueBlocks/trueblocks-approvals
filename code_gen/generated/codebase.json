@@ -3686,7 +3686,7 @@
                     "name": "createdAt",
                     "type": "datetime",
                     "docOrder": 5,
-                    "description": "Generation timestamp",
+                    "description": "Creation timestamp",
                     "num": 5
                 }
             ]

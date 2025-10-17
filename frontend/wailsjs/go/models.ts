@@ -1329,9 +1329,9 @@ export namespace types {
 	    GALLERY = "gallery",
 	}
 	export enum StoreState {
-	    STORE_STALE = "stale",
-	    STORE_FETCHING = "fetching",
-	    STORE_LOADED = "loaded",
+	    STALE = "stale",
+	    FETCHING = "fetching",
+	    LOADED = "loaded",
 	}
 	export class AbiCalcs {
 	    name?: string;

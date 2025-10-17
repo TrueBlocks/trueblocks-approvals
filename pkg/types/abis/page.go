@@ -197,7 +197,7 @@ func (c *AbisCollection) generateSummariesForPeriod(dataFacet types.DataFacet, p
 	// EXISTING_CODE
 	// EXISTING_CODE
 	default:
-		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary generation: %v", dataFacet)
+		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary: %v", dataFacet)
 	}
 }
 

@@ -524,7 +524,7 @@ func (c *ExportsCollection) generateSummariesForPeriod(dataFacet types.DataFacet
 		return nil
 	// EXISTING_CODE
 	default:
-		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary generation: %v", dataFacet)
+		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary: %v", dataFacet)
 	}
 }
 

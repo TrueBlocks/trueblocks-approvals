@@ -30,7 +30,7 @@ import {
   validateTransactionInputs,
 } from '@utils';
 
-import { getWriteFunctions } from '../dashboard/facetGeneration';
+import { getWriteFunctions } from '../dashboard/facetCreation';
 import { TransactionReviewModal } from './TransactionReviewModal';
 
 interface ContractExecuteProps {

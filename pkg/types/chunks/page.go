@@ -209,7 +209,7 @@ func (c *ChunksCollection) generateSummariesForPeriod(dataFacet types.DataFacet,
 	// EXISTING_CODE
 	// EXISTING_CODE
 	default:
-		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary generation: %v", dataFacet)
+		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary: %v", dataFacet)
 	}
 }
 

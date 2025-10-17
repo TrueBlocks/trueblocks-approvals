@@ -135,11 +135,15 @@ func isDupDalleDress() func(existing []*DalleDress, newItem *DalleDress) bool {
 	// EXISTING_CODE
 	seen := make(map[string]bool)
 	lastExistingLen := 0
+	var seenMutex sync.RWMutex
 
 	return func(existing []*DalleDress, newItem *DalleDress) bool {
 		if newItem == nil {
 			return false
 		}
+
+		seenMutex.Lock()
+		defer seenMutex.Unlock()
 
 		// Reset seen map when starting fresh (e.g., after a store reset)
 		if len(existing) == 0 && lastExistingLen > 0 {
