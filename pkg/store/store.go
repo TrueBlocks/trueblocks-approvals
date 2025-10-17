@@ -1,12 +1,9 @@
 package store
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
@@ -165,56 +162,47 @@ func (s *Store[T]) Count() int {
 }
 
 func (s *Store[T]) Fetch() error {
-	s.ChangeState(types.StateFetching, "Starting data fetch")
+	// Stop any currently running fetches. If we're here, we want to reload (or process for the first time)
+	UnregisterContext(s.contextKey)
+
+	// Clear data and change state to prepare for the new fetch
+	s.mutex.Lock()
+	s.data = s.data[:0]
+	s.expectedTotalItems.Store(0)
+	s.state = types.StateFetching
+	s.stateReason = "User reload - fetching data"
+
+	// Notify observers while holding the lock
+	currentObservers := make([]FacetObserver[T], len(s.observers))
+	copy(currentObservers, s.observers)
+	s.mutex.Unlock()
+	for _, observer := range currentObservers {
+		observer.OnStateChanged(types.StateFetching, "User reload - fetching data")
+	}
 
 	renderCtx := RegisterContext(s.contextKey)
-	done := make(chan struct{})
 	errChan := make(chan error, 1)
-	var processingError error
 
-	go func() {
-		defer logging.Silence()()
-		defer func() {
-			close(done)
-		}()
-		if s.queryFunc != nil {
+	// Execute the query function which will fill the channels with streamed data
+	if s.queryFunc != nil {
+		go func() {
+			defer logging.Silence()()
 			err := s.queryFunc(renderCtx)
 			if err != nil {
 				errChan <- err
-				return
 			}
-		}
-	}()
+		}()
+	}
 
 	modelChanClosed := false
 	errorChanClosed := false
 
 	for !modelChanClosed || !errorChanClosed {
-		// Check for errors first to avoid race conditions
-		// Skip context cancellation errors - let Ctx.Done() handle those
-		select {
-		case err := <-errChan:
-			if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
-				// Context cancellation should be handled by Ctx.Done() case for proper state
-				// Don't process this error here, continue to main select
-			} else {
-				processingError = err
-				msgs.EmitError("Query error during fetch", err)
-				if s.Count() > 0 {
-					s.ChangeState(types.StateLoaded, "Partial data available despite query error")
-				} else {
-					s.ChangeState(types.StateStale, "No data due to query error, ready to retry")
-				}
-				return processingError
-			}
-		default:
-		} // Main processing loop
-
 		select {
 		case item, ok := <-renderCtx.ModelChan:
 			if !ok {
 				modelChanClosed = true
-				if errorChanClosed && processingError == nil {
+				if errorChanClosed {
 					s.ChangeState(types.StateLoaded, "Data loaded successfully")
 				}
 				continue
@@ -268,73 +256,37 @@ func (s *Store[T]) Fetch() error {
 		case streamErr, ok := <-renderCtx.ErrorChan:
 			if !ok {
 				errorChanClosed = true
-				if modelChanClosed && processingError == nil {
+				if modelChanClosed {
 					s.ChangeState(types.StateLoaded, "Data loaded successfully")
 				}
 				continue
 			}
-			processingError = streamErr
 			msgs.EmitError("Stream error during fetch", streamErr)
+			if s.Count() > 0 {
+				s.ChangeState(types.StateLoaded, "Partial data loaded despite stream error")
+			} else {
+				s.ChangeState(types.StateStale, "No data due to stream error, ready to retry")
+			}
+			return streamErr
 
 		case <-renderCtx.Ctx.Done():
 			msgs.EmitStatus("loading canceled")
 			s.ChangeState(types.StateLoaded, "User cancelled operation")
 			return renderCtx.Ctx.Err()
 
-		case <-done:
-			// Query goroutine finished - now drain any remaining data
-			// with a reasonable timeout to handle SDK bug where channels don't close
-			drainTimeout := time.NewTimer(200 * time.Millisecond)
-			defer drainTimeout.Stop()
-
-		drainLoop:
-			for !modelChanClosed || !errorChanClosed {
-				select {
-				case item, ok := <-renderCtx.ModelChan:
-					if !ok {
-						modelChanClosed = true
-						continue drainLoop
-					}
-					itemPtr := s.processFunc(item)
-					if itemPtr != nil {
-						s.mutex.Lock()
-						s.data = append(s.data, itemPtr)
-						s.expectedTotalItems.Store(int64(len(s.data)))
-						s.mutex.Unlock()
-					}
-				case streamErr, ok := <-renderCtx.ErrorChan:
-					if !ok {
-						errorChanClosed = true
-						continue drainLoop
-					}
-					processingError = streamErr
-					msgs.EmitError("Stream error during final drain", streamErr)
-				case <-drainTimeout.C:
-					// Timeout reached - channels probably won't close (SDK bug)
-					modelChanClosed = true
-					errorChanClosed = true
-					break drainLoop
-				}
+		case queryErr := <-errChan:
+			msgs.EmitError("Query function failed", queryErr)
+			if s.Count() > 0 {
+				s.ChangeState(types.StateLoaded, "Partial data loaded despite query error")
+			} else {
+				s.ChangeState(types.StateStale, "No data due to query error, ready to retry")
 			}
-
-		default:
-			// No data immediately available, yield briefly to avoid busy waiting
-			time.Sleep(1 * time.Millisecond)
+			return queryErr
 		}
 	}
 
-	newState := types.StateLoaded
-	reason := "processing finished"
-	if processingError != nil {
-		if s.Count() > 0 {
-			reason = "Partial data loaded despite stream error"
-		} else {
-			newState = types.StateStale
-			reason = "No data due to stream error, ready to retry"
-		}
-	}
-	s.ChangeState(newState, reason)
-	return processingError
+	s.ChangeState(types.StateLoaded, "Data loaded successfully")
+	return nil
 }
 
 func (s *Store[T]) AddItem(item *T, index int) {

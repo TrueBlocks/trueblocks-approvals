@@ -135,11 +135,6 @@ func (r *Facet[T]) FetchFacet() error {
 		return ErrAlreadyLoading
 	}
 
-	if currentState != types.StateStale {
-		msgs.EmitStatus(fmt.Sprintf("cached: %d items", len(r.view)))
-		return nil
-	}
-
 	go func() {
 		ticker := time.NewTicker(progress.MaxWaitTime / 2)
 		defer ticker.Stop()
