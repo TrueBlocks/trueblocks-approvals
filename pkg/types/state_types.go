@@ -3,16 +3,16 @@ package types
 type StoreState string
 
 const (
-	StoreStateStale    StoreState = "stale"    // Needs refresh
-	StoreStateFetching StoreState = "fetching" // Currently loading
-	StoreStateLoaded   StoreState = "loaded"   // Complete data
+	StateStale    StoreState = "stale"    // Needs refresh
+	StateFetching StoreState = "fetching" // Currently loading
+	StateLoaded   StoreState = "loaded"   // Complete data
 )
 
-var AllStoreStates = []struct {
+var AllStates = []struct {
 	Value  StoreState `json:"value"`
 	TSName string     `json:"tsname"`
 }{
-	{StoreStateStale, "STORE_STALE"},
-	{StoreStateFetching, "STORE_FETCHING"},
-	{StoreStateLoaded, "STORE_LOADED"},
+	{StateStale, "STALE"},
+	{StateFetching, "FETCHING"},
+	{StateLoaded, "LOADED"},
 }

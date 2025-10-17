@@ -29,7 +29,7 @@ export const usePlaceholderRows = ({
       return;
     }
 
-    if (state === types.StoreState.STORE_FETCHING) {
+    if (state === types.StoreState.FETCHING) {
       // Start with a 2-second delay
       const delayTimer = setTimeout(() => {
         let currentCount = 0;

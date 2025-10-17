@@ -12,11 +12,11 @@ interface StateDisplayProps {
 
 const getStateColor = (state: types.StoreState) => {
   switch (state) {
-    case types.StoreState.STORE_STALE:
+    case types.StoreState.STALE:
       return 'gray';
-    case types.StoreState.STORE_FETCHING:
+    case types.StoreState.FETCHING:
       return 'blue';
-    case types.StoreState.STORE_LOADED:
+    case types.StoreState.LOADED:
       return 'green';
     default:
       return 'gray';
@@ -25,11 +25,11 @@ const getStateColor = (state: types.StoreState) => {
 
 const getStateLabel = (state: types.StoreState) => {
   switch (state) {
-    case types.StoreState.STORE_STALE:
+    case types.StoreState.STALE:
       return 'Stale';
-    case types.StoreState.STORE_FETCHING:
+    case types.StoreState.FETCHING:
       return 'Fetching...';
-    case types.StoreState.STORE_LOADED:
+    case types.StoreState.LOADED:
       return 'Loaded';
     default:
       return 'Unknown' + String(state);

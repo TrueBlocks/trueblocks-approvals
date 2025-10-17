@@ -31,7 +31,7 @@ describe('BaseTab', () => {
       <BaseTab<{ id: string; name: string }>
         data={mockData}
         columns={mockColumns}
-        state={types.StoreState.STORE_LOADED}
+        state={types.StoreState.LOADED}
         error={null}
         viewStateKey={mockViewStateKey}
         detailPanel={stubDetail}
@@ -47,7 +47,7 @@ describe('BaseTab', () => {
       <BaseTab<{ id: string; name: string }>
         data={[]}
         columns={mockColumns}
-        state={types.StoreState.STORE_FETCHING}
+        state={types.StoreState.FETCHING}
         error={null}
         viewStateKey={mockViewStateKey}
         detailPanel={stubDetail}
@@ -63,7 +63,7 @@ describe('BaseTab', () => {
       <BaseTab<{ id: string; name: string }>
         data={[]}
         columns={mockColumns}
-        state={types.StoreState.STORE_LOADED}
+        state={types.StoreState.LOADED}
         error={null}
         viewStateKey={mockViewStateKey}
         detailPanel={stubDetail}
@@ -90,7 +90,7 @@ describe('BaseTab', () => {
         <BaseTab<{ id: string; name: string }>
           data={mockData}
           columns={mockColumns}
-          state={types.StoreState.STORE_LOADED}
+          state={types.StoreState.LOADED}
           error={null}
           viewStateKey={allFacetKey}
           detailPanel={stubDetail}
@@ -107,7 +107,7 @@ describe('BaseTab', () => {
         <BaseTab<{ id: string; name: string }>
           data={mockData}
           columns={mockColumns}
-          state={types.StoreState.STORE_LOADED}
+          state={types.StoreState.LOADED}
           error={null}
           viewStateKey={customFacetKey}
           detailPanel={stubDetail}
@@ -140,7 +140,7 @@ describe('BaseTab', () => {
           <BaseTab<{ id: string; name: string }>
             data={mockData}
             columns={mockColumns}
-            state={types.StoreState.STORE_LOADED}
+            state={types.StoreState.LOADED}
             error={null}
             viewStateKey={key}
             detailPanel={stubDetail}
@@ -162,7 +162,7 @@ describe('BaseTab', () => {
         <BaseTab<{ id: string; name: string }>
           data={mockData}
           columns={mockColumns}
-          state={types.StoreState.STORE_LOADED}
+          state={types.StoreState.LOADED}
           error={null}
           viewStateKey={testKey}
           detailPanel={stubDetail}
@@ -208,7 +208,7 @@ describe('BaseTab', () => {
         <BaseTab<{ id: string; name: string }>
           data={mockData}
           columns={mockColumns}
-          state={types.StoreState.STORE_LOADED}
+          state={types.StoreState.LOADED}
           error={null}
           viewStateKey={mockViewStateKey}
           onSubmit={mockOnSubmit}

@@ -71,7 +71,7 @@ func main() {
 			msgs.AllMessages,
 			types.AllDataFacets,
 			types.AllCruds,
-			types.AllStoreStates,
+			types.AllStates,
 		},
 	}
 

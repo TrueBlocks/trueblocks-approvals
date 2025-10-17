@@ -75,7 +75,7 @@ func (c *ContractsCollection) getContractsStore(payload *types.Payload, facet ty
 		for i, c := range mockContracts {
 			theStore.AddItem(c, i)
 		}
-		theStore.ChangeState(0, types.StoreStateLoaded, "Mock data loaded")
+		theStore.ChangeState(types.StateLoaded, "Mock data loaded")
 		// EXISTING_CODE
 
 		contractsStore = theStore

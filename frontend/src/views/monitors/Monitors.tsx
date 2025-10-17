@@ -252,7 +252,7 @@ export const Monitors = () => {
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
         columns={currentColumns}
-        state={pageData?.state || types.StoreState.STORE_STALE}
+        state={pageData?.state || types.StoreState.STALE}
         error={error}
         viewStateKey={viewStateKey}
         headerActions={headerActions}
@@ -304,7 +304,7 @@ export const Monitors = () => {
         rowActions={config.rowActions}
         headerActions={config.headerActions}
         count={++renderCnt.current}
-        state={pageData?.state || types.StoreState.STORE_STALE}
+        state={pageData?.state || types.StoreState.STALE}
         totalItems={pageData?.totalItems}
       />
       <ConfirmModal

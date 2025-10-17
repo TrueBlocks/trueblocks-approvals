@@ -356,7 +356,7 @@ export const Table = <T extends Record<string, unknown>>({
           <Header columns={displayColumns} viewStateKey={viewStateKey} />
           <tbody className={getDebugClass(5)}>
             {data.length === 0 ? (
-              state === types.StoreState.STORE_FETCHING ? (
+              state === types.StoreState.FETCHING ? (
                 <tr>
                   <td
                     colSpan={displayColumns.length}
@@ -401,7 +401,7 @@ export const Table = <T extends Record<string, unknown>>({
                 selectedRowIndex={selectedRowIndex}
                 handleRowClick={handleRowClick}
                 noDataMessage={
-                  state === types.StoreState.STORE_FETCHING
+                  state === types.StoreState.FETCHING
                     ? 'Loading...'
                     : 'No data found.'
                 }

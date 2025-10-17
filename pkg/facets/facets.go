@@ -65,7 +65,7 @@ func NewFacet[T any](
 }
 
 func (r *Facet[T]) IsLoaded() bool {
-	return r.GetState() == types.StoreStateLoaded
+	return r.GetState() == types.StateLoaded
 }
 
 func (r *Facet[T]) GetState() types.StoreState {
@@ -74,7 +74,7 @@ func (r *Facet[T]) GetState() types.StoreState {
 
 func (r *Facet[T]) NeedsUpdate() bool {
 	state := r.GetState()
-	return state == types.StoreStateStale
+	return state == types.StateStale
 }
 
 func (r *Facet[T]) Reset() {
@@ -131,11 +131,11 @@ var ErrAlreadyLoading = errors.New("already loading")
 func (r *Facet[T]) FetchFacet() error {
 	currentState := r.GetState()
 
-	if currentState == types.StoreStateFetching {
+	if currentState == types.StateFetching {
 		return ErrAlreadyLoading
 	}
 
-	if currentState != types.StoreStateStale {
+	if currentState != types.StateStale {
 		msgs.EmitStatus(fmt.Sprintf("cached: %d items", len(r.view)))
 		return nil
 	}
@@ -154,7 +154,7 @@ func (r *Facet[T]) FetchFacet() error {
 		for {
 			select {
 			case err := <-done:
-				if err != nil && err != store.ErrStaleFetch && err.Error() != "context canceled" {
+				if err != nil && err.Error() != "context canceled" {
 					msgs.EmitError("Fetch failed", err)
 				}
 				return
@@ -306,9 +306,10 @@ func (r *Facet[T]) OnNewItem(item *T, index int) {
 	r.progress.Tick(currentCount, expectedTotal)
 }
 
+// OnStateChanged handles store state changes by updating the facet view accordingly
 func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 	switch state {
-	case types.StoreStateStale:
+	case types.StateStale:
 		r.expectedCnt = 0
 		r.mutex.Lock()
 		r.view = r.view[:0]
@@ -318,7 +319,7 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 		}
 		msgs.EmitStatus(fmt.Sprintf("data outdated: %s", reason))
 
-	case types.StoreStateFetching:
+	case types.StateFetching:
 		r.expectedCnt = 0
 		r.mutex.Lock()
 		r.view = r.view[:0]
@@ -327,7 +328,7 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 			r.summaryProvider.ResetSummary()
 		}
 
-	case types.StoreStateLoaded:
+	case types.StateLoaded:
 		r.SyncWithStore()
 		r.mutex.RLock()
 		currentCount := len(r.view)
@@ -338,7 +339,7 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 			collectionPayload := types.DataLoadedPayload{
 				CurrentCount:  currentCount,
 				ExpectedTotal: currentCount,
-				State:         types.StoreStateLoaded,
+				State:         types.StateLoaded,
 				Summary:       r.summaryProvider.GetSummary(),
 				Timestamp:     time.Now().Unix(),
 				EventPhase:    "complete",

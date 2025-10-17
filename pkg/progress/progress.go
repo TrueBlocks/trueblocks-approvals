@@ -107,7 +107,7 @@ func (pr *Progress) Tick(currentTotalCount, expectedTotal int) {
 			collectionPayload := types.DataLoadedPayload{
 				CurrentCount:  currentTotalCount,
 				ExpectedTotal: expectedTotal,
-				State:         types.StoreStateFetching,
+				State:         types.StateFetching,
 				Summary:       pr.summaryProvider.GetSummary(),
 				Timestamp:     time.Now().Unix(),
 				EventPhase:    "streaming",
@@ -157,7 +157,7 @@ func (pr *Progress) Heartbeat(currentTotalCount, expectedTotal int) {
 			collectionPayload := types.DataLoadedPayload{
 				CurrentCount:  currentTotalCount,
 				ExpectedTotal: expectedTotal,
-				State:         types.StoreStateFetching,
+				State:         types.StateFetching,
 				Summary:       pr.summaryProvider.GetSummary(),
 				Timestamp:     time.Now().Unix(),
 				EventPhase:    "streaming",

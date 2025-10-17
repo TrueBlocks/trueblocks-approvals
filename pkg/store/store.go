@@ -34,12 +34,9 @@ type Store[T any] struct {
 	state              types.StoreState
 	stateReason        string
 	expectedTotalItems atomic.Int64
-	dataGeneration     atomic.Uint64
 	summaryManager     *SummaryManager[T] // Manages aggregated summary data
 	mutex              sync.RWMutex
 }
-
-var ErrStaleFetch = errors.New("stale fetch: store was reset")
 
 // NewStore creates a new SDK-based store
 func NewStore[T any](
@@ -55,7 +52,7 @@ func NewStore[T any](
 		processFunc:    processFunc,
 		mappingFunc:    mappingFunc,
 		contextKey:     contextKey,
-		state:          types.StoreStateStale,
+		state:          types.StateStale,
 		summaryManager: NewSummaryManager[T](),
 	}
 	if mappingFunc != nil {
@@ -63,7 +60,6 @@ func NewStore[T any](
 		s.dataMap = &tempMap
 	}
 	s.expectedTotalItems.Store(0)
-	s.dataGeneration.Store(0)
 	return s
 }
 
@@ -98,14 +94,8 @@ func (s *Store[T]) UnregisterObserver(observer FacetObserver[T]) {
 	}
 }
 
-func (s *Store[T]) ChangeState(expectedGeneration uint64, newState types.StoreState, reason string) {
+func (s *Store[T]) ChangeState(newState types.StoreState, reason string) {
 	s.mutex.Lock()
-	if expectedGeneration != 0 && newState == types.StoreStateLoaded {
-		if s.dataGeneration.Load() != expectedGeneration {
-			s.mutex.Unlock()
-			return
-		}
-	}
 
 	s.state = newState
 	s.stateReason = reason
@@ -128,7 +118,7 @@ func (s *Store[T]) GetState() types.StoreState {
 }
 
 func (s *Store[T]) MarkStale(reason string) {
-	s.ChangeState(0, types.StoreStateStale, reason)
+	s.ChangeState(types.StateStale, reason)
 }
 
 func (s *Store[T]) GetItem(index int) *T {
@@ -175,8 +165,7 @@ func (s *Store[T]) Count() int {
 }
 
 func (s *Store[T]) Fetch() error {
-	fetchGeneration := s.dataGeneration.Load()
-	s.ChangeState(fetchGeneration, types.StoreStateFetching, "Starting data fetch")
+	s.ChangeState(types.StateFetching, "Starting data fetch")
 
 	renderCtx := RegisterContext(s.contextKey)
 	done := make(chan struct{})
@@ -212,9 +201,9 @@ func (s *Store[T]) Fetch() error {
 				processingError = err
 				msgs.EmitError("Query error during fetch", err)
 				if s.Count() > 0 {
-					s.ChangeState(fetchGeneration, types.StoreStateLoaded, "Partial data available despite query error")
+					s.ChangeState(types.StateLoaded, "Partial data available despite query error")
 				} else {
-					s.ChangeState(0, types.StoreStateStale, "No data due to query error, ready to retry")
+					s.ChangeState(types.StateStale, "No data due to query error, ready to retry")
 				}
 				return processingError
 			}
@@ -226,7 +215,7 @@ func (s *Store[T]) Fetch() error {
 			if !ok {
 				modelChanClosed = true
 				if errorChanClosed && processingError == nil {
-					s.ChangeState(fetchGeneration, types.StoreStateLoaded, "Data loaded successfully")
+					s.ChangeState(types.StateLoaded, "Data loaded successfully")
 				}
 				continue
 			}
@@ -237,10 +226,6 @@ func (s *Store[T]) Fetch() error {
 			}
 
 			s.mutex.Lock()
-			if s.dataGeneration.Load() != fetchGeneration {
-				s.mutex.Unlock()
-				return ErrStaleFetch
-			}
 
 			if s.mappingFunc != nil {
 				key, includeInMap := s.mappingFunc(itemPtr)
@@ -262,7 +247,7 @@ func (s *Store[T]) Fetch() error {
 
 			// TODO: BOGUS
 			// Note: Summary aggregation is now handled by the GetSummaryPage method in the backend
-			// which calls AddItem/AddBalance during summary generation per period
+			// which calls AddItem/AddBalance during summary creation per period
 			// Items during fetch are stored but not immediately summarized
 
 			currentObservers := make([]FacetObserver[T], len(s.observers))
@@ -284,7 +269,7 @@ func (s *Store[T]) Fetch() error {
 			if !ok {
 				errorChanClosed = true
 				if modelChanClosed && processingError == nil {
-					s.ChangeState(fetchGeneration, types.StoreStateLoaded, "Data loaded successfully")
+					s.ChangeState(types.StateLoaded, "Data loaded successfully")
 				}
 				continue
 			}
@@ -293,7 +278,7 @@ func (s *Store[T]) Fetch() error {
 
 		case <-renderCtx.Ctx.Done():
 			msgs.EmitStatus("loading canceled")
-			s.ChangeState(0, types.StoreStateLoaded, "User cancelled operation")
+			s.ChangeState(types.StateLoaded, "User cancelled operation")
 			return renderCtx.Ctx.Err()
 
 		case <-done:
@@ -313,10 +298,8 @@ func (s *Store[T]) Fetch() error {
 					itemPtr := s.processFunc(item)
 					if itemPtr != nil {
 						s.mutex.Lock()
-						if s.dataGeneration.Load() == fetchGeneration {
-							s.data = append(s.data, itemPtr)
-							s.expectedTotalItems.Store(int64(len(s.data)))
-						}
+						s.data = append(s.data, itemPtr)
+						s.expectedTotalItems.Store(int64(len(s.data)))
 						s.mutex.Unlock()
 					}
 				case streamErr, ok := <-renderCtx.ErrorChan:
@@ -340,22 +323,17 @@ func (s *Store[T]) Fetch() error {
 		}
 	}
 
-	// Check if fetch became stale before final state change
-	if s.dataGeneration.Load() != fetchGeneration {
-		return ErrStaleFetch
-	}
-
-	newState := types.StoreStateLoaded
+	newState := types.StateLoaded
 	reason := "processing finished"
 	if processingError != nil {
 		if s.Count() > 0 {
 			reason = "Partial data loaded despite stream error"
 		} else {
-			newState = types.StoreStateStale
+			newState = types.StateStale
 			reason = "No data due to stream error, ready to retry"
 		}
 	}
-	s.ChangeState(fetchGeneration, newState, reason)
+	s.ChangeState(newState, reason)
 	return processingError
 }
 
@@ -377,7 +355,7 @@ func (s *Store[T]) AddItem(item *T, index int) {
 
 	// TODO: BOGUS
 	// Note: Summary aggregation is now handled by the GetSummaryPage method in the backend
-	// which calls summary manager methods during summary generation per period
+	// which calls summary manager methods during summary creation per period
 	// Items added individually are stored but not immediately summarized
 
 	observers := make([]FacetObserver[T], len(s.observers))
@@ -404,9 +382,8 @@ func (s *Store[T]) Reset() {
 	}
 	s.summaryManager.Reset()
 	s.expectedTotalItems.Store(0)
-	s.dataGeneration.Add(1)
 
-	s.state = types.StoreStateStale
+	s.state = types.StateStale
 	s.stateReason = "Store reset"
 
 	currentObservers := make([]FacetObserver[T], len(s.observers))
@@ -415,7 +392,7 @@ func (s *Store[T]) Reset() {
 
 	// Notify observers of state change
 	for _, observer := range currentObservers {
-		observer.OnStateChanged(types.StoreStateStale, "Store reset")
+		observer.OnStateChanged(types.StateStale, "Store reset")
 	}
 }
 
@@ -467,7 +444,7 @@ func (s *Store[T]) AddBalance(item *T, index int) {
 	}
 
 	// Note: Balance summarization is handled by the GetSummaryPage method in the backend
-	// which calls AddBalance during summary generation per period with proper period strings
+	// which calls AddBalance during summary creation per period with proper period strings
 	// Balances added individually are stored but not immediately summarized
 
 	observers := make([]FacetObserver[T], len(s.observers))

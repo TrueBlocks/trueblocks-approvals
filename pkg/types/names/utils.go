@@ -22,7 +22,7 @@ func (c *NamesCollection) loadNamesSync(chain string) error {
 	defer namesStoreMu.Unlock()
 
 	// Double-check if store is already loaded after acquiring lock
-	if namesStore != nil && namesStore.GetState() == types.StoreStateLoaded {
+	if namesStore != nil && namesStore.GetState() == types.StateLoaded {
 		return nil
 	}
 
@@ -49,7 +49,7 @@ func (c *NamesCollection) loadNamesSync(chain string) error {
 		}
 
 		// Mark the store as loaded
-		namesStore.ChangeState(0, types.StoreStateLoaded, "Synchronously loaded names")
+		namesStore.ChangeState(types.StateLoaded, "Synchronously loaded names")
 	}
 
 	return nil
@@ -63,7 +63,7 @@ func (c *NamesCollection) ensureLoadedSync(chain string) bool {
 	}
 
 	// Quick check without lock first (optimization)
-	if namesStore.GetState() == types.StoreStateLoaded {
+	if namesStore.GetState() == types.StateLoaded {
 		return true
 	}
 
@@ -73,5 +73,5 @@ func (c *NamesCollection) ensureLoadedSync(chain string) bool {
 	}
 
 	// Verify the store is now loaded
-	return namesStore.GetState() == types.StoreStateLoaded
+	return namesStore.GetState() == types.StateLoaded
 }

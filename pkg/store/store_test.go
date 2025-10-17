@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
@@ -21,7 +20,7 @@ func TestNewStore(t *testing.T) {
 
 	assert.NotNil(t, store)
 	assert.Equal(t, "test-key", store.GetContextKey())
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 	assert.Equal(t, 0, store.Count())
 	assert.Equal(t, int64(0), store.ExpectedTotalItems())
 	assert.NotNil(t, store.dataMap)
@@ -58,7 +57,7 @@ func TestStoreObserverManagement(t *testing.T) {
 func TestStoreBasicOperations(t *testing.T) {
 	store := createTestStore(t)
 
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 	assert.Equal(t, 0, store.Count())
 	assert.Empty(t, store.GetItems())
 
@@ -128,32 +127,19 @@ func TestStoreStateManagement(t *testing.T) {
 	store.RegisterObserver(observer)
 
 	store.MarkStale("Test stale")
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 
 	stateChanges := observer.GetStateChanges()
 	assert.Len(t, stateChanges, 1)
-	assert.Equal(t, types.StoreStateStale, stateChanges[0].state)
+	assert.Equal(t, types.StateStale, stateChanges[0].state)
 	assert.Equal(t, "Test stale", stateChanges[0].reason)
 
 	observer.Reset()
-	generation := store.dataGeneration.Load()
-	store.ChangeState(generation, types.StoreStateLoaded, "Test loaded")
+	store.ChangeState(types.StateLoaded, "Test loaded")
 
 	stateChanges = observer.GetStateChanges()
 	assert.Len(t, stateChanges, 1)
-	assert.Equal(t, types.StoreStateLoaded, stateChanges[0].state)
-}
-
-func TestStoreStateManagementWithStaleGeneration(t *testing.T) {
-	store := createTestStore(t)
-	observer := &MockObserver{}
-	store.RegisterObserver(observer)
-
-	store.ChangeState(999, types.StoreStateLoaded, "Should be ignored")
-
-	stateChanges := observer.GetStateChanges()
-	assert.Len(t, stateChanges, 0)
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateLoaded, stateChanges[0].state)
 }
 
 func TestStoreReset(t *testing.T) {
@@ -165,17 +151,15 @@ func TestStoreReset(t *testing.T) {
 	store.AddItem(testItem, 0)
 	assert.Equal(t, 1, store.Count())
 
-	oldGeneration := store.dataGeneration.Load()
 	store.Reset()
 
 	assert.Equal(t, 0, store.Count())
-	assert.Equal(t, types.StoreStateStale, store.GetState())
-	assert.Greater(t, store.dataGeneration.Load(), oldGeneration)
+	assert.Equal(t, types.StateStale, store.GetState())
 
 	stateChanges := observer.GetStateChanges()
 	assert.True(t, len(stateChanges) > 0)
 	lastChange := stateChanges[len(stateChanges)-1]
-	assert.Equal(t, types.StoreStateStale, lastChange.state)
+	assert.Equal(t, types.StateStale, lastChange.state)
 	assert.Equal(t, "Store reset", lastChange.reason)
 }
 
@@ -194,7 +178,7 @@ func TestStoreFetchWithProperChannelClosure(t *testing.T) {
 
 	err := store.Fetch()
 	assert.NoError(t, err)
-	assert.Equal(t, types.StoreStateLoaded, store.GetState())
+	assert.Equal(t, types.StateLoaded, store.GetState())
 	assert.Equal(t, len(items), store.Count())
 
 	receivedItems := observer.GetNewItems()
@@ -206,8 +190,8 @@ func TestStoreFetchWithProperChannelClosure(t *testing.T) {
 
 	stateChanges := observer.GetStateChanges()
 	assert.True(t, len(stateChanges) >= 2)
-	assert.Equal(t, types.StoreStateFetching, stateChanges[0].state)
-	assert.Equal(t, types.StoreStateLoaded, stateChanges[len(stateChanges)-1].state)
+	assert.Equal(t, types.StateFetching, stateChanges[0].state)
+	assert.Equal(t, types.StateLoaded, stateChanges[len(stateChanges)-1].state)
 }
 
 // TestStoreFetchWithSDKBug is commented out because it's designed to fail
@@ -230,7 +214,7 @@ func TestStoreFetchWithSDKBug(t *testing.T) {
 
 	err := store.Fetch()
 	assert.NoError(t, err)
-	assert.Equal(t, types.StoreStateLoaded, store.GetState())
+	assert.Equal(t, types.StateLoaded, store.GetState())
 	assert.Equal(t, len(items), store.Count())
 
 	receivedItems := observer.GetNewItems()
@@ -242,8 +226,8 @@ func TestStoreFetchWithSDKBug(t *testing.T) {
 
 	stateChanges := observer.GetStateChanges()
 	assert.True(t, len(stateChanges) >= 2)
-	assert.Equal(t, types.StoreStateFetching, stateChanges[0].state)
-	assert.Equal(t, types.StoreStateLoaded, stateChanges[len(stateChanges)-1].state)
+	assert.Equal(t, types.StateFetching, stateChanges[0].state)
+	assert.Equal(t, types.StateLoaded, stateChanges[len(stateChanges)-1].state)
 }
 */
 
@@ -263,12 +247,12 @@ func TestStoreFetchWithError(t *testing.T) {
 	err := store.Fetch()
 	assert.Error(t, err)
 	assert.Equal(t, testError, err)
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 
 	stateChanges := observer.GetStateChanges()
 	assert.True(t, len(stateChanges) >= 2)
-	assert.Equal(t, types.StoreStateFetching, stateChanges[0].state)
-	assert.Equal(t, types.StoreStateStale, stateChanges[len(stateChanges)-1].state)
+	assert.Equal(t, types.StateFetching, stateChanges[0].state)
+	assert.Equal(t, types.StateStale, stateChanges[len(stateChanges)-1].state)
 }
 
 // TestStoreFetchWithCancellation is temporarily commented out due to race condition
@@ -294,7 +278,7 @@ func TestStoreFetchWithCancellation(t *testing.T) {
 	err := store.Fetch()
 	assert.Error(t, err)
 	assert.Equal(t, context.Canceled, err)
-	assert.Equal(t, types.StoreStateLoaded, store.GetState())
+	assert.Equal(t, types.StateLoaded, store.GetState())
 }
 */
 
@@ -319,7 +303,7 @@ func TestStoreFetchWithStreamError(t *testing.T) {
 	err := store.Fetch()
 	assert.Error(t, err)
 	assert.Equal(t, testError, err)
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 }
 
 // Second TestStoreFetchWithCancellation also commented out due to race condition
@@ -344,44 +328,9 @@ func TestStoreFetchWithCancellation(t *testing.T) {
 	err := store.Fetch()
 	assert.Error(t, err)
 	assert.Equal(t, context.Canceled, err)
-	assert.Equal(t, types.StoreStateLoaded, store.GetState())
+	assert.Equal(t, types.StateLoaded, store.GetState())
 }
 */
-
-func TestStoreFetchWithStaleData(t *testing.T) {
-	proceedChannel := make(chan struct{})
-	store := NewStore("stale-test",
-		func(ctx *output.RenderCtx) error {
-			go func() {
-				<-proceedChannel
-				ctx.ModelChan <- &TestData{ID: 1, Name: "Test", Value: 100}
-				close(ctx.ModelChan)
-				close(ctx.ErrorChan)
-			}()
-			return nil
-		},
-		func(item interface{}) *TestData { return item.(*TestData) },
-		nil)
-
-	var fetchErr error
-	fetchDone := make(chan struct{})
-	go func() {
-		defer close(fetchDone)
-		fetchErr = store.Fetch()
-	}()
-
-	time.Sleep(10 * time.Millisecond)
-	store.dataGeneration.Add(1)
-	close(proceedChannel)
-	<-fetchDone
-	assert.Equal(t, ErrStaleFetch, fetchErr)
-}
-
-func TestErrStaleFetch(t *testing.T) {
-	err := ErrStaleFetch
-	assert.Equal(t, ErrStaleFetch, err)
-	assert.Contains(t, err.Error(), "stale fetch")
-}
 
 func TestStoreConcurrentAccess(t *testing.T) {
 	store := createTestStore(t)
@@ -419,7 +368,7 @@ func TestStoreConcurrentAccess(t *testing.T) {
 	wg.Wait()
 
 	assert.Equal(t, numGoroutines, store.Count())
-	assert.Equal(t, types.StoreStateStale, store.GetState())
+	assert.Equal(t, types.StateStale, store.GetState())
 }
 
 func TestStoreObserverNotifications(t *testing.T) {
@@ -448,6 +397,6 @@ func TestStoreObserverNotifications(t *testing.T) {
 
 	assert.True(t, len(changes1) > 0)
 	assert.True(t, len(changes2) > 0)
-	assert.Equal(t, types.StoreStateStale, changes1[len(changes1)-1].state)
-	assert.Equal(t, types.StoreStateStale, changes2[len(changes2)-1].state)
+	assert.Equal(t, types.StateStale, changes1[len(changes1)-1].state)
+	assert.Equal(t, types.StateStale, changes2[len(changes2)-1].state)
 }
