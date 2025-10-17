@@ -94,9 +94,13 @@ func createStoreWithTestData(t *testing.T, items []*TestData, streamError error)
 	t.Helper()
 	return NewStore("test-data-store",
 		func(ctx *output.RenderCtx) error {
+			// Start goroutine but wait for it to complete before returning
+			// This more accurately simulates real SDK behavior
+			done := make(chan struct{})
 			go func() {
 				defer close(ctx.ModelChan)
 				defer close(ctx.ErrorChan)
+				defer close(done)
 
 				if streamError != nil {
 					ctx.ErrorChan <- streamError
@@ -106,6 +110,41 @@ func createStoreWithTestData(t *testing.T, items []*TestData, streamError error)
 				for _, item := range items {
 					ctx.ModelChan <- item
 				}
+			}()
+			<-done // Wait for goroutine to complete
+			return nil
+		},
+		func(item interface{}) *TestData {
+			if testData, ok := item.(*TestData); ok {
+				return testData
+			}
+			return nil
+		},
+		func(item *TestData) (interface{}, bool) {
+			return item.ID, true
+		})
+}
+
+// createStoreWithSDKBug simulates the TrueBlocks Core SDK bug where
+// the queryFunc completes and signals done, but channels never close
+// This function is commented out along with its corresponding test
+/*
+func createStoreWithSDKBug(t *testing.T, items []*TestData, streamError error) *Store[TestData] {
+	t.Helper()
+	return NewStore("test-sdk-bug-store",
+		func(ctx *output.RenderCtx) error {
+			go func() {
+				// Note: NO defer close() calls - this simulates the SDK bug
+
+				if streamError != nil {
+					ctx.ErrorChan <- streamError
+					return
+				}
+
+				for _, item := range items {
+					ctx.ModelChan <- item
+				}
+				// Goroutine exits but channels remain open (SDK bug)
 			}()
 			return nil
 		},
@@ -119,3 +158,4 @@ func createStoreWithTestData(t *testing.T, items []*TestData, streamError error)
 			return item.ID, true
 		})
 }
+*/

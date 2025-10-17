@@ -18,8 +18,6 @@ const getStateColor = (state: types.StoreState) => {
       return 'blue';
     case types.StoreState.STORE_LOADED:
       return 'green';
-    case types.StoreState.STORE_ERROR:
-      return 'red';
     default:
       return 'gray';
   }
@@ -33,8 +31,6 @@ const getStateLabel = (state: types.StoreState) => {
       return 'Fetching...';
     case types.StoreState.STORE_LOADED:
       return 'Loaded';
-    case types.StoreState.STORE_ERROR:
-      return 'Error';
     default:
       return 'Unknown' + String(state);
   }

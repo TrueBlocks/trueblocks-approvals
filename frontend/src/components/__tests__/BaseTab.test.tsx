@@ -220,22 +220,5 @@ describe('BaseTab', () => {
         document.querySelector('[data-testid="mock-table"]'),
       ).toBeInTheDocument();
     });
-
-    it('handles error prop without breaking render', () => {
-      const mockError = new Error('Test error');
-
-      const { container } = render(
-        <BaseTab<{ id: string; name: string }>
-          data={mockData}
-          columns={mockColumns}
-          state={types.StoreState.STORE_ERROR}
-          error={mockError}
-          viewStateKey={mockViewStateKey}
-          detailPanel={stubDetail}
-        />,
-      );
-
-      expect(container.innerHTML).toContain('data-testid="mock-table"');
-    });
   });
 });

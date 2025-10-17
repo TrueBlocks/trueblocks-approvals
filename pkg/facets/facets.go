@@ -313,11 +313,9 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 		r.mutex.Lock()
 		r.view = r.view[:0]
 		r.mutex.Unlock()
-
 		if r.summaryProvider != nil {
 			r.summaryProvider.ResetSummary()
 		}
-
 		msgs.EmitStatus(fmt.Sprintf("data outdated: %s", reason))
 
 	case types.StoreStateFetching:
@@ -325,7 +323,6 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 		r.mutex.Lock()
 		r.view = r.view[:0]
 		r.mutex.Unlock()
-
 		if r.summaryProvider != nil {
 			r.summaryProvider.ResetSummary()
 		}
@@ -337,7 +334,6 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 		r.expectedCnt = r.store.GetExpectedTotal()
 		r.mutex.RUnlock()
 		r.progress.Tick(currentCount, currentCount)
-
 		if r.summaryProvider != nil {
 			collectionPayload := types.DataLoadedPayload{
 				CurrentCount:  currentCount,
@@ -351,17 +347,6 @@ func (r *Facet[T]) OnStateChanged(state types.StoreState, reason string) {
 			collectionPayload.Collection = r.collectionName
 			collectionPayload.DataFacet = r.dataFacet
 			msgs.EmitLoaded(collectionPayload)
-		}
-
-	case types.StoreStateError:
-		r.mutex.RLock()
-		hasData := len(r.view) > 0
-		currentCount := len(r.view)
-		r.mutex.RUnlock()
-		if hasData {
-			msgs.EmitStatus(fmt.Sprintf("load failed with partial data: %d items (error: %s)", currentCount, reason))
-		} else {
-			msgs.EmitError(fmt.Sprintf("load failed: %s", reason), errors.New(reason))
 		}
 	}
 }

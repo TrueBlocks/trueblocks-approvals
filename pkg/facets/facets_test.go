@@ -271,13 +271,13 @@ func TestFacetObserverInterface(t *testing.T) {
 	testStore.ChangeState(0, types.StoreStateLoaded, "Test loaded")
 	assert.Equal(types.StoreStateLoaded, facet.GetState(), "Expected state to be StateLoaded")
 
-	testStore.ChangeState(0, types.StoreStateError, "Test error")
-	assert.Equal(types.StoreStateError, facet.GetState(), "Expected state to be StateError")
+	testStore.ChangeState(0, types.StoreStateStale, "Test stale")
+	assert.Equal(types.StoreStateStale, facet.GetState(), "Expected state to be StateStale")
 
-	// Test error state with existing data - facet should still reflect store's error state
+	// Test state with existing data
 	facet.OnNewItem(&TestItem{ID: 1, Name: "Test", Value: 100}, 0)
-	testStore.ChangeState(0, types.StoreStateError, "Test error with existing data")
-	assert.Equal(types.StoreStateError, facet.GetState(), "Expected state to be StateError even when error occurs with existing data")
+	testStore.ChangeState(0, types.StoreStateLoaded, "Test loaded with data")
+	assert.Equal(types.StoreStateLoaded, facet.GetState(), "Expected state to be StateLoaded with data")
 }
 
 func TestFacetForEvery(t *testing.T) {

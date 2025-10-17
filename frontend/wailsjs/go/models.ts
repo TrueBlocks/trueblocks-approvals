@@ -1332,7 +1332,6 @@ export namespace types {
 	    STORE_STALE = "stale",
 	    STORE_FETCHING = "fetching",
 	    STORE_LOADED = "loaded",
-	    STORE_ERROR = "error",
 	}
 	export class AbiCalcs {
 	    name?: string;
