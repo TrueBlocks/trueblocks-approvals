@@ -30,6 +30,7 @@ const (
 	ExportsApprovalTxs   types.DataFacet = "approvaltxs"
 	ExportsWithdrawals   types.DataFacet = "withdrawals"
 	ExportsAssets        types.DataFacet = "assets"
+	ExportsAssetCharts   types.DataFacet = "assetcharts"
 	ExportsLogs          types.DataFacet = "logs"
 	ExportsTraces        types.DataFacet = "traces"
 	ExportsReceipts      types.DataFacet = "receipts"
@@ -45,6 +46,7 @@ func init() {
 	types.RegisterDataFacet(ExportsApprovalTxs)
 	types.RegisterDataFacet(ExportsWithdrawals)
 	types.RegisterDataFacet(ExportsAssets)
+	types.RegisterDataFacet(ExportsAssetCharts)
 	types.RegisterDataFacet(ExportsLogs)
 	types.RegisterDataFacet(ExportsTraces)
 	types.RegisterDataFacet(ExportsReceipts)
@@ -60,6 +62,7 @@ type ExportsCollection struct {
 	approvaltxsFacet   *facets.Facet[ApprovalTx]
 	withdrawalsFacet   *facets.Facet[Withdrawal]
 	assetsFacet        *facets.Facet[Asset]
+	assetchartsFacet   *facets.Facet[Statement]
 	logsFacet          *facets.Facet[Log]
 	tracesFacet        *facets.Facet[Trace]
 	receiptsFacet      *facets.Facet[Receipt]
@@ -156,6 +159,15 @@ func (c *ExportsCollection) initializeFacets(payload *types.Payload) {
 		c,
 	)
 
+	c.assetchartsFacet = facets.NewFacet(
+		ExportsAssetCharts,
+		isAssetChart,
+		isDupStatement(),
+		c.getStatementsStore(payload, ExportsAssetCharts),
+		"exports",
+		c,
+	)
+
 	c.logsFacet = facets.NewFacet(
 		ExportsLogs,
 		isLog,
@@ -233,6 +245,12 @@ func isWithdrawal(item *Withdrawal) bool {
 }
 
 func isAsset(item *Asset) bool {
+	// EXISTING_CODE
+	return true
+	// EXISTING_CODE
+}
+
+func isAssetChart(item *Statement) bool {
 	// EXISTING_CODE
 	return true
 	// EXISTING_CODE
@@ -371,6 +389,10 @@ func (c *ExportsCollection) FetchByFacet(dataFacet types.DataFacet) {
 			if err := c.assetsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
 			}
+		case ExportsAssetCharts:
+			if err := c.assetchartsFacet.FetchFacet(); err != nil {
+				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
+			}
 		case ExportsLogs:
 			if err := c.logsFacet.FetchFacet(); err != nil {
 				logging.LogError(fmt.Sprintf("LoadData.%s from store: %%v", dataFacet), err, facets.ErrAlreadyLoading)
@@ -410,6 +432,8 @@ func (c *ExportsCollection) Reset(dataFacet types.DataFacet) {
 		c.withdrawalsFacet.Reset()
 	case ExportsAssets:
 		c.assetsFacet.Reset()
+	case ExportsAssetCharts:
+		c.assetchartsFacet.Reset()
 	case ExportsLogs:
 		c.logsFacet.Reset()
 	case ExportsTraces:
@@ -441,6 +465,8 @@ func (c *ExportsCollection) NeedsUpdate(dataFacet types.DataFacet) bool {
 		return c.withdrawalsFacet.NeedsUpdate()
 	case ExportsAssets:
 		return c.assetsFacet.NeedsUpdate()
+	case ExportsAssetCharts:
+		return c.assetchartsFacet.NeedsUpdate()
 	case ExportsLogs:
 		return c.logsFacet.NeedsUpdate()
 	case ExportsTraces:
@@ -463,6 +489,7 @@ func (c *ExportsCollection) GetSupportedFacets() []types.DataFacet {
 		ExportsApprovalTxs,
 		ExportsWithdrawals,
 		ExportsAssets,
+		ExportsAssetCharts,
 		ExportsLogs,
 		ExportsTraces,
 		ExportsReceipts,
@@ -615,6 +642,8 @@ func (c *ExportsCollection) ExportData(payload *types.Payload) (string, error) {
 		return c.withdrawalsFacet.ExportData(payload, string(ExportsWithdrawals))
 	case ExportsAssets:
 		return c.assetsFacet.ExportData(payload, string(ExportsAssets))
+	case ExportsAssetCharts:
+		return c.assetchartsFacet.ExportData(payload, string(ExportsAssetCharts))
 	case ExportsLogs:
 		return c.logsFacet.ExportData(payload, string(ExportsLogs))
 	case ExportsTraces:

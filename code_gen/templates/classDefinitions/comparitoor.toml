@@ -22,7 +22,7 @@ viewType = ""
 renderer = ""
 
 [[facets]]
-name = "EtherScan"
+name = "Etherscan"
 store = "Transaction"
 actions = ["export"]
 viewType = ""

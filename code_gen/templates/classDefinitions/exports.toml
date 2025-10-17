@@ -13,6 +13,7 @@ store = "Statements"
 actions = ["export"]
 viewType = ""
 renderer = "panel"
+needsCalcs = true
 
 [[facets]]
 name = "Balances"
@@ -62,6 +63,14 @@ name = "Assets"
 store = "Assets"
 actions = ["export"]
 viewType = ""
+
+[[facets]]
+name = "AssetCharts"
+store = "Statements"
+actions = ["export"]
+viewType = ""
+renderer = ""
+needsCalcs = true
 
 [[facets]]
 name = "Logs"

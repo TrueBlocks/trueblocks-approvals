@@ -1311,6 +1311,7 @@ export namespace types {
 	    APPROVALTXS = "approvaltxs",
 	    WITHDRAWALS = "withdrawals",
 	    ASSETS = "assets",
+	    ASSETCHARTS = "assetcharts",
 	    LOGS = "logs",
 	    TRACES = "traces",
 	    RECEIPTS = "receipts",

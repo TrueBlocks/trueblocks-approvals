@@ -56,7 +56,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			RendererTypes: "",
 		},
 		"openapprovals": {
-			Name:          "Openapprovals",
+			Name:          "Open Approvals",
 			Store:         "openapprovals",
 			IsForm:        false,
 			DividerBefore: false,
@@ -66,7 +66,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			RendererTypes: "panel",
 		},
 		"approvallogs": {
-			Name:          "Approvallogs",
+			Name:          "Approval Logs",
 			Store:         "approvallogs",
 			IsForm:        false,
 			DividerBefore: false,
@@ -76,7 +76,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			RendererTypes: "",
 		},
 		"approvaltxs": {
-			Name:          "Approvaltxs",
+			Name:          "Approval Txs",
 			Store:         "approvaltxs",
 			IsForm:        false,
 			DividerBefore: false,
@@ -101,6 +101,16 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getAssetsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+			RendererTypes: "",
+		},
+		"assetcharts": {
+			Name:          "Asset Charts",
+			Store:         "statements",
+			IsForm:        false,
+			DividerBefore: false,
+			Fields:        getStatementsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
@@ -140,7 +150,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 	cfg := &types.ViewConfig{
 		ViewName:   "exports",
 		Facets:     facets,
-		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "openapprovals", "approvallogs", "approvaltxs", "withdrawals", "assets", "logs", "traces", "receipts"},
+		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "openapprovals", "approvallogs", "approvaltxs", "withdrawals", "assets", "assetcharts", "logs", "traces", "receipts"},
 		Actions: map[string]types.ActionConfig{
 			"export": {Name: "export", Label: "Export", Icon: "Export"},
 		},

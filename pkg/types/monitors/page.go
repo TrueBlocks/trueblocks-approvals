@@ -79,7 +79,6 @@ func (c *MonitorsCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("monitors", dataFacet, "GetPage", err)
 		} else {
-
 			page.Monitors, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()

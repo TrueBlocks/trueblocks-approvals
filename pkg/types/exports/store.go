@@ -25,6 +25,7 @@ type OpenApproval = sdk.Approval
 type ApprovalLog = sdk.Log
 type ApprovalTx = sdk.Transaction
 type Asset = sdk.Asset
+type Assetchart = sdk.Statement
 type Balance = sdk.Balance
 type Log = sdk.Log
 type Receipt = sdk.Receipt
@@ -103,7 +104,7 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 		}
 
 		processFunc := func(item interface{}) *ApprovalLog {
-			// Extract logs from transaction data
+			// EXISTING_CODE
 			if tx, ok := item.(*sdk.Transaction); ok {
 				for _, log := range tx.Receipt.Logs {
 					if len(log.Topics) > 0 {
@@ -111,7 +112,7 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 					}
 				}
 			}
-			// Direct log case (fallback)
+			// EXISTING_CODE
 			if it, ok := item.(*ApprovalLog); ok {
 				return it
 			}
@@ -165,6 +166,8 @@ func (c *ExportsCollection) getApprovalTxsStore(payload *types.Payload, facet ty
 		}
 
 		processFunc := func(item interface{}) *ApprovalTx {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*ApprovalTx); ok {
 				return it
 			}
@@ -218,6 +221,8 @@ func (c *ExportsCollection) getAssetsStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Asset {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Asset); ok {
 				return it
 			}
@@ -271,6 +276,8 @@ func (c *ExportsCollection) getBalancesStore(payload *types.Payload, facet types
 		}
 
 		processFunc := func(item interface{}) *Balance {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Balance); ok {
 				return it
 			}
@@ -325,6 +332,8 @@ func (c *ExportsCollection) getLogsStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Log {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Log); ok {
 				return it
 			}
@@ -379,6 +388,8 @@ func (c *ExportsCollection) getOpenApprovalsStore(payload *types.Payload, facet 
 		}
 
 		processFunc := func(item interface{}) *OpenApproval {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*OpenApproval); ok {
 				return it
 			}
@@ -433,6 +444,8 @@ func (c *ExportsCollection) getReceiptsStore(payload *types.Payload, facet types
 		}
 
 		processFunc := func(item interface{}) *Receipt {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Receipt); ok {
 				return it
 			}
@@ -487,6 +500,8 @@ func (c *ExportsCollection) getStatementsStore(payload *types.Payload, facet typ
 		}
 
 		processFunc := func(item interface{}) *Statement {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Statement); ok {
 				return it
 			}
@@ -541,6 +556,8 @@ func (c *ExportsCollection) getTracesStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Trace {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Trace); ok {
 				return it
 			}
@@ -594,6 +611,8 @@ func (c *ExportsCollection) getTransactionsStore(payload *types.Payload, facet t
 		}
 
 		processFunc := func(item interface{}) *Transaction {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Transaction); ok {
 				return it
 			}
@@ -648,6 +667,8 @@ func (c *ExportsCollection) getTransfersStore(payload *types.Payload, facet type
 		}
 
 		processFunc := func(item interface{}) *Transfer {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Transfer); ok {
 				return it
 			}
@@ -701,6 +722,8 @@ func (c *ExportsCollection) getWithdrawalsStore(payload *types.Payload, facet ty
 		}
 
 		processFunc := func(item interface{}) *Withdrawal {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Withdrawal); ok {
 				return it
 			}
@@ -746,6 +769,8 @@ func (c *ExportsCollection) GetStoreName(dataFacet types.DataFacet, chain, addre
 		name = "exports-withdrawals"
 	case ExportsAssets:
 		name = "exports-assets"
+	case ExportsAssetCharts:
+		name = "exports-statements"
 	case ExportsLogs:
 		name = "exports-logs"
 	case ExportsTraces:

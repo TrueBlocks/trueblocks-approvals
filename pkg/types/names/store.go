@@ -59,6 +59,8 @@ func (c *NamesCollection) getNamesStore(payload *types.Payload, facet types.Data
 		}
 
 		processFunc := func(item interface{}) *Name {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Name); ok {
 				return it
 			}

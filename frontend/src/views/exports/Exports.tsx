@@ -84,7 +84,6 @@ export const Exports = () => {
     } catch (err: unknown) {
       handleError(err, `Failed to fetch ${getCurrentDataFacet()}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     clearError,
     createPayload,
@@ -93,9 +92,8 @@ export const Exports = () => {
     pagination.pageSize,
     sort,
     filter,
-    // setTotalItems,
+    setTotalItems,
     handleError,
-    // setTotalItems is intentionally excluded to prevent infinite loops
   ]);
 
   const currentData = useMemo(() => {
@@ -120,6 +118,8 @@ export const Exports = () => {
         return pageData.withdrawals || [];
       case types.DataFacet.ASSETS:
         return pageData.assets || [];
+      case types.DataFacet.ASSETCHARTS:
+        return pageData.statements || [];
       case types.DataFacet.LOGS:
         return pageData.logs || [];
       case types.DataFacet.TRACES:

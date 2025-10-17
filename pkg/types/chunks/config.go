@@ -57,7 +57,7 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 			Actions:       []string{},
 			HeaderActions: []string{},
 			RendererTypes: "",
-			PanelConfig:   nil, // Form facet - no panel
+			PanelConfig:   getManifestPanelConfig(),
 		},
 	}
 
@@ -141,8 +141,6 @@ func getStatsFields() []types.FieldConfig {
 }
 
 // EXISTING_CODE
-// EXISTING_CODE
-
 func getStatsPanelConfig() *types.PanelConfig {
 	return &types.PanelConfig{
 		Type:          "barchart",
@@ -234,3 +232,9 @@ func getBloomsPanelConfig() *types.PanelConfig {
 		},
 	}
 }
+
+func getManifestPanelConfig() *types.PanelConfig {
+	return nil
+}
+
+// EXISTING_CODE

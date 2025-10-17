@@ -211,7 +211,7 @@ func (c *ComparitoorCollection) GetPage(
 		var filterFunc func(*Transaction) bool
 		if filter != "" {
 			filterFunc = func(item *Transaction) bool {
-				return c.matchesTrueBlockFilter(item, filter)
+				return c.matchesChifraFilter(item, filter)
 			}
 		}
 		sortFunc := func(items []Transaction, sort sdk.SortSpec) error {
@@ -224,12 +224,12 @@ func (c *ComparitoorCollection) GetPage(
 			page.TotalItems, page.State = len(result.Items), result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
-	case ComparitoorEtherScan:
+	case ComparitoorEtherscan:
 		facet := c.etherscanFacet
 		var filterFunc func(*Transaction) bool
 		if filter != "" {
 			filterFunc = func(item *Transaction) bool {
-				return c.matchesEtherScanFilter(item, filter)
+				return c.matchesEtherscanFilter(item, filter)
 			}
 		}
 		sortFunc := func(items []Transaction, sort sdk.SortSpec) error {
@@ -383,11 +383,11 @@ func (c *ComparitoorCollection) matchesComparitoorFilter(item *Transaction, filt
 	return strings.Contains(strings.ToLower(s), strings.ToLower(filter))
 }
 
-func (c *ComparitoorCollection) matchesTrueBlockFilter(item *Transaction, filter string) bool {
+func (c *ComparitoorCollection) matchesChifraFilter(item *Transaction, filter string) bool {
 	return c.matchesComparitoorFilter(item, filter)
 }
 
-func (c *ComparitoorCollection) matchesEtherScanFilter(item *Transaction, filter string) bool {
+func (c *ComparitoorCollection) matchesEtherscanFilter(item *Transaction, filter string) bool {
 	return c.matchesComparitoorFilter(item, filter)
 }
 

@@ -74,6 +74,8 @@ func (c *ChunksCollection) getBloomsStore(payload *types.Payload, facet types.Da
 		}
 
 		processFunc := func(item interface{}) *Bloom {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Bloom); ok {
 				c.updateBloomsBucket(it)
 				return it
@@ -131,6 +133,8 @@ func (c *ChunksCollection) getIndexStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Index {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Index); ok {
 				c.updateIndexBucket(it)
 				return it
@@ -192,6 +196,8 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 		}
 
 		processFunc := func(item interface{}) *Manifest {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Manifest); ok {
 				c.updateManifestBucket(it)
 				return it
@@ -249,6 +255,8 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Stats {
+			// EXISTING_CODE
+			// EXISTING_CODE
 			if it, ok := item.(*Stats); ok {
 				c.updateStatsBucket(it)
 				return it

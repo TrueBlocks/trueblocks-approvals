@@ -80,7 +80,6 @@ func (c *AbisCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("abis", dataFacet, "GetPage", err)
 		} else {
-
 			page.Abis, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
@@ -98,7 +97,6 @@ func (c *AbisCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("abis", dataFacet, "GetPage", err)
 		} else {
-
 			page.Abis, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
@@ -116,7 +114,6 @@ func (c *AbisCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("abis", dataFacet, "GetPage", err)
 		} else {
-
 			page.Functions, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
@@ -134,7 +131,6 @@ func (c *AbisCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("abis", dataFacet, "GetPage", err)
 		} else {
-
 			page.Functions, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()

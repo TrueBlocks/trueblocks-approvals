@@ -26,7 +26,16 @@ frontend/src/views/[view]/                      # Frontend components
 
 ## Step-by-Step Process
 
+**IMPORTANT**: Work step by step. Present each change, explain why you want to make it, and wait for approval before proceeding. Do not run ahead with multiple changes.
+
 ### Phase 1: Planning and Configuration
+
+#### Step 0: Pre-flight Checklist
+**Before Starting**:
+- Make a backup of your current working state
+- Verify the store name you plan to use (format: `Xxxx`)
+- Confirm that `./code_gen/templates/classDefinitions/fields/[store].csv` exists for your chosen store
+- Understand whether you're creating a new store or reusing an existing one
 
 #### Step 1: Define Facet Requirements
 **Questions to Answer**:
@@ -63,22 +72,36 @@ renderer = ""               # Custom renderer ("panel" for detail panel)
 ### Phase 2: Code Generation
 
 #### Step 4: Run Code Generation
-**Command**: `wails generate module`
+**Command**: `make generate`
 
-**Generated Files**:
-- Backend store methods
-- API endpoint updates
-- TypeScript type definitions
-- Component boilerplate
+**What Gets Generated** (general overview):
+- Backend: DataFacet constants, config entries, store method stubs, API switch cases
+- Frontend: TypeScript enum updates, component switch cases, basic data mapping
+- Templates: Boilerplate for new facet integration across the stack
 
-**Verify Generation**:
-- Check backend files in `pkg/types/[view]/`
-- Review API updates in `app/api_[view].go`
-- Confirm TypeScript types in `frontend/wailsjs/go/models.ts`
+**Expected Issues After Generation**:
+- Enum constants with spaces (e.g., `ASSET HISTORIES`) need manual correction
+- Generated switch cases may need adjustment
+- Store method implementations may need refinement
+- Frontend data mapping may require fixes
+
+**Critical**: Expect significant manual work after code generation. The generator creates the skeleton, but manual refinement is always required.
+
+#### Step 5: Manual Code Fixes (Post-Generation)
+After `make generate`, you will need to manually fix generated code issues:
+
+**Common Fixes Needed**:
+- Remove spaces from TypeScript enum constants
+- Correct data field mappings in switch statements
+- Verify store method implementations
+- Fix any syntax errors in generated TypeScript
+- Ensure proper data type consistency
+
+**Process**: Work through compilation errors systematically, starting with TypeScript syntax issues, then backend compilation, then runtime integration.
 
 ### Phase 3: Backend Implementation
 
-#### Step 5: Store Integration
+#### Step 6: Store Integration
 **Files**: `pkg/types/[view]/store.go`
 
 **For New Data Type**:
@@ -91,7 +114,7 @@ renderer = ""               # Custom renderer ("panel" for detail panel)
 - Add filtering logic based on facet name
 - Ensure proper SDK command usage
 
-#### Step 6: Configuration Updates
+#### Step 7: Configuration Updates
 **Files**: `pkg/types/[view]/config.go`
 
 Add facet configuration:
@@ -108,7 +131,9 @@ Add facet configuration:
 },
 ```
 
-#### Step 7: API Method Updates
+**Field Configuration**: To see available fields, check `./code_gen/templates/classDefinitions/fields/[store].csv`
+
+#### Step 8: API Method Updates
 **Files**: `app/api_[view].go`
 
 Ensure API methods handle new facet:
@@ -118,7 +143,7 @@ Ensure API methods handle new facet:
 
 ### Phase 4: Frontend Implementation
 
-#### Step 8: Component Updates
+#### Step 9: Component Updates
 **Files**: `frontend/src/views/[view]/[View].tsx`
 
 Add facet handling:
@@ -128,14 +153,14 @@ case types.DataFacet.NEWFACET:
   return pageData.newfacetdata || [];
 ```
 
-#### Step 9: DataFacet Enum
+#### Step 10: DataFacet Enum
 **Check**: `frontend/wailsjs/go/models.ts` or type definitions
 
 Verify `NEWFACET` is added to DataFacet enum:
 - If auto-generated, confirm it appears
 - If manual, add it to the appropriate enum file
 
-#### Step 10: Custom Renderer (Optional)
+#### Step 11: Custom Renderer (Optional)
 **Files**: `frontend/src/views/[view]/renderers/`
 
 **If renderer = "panel" in TOML**:
@@ -158,7 +183,7 @@ export const FacetRenderer = ({ data }: { data: any }) => {
 
 ### Phase 5: Testing and Validation
 
-#### Step 11: Code Quality
+#### Step 12: Code Quality
 **Commands**:
 ```bash
 yarn lint
@@ -170,7 +195,7 @@ yarn test
 - Update tests if needed
 - Ensure TypeScript compilation
 
-#### Step 12: Manual Testing
+#### Step 13: Manual Testing
 **Test Scenarios**:
 1. New facet tab appears in view
 2. Data loads correctly
@@ -194,22 +219,31 @@ yarn test
 - `renderer = "panel"`
 - Custom renderer component
 
-### Store Mapping Examples
+### Store Reuse Patterns
+
+When multiple facets use the same underlying data store, they can provide different views or filters of the same data:
+
+**Store Mapping Examples**:
 ```toml
-# New data type
+# New data type - facet and store match
 name = "Statements"
 store = "Statements"
 
-# Reuse existing type
-name = "Approve" 
-store = "Logs"      # Uses existing Log data type
+# Reuse existing type - different facet name
+name = "Asset Histories" 
+store = "Statements"    # Reuses existing Statements data
 
-# Multiple facets, same store
+# Multiple related facets, same store
 name = "Balances"
 store = "Balances"
 name = "TokenBalances"  
-store = "Balances"      # Same store, different filtering
+store = "Balances"      # Same store, potentially different filtering
 ```
+
+**When to Reuse vs. Create New**:
+- **Reuse**: When you want a different view/presentation of existing data
+- **Create New**: When you need fundamentally different SDK calls or data processing
+- **Consider**: Whether the existing store's SDK integration matches your needs
 
 ### SDK Integration Patterns
 ```go
@@ -291,7 +325,7 @@ processFunc := func(item interface{}) *ApprovalLog {
 - Use descriptive facet names
 - Follow established naming conventions
 - Include appropriate header actions
-- Consider dividers for grouping related facets
+- **Facet Ordering**: Default behavior uses TOML order. Do not implement custom sorting unless specifically required
 
 ### Implementation
 - Reuse existing data types when possible

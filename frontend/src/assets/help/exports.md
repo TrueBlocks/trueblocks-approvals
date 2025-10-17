@@ -23,6 +23,7 @@ This is the help file for the Exports view.
 - ApprovalTxs Facet uses the ApprovalTxs store.
 - Withdrawals Facet uses the Withdrawals store.
 - Assets Facet uses the Assets store.
+- AssetCharts Facet uses the Statements store.
 - Logs Facet uses the Logs store.
 - Traces Facet uses the Traces store.
 - Receipts Facet uses the Receipts store.
