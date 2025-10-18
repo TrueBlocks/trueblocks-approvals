@@ -228,7 +228,8 @@ export const Contracts = () => {
       currentColumns as unknown as import('@components').FormField<
         Record<string, unknown>
       >[],
-    renderers: renderers(pageData, fetchData),
+    renderers: renderers.facets,
+    viewName: ROUTE,
   });
 
   const perTabContent = useMemo(() => {

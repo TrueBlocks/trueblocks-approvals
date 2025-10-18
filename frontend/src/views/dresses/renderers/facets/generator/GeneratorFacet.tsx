@@ -19,12 +19,15 @@ import { useScrollSelectedIntoView } from '../../hooks/useScrollSelectedIntoView
 import { useSpeakPrompt } from '../../hooks/useSpeakPrompt';
 import { getItemKey, useGalleryStore } from '../../store';
 
-export type GeneratorProps = {
+export type GeneratorFacetProps = {
   pageData: dresses.DressesPage | null;
   viewStateKey: project.ViewStateKey; // Make required since persistence depends on it
 };
 
-export const Generator = ({ pageData, viewStateKey }: GeneratorProps) => {
+export const GeneratorFacet = ({
+  pageData,
+  viewStateKey,
+}: GeneratorFacetProps) => {
   const thumbRowRef = useRef<HTMLDivElement | null>(null);
   const hasScrolledOnMount = useRef(false);
   const icons = useIconSets();

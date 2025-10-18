@@ -16,7 +16,6 @@ import { getReadFunctions } from './facetCreation';
 
 interface ContractDashboardProps {
   contractState: types.Contract;
-  onRefresh?: () => void;
 }
 
 interface FunctionResult {
@@ -27,12 +26,10 @@ interface FunctionResult {
 
 export const ContractDashboard: React.FC<ContractDashboardProps> = ({
   contractState,
-  onRefresh,
 }) => {
   const [functionResults, setFunctionResults] = useState<
     Record<string, FunctionResult>
   >({});
-  const [globalLoading, setGlobalLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const readFunctions = useMemo(() => {
@@ -114,7 +111,7 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
   }, [contractState, readFunctions]);
 
   // Call a specific read function
-  const callReadFunction = async (func: types.Function) => {
+  const _callReadFunction = async (func: types.Function) => {
     const currentResult = functionResults[func.name];
     if (!currentResult) return;
 
@@ -195,17 +192,6 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
         }));
       }
     }
-  };
-
-  // Refresh all read functions
-  const refreshAllFunctions = async () => {
-    setGlobalLoading(true);
-
-    const promises = readFunctions.map((func) => callReadFunction(func));
-    await Promise.allSettled(promises);
-
-    setGlobalLoading(false);
-    onRefresh?.();
   };
 
   // Get the display value from function outputs
@@ -458,16 +444,6 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
               })}
           </Grid>
         </div>
-      </Group>
-
-      <Group justify="center" align="center">
-        <StyledButton
-          variant="light"
-          onClick={refreshAllFunctions}
-          loading={globalLoading}
-        >
-          Refresh All
-        </StyledButton>
       </Group>
     </Stack>
   );

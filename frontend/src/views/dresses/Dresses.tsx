@@ -34,11 +34,11 @@ import { crud, msgs, project, types } from '@models';
 import { Debugger, LogError, useErrorHandler } from '@utils';
 
 import { assertRouteConsistency } from '../routes';
-import { SeriesModal } from './components';
-import { ROUTE } from './constants';
-import { useSeriesModal } from './hooks/seriesModal';
 import { renderers } from './renderers';
-import { getItemKey, useGalleryStore } from './store/useGalleryStore';
+import { SeriesModal } from './renderers/components';
+import { ROUTE } from './renderers/constants';
+import { useSeriesModal } from './renderers/hooks/seriesModal';
+import { getItemKey, useGalleryStore } from './renderers/store/useGalleryStore';
 
 export const Dresses = () => {
   // === SECTION 2: Hook Initialization ===
@@ -57,8 +57,7 @@ export const Dresses = () => {
     facets: facetsFromConfig,
     viewRoute: ROUTE,
   });
-  const { availableFacets, getCurrentDataFacet, setActiveFacet } =
-    activeFacetHook;
+  const { availableFacets, getCurrentDataFacet } = activeFacetHook;
 
   const [pageData, setPageData] = useState<dresses.DressesPage | null>(null);
   const viewStateKey = useMemo(
@@ -133,7 +132,7 @@ export const Dresses = () => {
     msgs.EventType.DATA_LOADED,
     (_message: string, payload?: Record<string, unknown>) => {
       if (payload?.collection === ROUTE) {
-        const eventDataFacet = payload.dataFacet;
+        const eventDataFacet = payload?.dataFacet;
         if (eventDataFacet === getCurrentDataFacet()) {
           fetchData();
         }
@@ -470,13 +469,8 @@ export const Dresses = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet),
+    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers.panels),
     [viewConfig, getCurrentDataFacet],
-  );
-
-  const rendererMap = useMemo(
-    () => renderers(pageData, viewStateKey, setActiveFacet),
-    [pageData, viewStateKey, setActiveFacet],
   );
   const { isCanvas, node: formNode } = useFacetForm<Record<string, unknown>>({
     viewConfig,
@@ -486,19 +480,22 @@ export const Dresses = () => {
       currentColumns as unknown as import('@components').FormField<
         Record<string, unknown>
       >[],
-    renderers: rendererMap,
+    renderers: renderers.facets,
+    viewName: ROUTE,
   });
 
   const perTabContent = useMemo(() => {
     const facet = getCurrentDataFacet();
     if (
-      rendererMap[facet] &&
+      renderers.facets[facet as keyof typeof renderers.facets] &&
       (facet === types.DataFacet.GENERATOR || facet === types.DataFacet.GALLERY)
     ) {
       return (
         <Stack gap="xs">
           {headerActions}
-          {rendererMap[facet]()}
+          {renderers.facets[facet as keyof typeof renderers.facets]?.({
+            data: (pageData as unknown as Record<string, unknown>) || {},
+          })}
         </Stack>
       );
     }
@@ -517,12 +514,11 @@ export const Dresses = () => {
     );
   }, [
     getCurrentDataFacet,
-    rendererMap,
     currentColumns,
     isCanvas,
     formNode,
     currentData,
-    pageData?.state,
+    pageData,
     error,
     viewStateKey,
     headerActions,

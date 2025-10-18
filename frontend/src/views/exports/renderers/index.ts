@@ -1,10 +1,20 @@
-import { renderApprovalDetailPanel } from './Approval';
-import { renderStatementDetailPanel } from './Statement';
+import { types } from '@models';
 
-export * from './Approval';
-export * from './Statement';
+import { AssetChartsRenderer } from './facets';
+import {
+  renderApprovalDetailPanel,
+  renderStatementDetailPanel,
+} from './panels';
+
+export * from './panels';
+export * from './facets';
 
 export const renderers = {
-  'exports.openapprovals': renderApprovalDetailPanel,
-  'exports.statements': renderStatementDetailPanel,
+  panels: {
+    [types.DataFacet.OPENAPPROVALS]: renderApprovalDetailPanel,
+    [types.DataFacet.STATEMENTS]: renderStatementDetailPanel,
+  },
+  facets: {
+    [types.DataFacet.ASSETCHARTS]: AssetChartsRenderer,
+  },
 };

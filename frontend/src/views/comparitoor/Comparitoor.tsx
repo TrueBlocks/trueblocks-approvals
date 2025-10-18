@@ -6,7 +6,6 @@
  * the code inside of 'EXISTING_CODE' tags.
  */
 // === SECTION 1: Imports & Dependencies ===
-import type { ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { GetComparitoorPage, Reload } from '@app';
@@ -221,7 +220,7 @@ export const Comparitoor = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet),
+    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers.panels),
     [viewConfig, getCurrentDataFacet],
   );
 
@@ -233,17 +232,19 @@ export const Comparitoor = () => {
       currentColumns as unknown as import('@components').FormField<
         Record<string, unknown>
       >[],
-    renderers: renderers(pageData, fetchData),
+    renderers: renderers.facets,
+    viewName: ROUTE,
   });
 
   const perTabContent = useMemo(() => {
     const facet = getCurrentDataFacet();
-    const rendererMap = renderers(pageData, fetchData) as Partial<
-      Record<types.DataFacet, () => ReactElement>
-    >;
-    const customRenderer = rendererMap[facet];
-    if (customRenderer && facet === types.DataFacet.COMPARITOOR) {
-      return customRenderer();
+    if (
+      renderers.facets[facet as keyof typeof renderers.facets] &&
+      facet === types.DataFacet.COMPARITOOR
+    ) {
+      return renderers.facets[facet as keyof typeof renderers.facets]?.({
+        data: (pageData as unknown as Record<string, unknown>) || {},
+      });
     }
     if (isCanvas && formNode) return formNode;
     return (
@@ -261,7 +262,6 @@ export const Comparitoor = () => {
     currentData,
     currentColumns,
     pageData,
-    fetchData,
     error,
     viewStateKey,
     isCanvas,

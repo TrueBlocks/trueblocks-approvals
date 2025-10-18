@@ -2,21 +2,21 @@ import { BarchartPanel, HeatmapPanel } from '@components';
 import { types } from '@models';
 import { formatNumericValue } from '@utils';
 
-import { useChunksPanelRenderer } from '../hooks/useChunksPanelRenderer';
+import { useChunksPanelRenderer } from '../../hooks/useChunksPanelRenderer';
 
-interface ChunksPanelRendererProps {
+interface ChunksPanelProps {
   panelConfig: types.PanelConfig;
   dataFacet: types.DataFacet;
   collection: string;
   row: Record<string, unknown> | null;
 }
 
-export const ChunksPanelRenderer = ({
+export const ChunksPanel = ({
   panelConfig,
   dataFacet,
   collection,
   row,
-}: ChunksPanelRendererProps) => {
+}: ChunksPanelProps) => {
   const { fetchBuckets, getMetric, setMetric } =
     useChunksPanelRenderer(dataFacet);
 

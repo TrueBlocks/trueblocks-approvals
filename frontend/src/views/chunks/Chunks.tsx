@@ -212,7 +212,7 @@ export const Chunks = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers),
+    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers.panels),
     [viewConfig, getCurrentDataFacet],
   );
 

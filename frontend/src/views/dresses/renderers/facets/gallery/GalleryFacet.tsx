@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import type { DataFacet } from '@hooks';
+import { NavigateToRow } from '@app';
+import { usePayload } from '@hooks';
 import { Center, Container, Title } from '@mantine/core';
 import { dresses, model, project, types } from '@models';
 
@@ -8,20 +9,16 @@ import { GalleryControls, GalleryGrouping } from '../../components';
 import { useScrollSelectedIntoView } from '../../hooks/useScrollSelectedIntoView';
 import { getItemKey, useGalleryStore } from '../../store';
 
-export type GalleryProps = {
+export type GalleryFacetProps = {
   pageData: dresses.DressesPage | null;
-  viewStateKey: project.ViewStateKey; // Make required since persistence depends on it
-  setActiveFacet?: (f: DataFacet) => void;
+  viewStateKey: project.ViewStateKey;
 };
 
-export const Gallery = ({
-  pageData,
-  viewStateKey,
-  setActiveFacet,
-}: GalleryProps) => {
+export const GalleryFacet = ({ pageData, viewStateKey }: GalleryFacetProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const keyScopeRef = useRef<HTMLDivElement | null>(null);
   const hasScrolledOnMount = useRef(false);
+  const createPayload = usePayload();
 
   const {
     getSelectionKey,
@@ -44,10 +41,6 @@ export const Gallery = ({
   }, [pageData?.dalledress, ingestItems]);
 
   useEffect(() => {
-    keyScopeRef.current?.focus({ preventScroll: true });
-  }, []);
-
-  useEffect(() => {
     ensureHydrated(viewStateKey);
   }, [viewStateKey, ensureHydrated]);
 
@@ -59,6 +52,10 @@ export const Gallery = ({
       }
     }
   }, [galleryItems, getSelectionKey, setSelection, viewStateKey, hydrated]);
+
+  useEffect(() => {
+    keyScopeRef.current?.focus({ preventScroll: true });
+  }, []);
 
   // --------------------------------------
   const selectedKey = getSelectionKey();
@@ -121,11 +118,15 @@ export const Gallery = ({
 
   const handleItemDoubleClick = useCallback(
     (item: model.DalleDress) => {
-      setSelection(getItemKey(item), viewStateKey);
-      if (setActiveFacet)
-        setActiveFacet(types.DataFacet.GENERATOR as DataFacet);
+      const payload = createPayload(
+        types.DataFacet.GENERATOR,
+      ) as types.NavigationPayload;
+      payload.collection = 'dresses';
+      payload.recordId = getItemKey(item);
+      payload.rowIndex = 0;
+      NavigateToRow(payload);
     },
-    [setActiveFacet, setSelection, viewStateKey],
+    [createPayload],
   );
 
   const handleKey = useCallback(

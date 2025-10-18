@@ -4,7 +4,7 @@ import { Grid, Group, Stack } from '@mantine/core';
 import { types } from '@models';
 import { addressToHex } from '@utils';
 
-import '../../../components/detail/DetailTable.css';
+import '../../../../../components/detail/DetailTable.css';
 
 export const renderStatementDetailPanel = (
   rowData: Record<string, unknown> | null,

@@ -4,7 +4,7 @@ import { StyledSelect, StyledText } from '@components';
 import { BarChart } from '@mantine/charts';
 import { Divider, Paper, Stack, Title } from '@mantine/core';
 
-import type { AppearanceItem } from './ComparitoorRenderer';
+import type { AppearanceItem } from '../../hooks/useComparitoorData';
 
 type ActiveType = {
   source: string;

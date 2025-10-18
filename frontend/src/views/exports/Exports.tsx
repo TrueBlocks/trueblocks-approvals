@@ -230,7 +230,7 @@ export const Exports = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers),
+    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers.panels),
     [viewConfig, getCurrentDataFacet],
   );
 
@@ -242,6 +242,8 @@ export const Exports = () => {
       currentColumns as unknown as import('@components').FormField<
         Record<string, unknown>
       >[],
+    viewName: ROUTE,
+    renderers: renderers.facets,
   });
 
   const perTabContent = useMemo(() => {

@@ -13,8 +13,8 @@ import {
 } from '@mantine/core';
 import { comparitoor } from '@models';
 
-import { useComparitoorData } from '../hooks/useComparitoorData';
-import { SummaryColumn } from './SummaryColumn';
+import { useComparitoorData } from '../../../hooks/useComparitoorData';
+import { SummaryColumn } from '../../components/SummaryColumn';
 
 export type AppearanceItem = {
   blockNum: string;
@@ -33,7 +33,7 @@ const MaterialIcon = () => (
   <span style={{ fontWeight: 'bold', marginLeft: 4 }}>★</span>
 );
 
-export const ComparitoorRenderer = ({
+export const ComparitoorFacet = ({
   _pageData,
   address,
 }: ComparitoorRendererProps) => {
