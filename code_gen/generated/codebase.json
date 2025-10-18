@@ -1705,8 +1705,8 @@
                             "actions": [
                                 "export"
                             ],
-                            "viewType": "",
-                            "renderer": "",
+                            "viewType": "canvas",
+                            "renderer": "facet",
                             "attributes": "",
                             "disabled": false,
                             "needsCalcs": true
@@ -2569,8 +2569,8 @@
                     "actions": [
                         "export"
                     ],
-                    "viewType": "",
-                    "renderer": "",
+                    "viewType": "canvas",
+                    "renderer": "facet",
                     "attributes": "",
                     "disabled": false,
                     "needsCalcs": true

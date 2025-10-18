@@ -13,6 +13,19 @@
 - **After backend changes**: Run `wails generate module` to update TypeScript bindings
 - **File deletion**: Use `rm -f` for files, `rm -R` for folders, ask confirmation, then explicitly remove from context memory
 
+### VS Code Problems Server Reset
+When VS Code shows stale errors for deleted files or incorrect TypeScript diagnostics:
+```bash
+# Method 1: Restart TypeScript language server (most common)
+Cmd+Shift+P → "TypeScript: Restart TS Server"
+
+# Method 2: Reload VS Code window (nuclear option)
+Cmd+Shift+P → "Developer: Reload Window"
+
+# Method 3: Clear workspace state and reload
+Cmd+Shift+P → "Developer: Reset Workspace State" → "Developer: Reload Window"
+```
+
 ## 2. Codebase Architecture
 
 ### Wails Structure

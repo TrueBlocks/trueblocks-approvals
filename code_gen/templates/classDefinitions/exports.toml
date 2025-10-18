@@ -59,7 +59,8 @@ actions = ["export"]
 name = "AssetCharts"
 store = "Statements"
 actions = ["export"]
-renderer = ""
+renderer = "facet"
+viewType = "canvas"
 needsCalcs = true
 
 [[facets]]
