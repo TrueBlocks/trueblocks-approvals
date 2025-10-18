@@ -29,18 +29,18 @@ export function useFacetForm<T extends Record<string, unknown>>({
   title?: string;
   renderers?: RendererMap<T>;
 }): {
-  isForm: boolean;
+  isCanvas: boolean;
   node: React.ReactNode | null;
   facetConfig?: types.FacetConfig;
 } {
   const facet = getCurrentDataFacet();
   const facetConfig = viewConfig?.facets?.[facet];
-  const isForm = Boolean(facetConfig?.isForm);
+  const isCanvas = facetConfig?.viewMode === 'canvas';
 
   const derivedTitle = title || facetConfig?.name || viewConfig?.viewName || '';
 
   const node = useMemo(() => {
-    if (!isForm) return null;
+    if (!isCanvas) return null;
     const data = currentData && currentData.length > 0 ? currentData[0] : null;
     if (renderers && renderers[facet] && data) {
       const renderer = renderers[facet];
@@ -121,7 +121,7 @@ export function useFacetForm<T extends Record<string, unknown>>({
         onSubmit={() => {}}
       />
     );
-  }, [isForm, currentData, currentColumns, renderers, facet, derivedTitle]);
+  }, [isCanvas, currentData, currentColumns, renderers, facet, derivedTitle]);
 
-  return { isForm, node, facetConfig };
+  return { isCanvas, node, facetConfig };
 }

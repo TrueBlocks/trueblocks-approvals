@@ -18,7 +18,6 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 		"stats": {
 			Name:          "Stats",
 			Store:         "stats",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getStatsFields(),
 			Actions:       []string{},
@@ -29,7 +28,6 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 		"index": {
 			Name:          "Index",
 			Store:         "index",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getIndexFields(),
 			Actions:       []string{},
@@ -40,7 +38,6 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 		"blooms": {
 			Name:          "Blooms",
 			Store:         "blooms",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getBloomsFields(),
 			Actions:       []string{},
@@ -51,7 +48,7 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 		"manifest": {
 			Name:          "Manifest",
 			Store:         "manifest",
-			IsForm:        true,
+			ViewMode:      "canvas",
 			DividerBefore: false,
 			Fields:        getManifestFields(),
 			Actions:       []string{},

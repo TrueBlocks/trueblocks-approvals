@@ -16,6 +16,18 @@ This guide provides a generic process for adding new facets to any view in the T
 - **Manual Implementation**: Handles custom logic and integration
 - **Data Flow**: Backend stores → API → Frontend components
 
+### View Architecture
+**Two Main View Modes**:
+1. **Table View** (default): Standard data table presentation
+   - Uses fields without `NoTable: true`
+   - Has optional Detail Panel for selected rows (uses `NoTable: true` fields)
+   - Detail Panel can have custom "panel" renderers
+
+2. **Canvas View**: Free-form graphical presentation
+   - Uses same field definitions but in flexible ways
+   - If custom renderer specified → uses custom renderer
+   - If no custom renderer → uses CanvasView (form fields, no buttons)
+
 ### File Structure
 ```
 code_gen/templates/classDefinitions/[view].toml  # Facet configuration
@@ -65,8 +77,8 @@ Add facet entry:
 name = "FacetName"           # User-facing name
 store = "DataTypeName"       # Backend data type/store
 actions = ["export"]         # Available actions
-viewType = ""               # Form view type (if applicable)
-renderer = ""               # Custom renderer ("panel" for detail panel)
+viewType = ""               # "canvas" for non-table view, "" for table view
+renderer = ""               # Custom renderer ("panel" for detail panel, "facet" for canvas)
 ```
 
 ### Phase 2: Code Generation
@@ -122,7 +134,7 @@ Add facet configuration:
 "facetname": {
     Name:          "FacetName",
     Store:         "storename",
-    IsForm:        false,
+    ViewMode:      "table",        // "table" (default) or "canvas"
     DividerBefore: false,
     Fields:        getFacetFields(),
     Actions:       []string{},
@@ -130,6 +142,8 @@ Add facet configuration:
     RendererTypes: "",
 },
 ```
+
+**Note**: `IsForm` has been replaced with `ViewMode`. Canvas view with no renderer automatically uses CanvasView (form fields).
 
 **Field Configuration**: To see available fields, check `./code_gen/templates/classDefinitions/fields/[store].csv`
 
@@ -208,14 +222,17 @@ yarn test
 
 ### Facet Types
 **Table Facets**: Standard data table with columns
-- `renderer = ""` (default)
+- `viewType = ""` (default)
+- `renderer = ""` (default table view)
 
-**Form Facets**: Custom form interface
-- `viewType = "form"`
+**Canvas Facets**: Free-form non-table presentation
+- `viewType = "canvas"`
+- `renderer = ""` (uses default CanvasView with form fields)
+- `renderer = "facet"` (uses custom canvas renderer)
 
-**Panel Facets**: Custom detail panel
-- `renderer = "panel"`
-- Custom renderer component
+**Detail Panel**: Contextual overlay within table view
+- `renderer = "panel"` (custom detail panel renderer)
+- Uses `NoTable: true` fields from field configuration
 
 ### Store Reuse Patterns
 

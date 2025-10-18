@@ -18,7 +18,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"statements": {
 			Name:          "Statements",
 			Store:         "statements",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getStatementsFields(),
 			Actions:       []string{},
@@ -28,7 +27,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"balances": {
 			Name:          "Balances",
 			Store:         "balances",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getBalancesFields(),
 			Actions:       []string{},
@@ -38,7 +36,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"transfers": {
 			Name:          "Transfers",
 			Store:         "transfers",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getTransfersFields(),
 			Actions:       []string{},
@@ -48,7 +45,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"transactions": {
 			Name:          "Transactions",
 			Store:         "transactions",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getTransactionsFields(),
 			Actions:       []string{},
@@ -58,7 +54,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"openapprovals": {
 			Name:          "Open Approvals",
 			Store:         "openapprovals",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getOpenapprovalsFields(),
 			Actions:       []string{},
@@ -68,7 +63,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"approvallogs": {
 			Name:          "Approval Logs",
 			Store:         "approvallogs",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getApprovallogsFields(),
 			Actions:       []string{},
@@ -78,7 +72,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"approvaltxs": {
 			Name:          "Approval Txs",
 			Store:         "approvaltxs",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getApprovaltxsFields(),
 			Actions:       []string{},
@@ -88,7 +81,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"withdrawals": {
 			Name:          "Withdrawals",
 			Store:         "withdrawals",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getWithdrawalsFields(),
 			Actions:       []string{},
@@ -98,7 +90,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"assets": {
 			Name:          "Assets",
 			Store:         "assets",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getAssetsFields(),
 			Actions:       []string{},
@@ -108,7 +99,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"assetcharts": {
 			Name:          "Asset Charts",
 			Store:         "statements",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getStatementsFields(),
 			Actions:       []string{},
@@ -118,7 +108,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"logs": {
 			Name:          "Logs",
 			Store:         "logs",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getLogsFields(),
 			Actions:       []string{},
@@ -128,7 +117,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"traces": {
 			Name:          "Traces",
 			Store:         "traces",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getTracesFields(),
 			Actions:       []string{},
@@ -138,7 +126,6 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"receipts": {
 			Name:          "Receipts",
 			Store:         "receipts",
-			IsForm:        false,
 			DividerBefore: false,
 			Fields:        getReceiptsFields(),
 			Actions:       []string{},

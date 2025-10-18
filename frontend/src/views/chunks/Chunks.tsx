@@ -216,7 +216,7 @@ export const Chunks = () => {
     [viewConfig, getCurrentDataFacet],
   );
 
-  const { isForm, node: formNode } = useFacetForm<Record<string, unknown>>({
+  const { isCanvas, node: formNode } = useFacetForm<Record<string, unknown>>({
     viewConfig,
     getCurrentDataFacet,
     currentData: currentData as unknown as Record<string, unknown>[],
@@ -227,7 +227,7 @@ export const Chunks = () => {
   });
 
   const perTabContent = useMemo(() => {
-    if (isForm && formNode) return formNode;
+    if (isCanvas && formNode) return formNode;
     return (
       <BaseTab<Record<string, unknown>>
         data={currentData as unknown as Record<string, unknown>[]}
@@ -245,7 +245,7 @@ export const Chunks = () => {
     pageData?.state,
     error,
     viewStateKey,
-    isForm,
+    isCanvas,
     formNode,
     headerActions,
     detailPanel,

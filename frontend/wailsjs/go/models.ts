@@ -2376,7 +2376,7 @@ export namespace types {
 	export class FacetConfig {
 	    name: string;
 	    store: string;
-	    isForm: boolean;
+	    viewMode?: string;
 	    dividerBefore: boolean;
 	    disabled: boolean;
 	    fields: FieldConfig[];
@@ -2395,7 +2395,7 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.name = source["name"];
 	        this.store = source["store"];
-	        this.isForm = source["isForm"];
+	        this.viewMode = source["viewMode"];
 	        this.dividerBefore = source["dividerBefore"];
 	        this.disabled = source["disabled"];
 	        this.fields = this.convertValues(source["fields"], FieldConfig);
