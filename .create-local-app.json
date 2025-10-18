@@ -7,29 +7,29 @@
   "ViewConfig": {
     "abis": {
       "menuOrder": 40,
-      "dxisabled": true
+      "disabled": true
     },
     "chunks": {
       "menuOrder": 60,
-      "dxisabled": true
+      "disabled": true
     },
     "comparitoor": {
       "menuOrder": 100,
-      "dxisabled": true
+      "disabled": true
     },
     "contracts": {
       "menuOrder": 70,
-      "dxisabled": true
+      "disabled": true
     },
     "dresses": {
       "menuOrder": 15,
-      "dixsabled": true
+      "disabled": true
     },
     "exports": {
       "menuOrder": 20,
-      "dxisabled": false,
+      "disabled": false,
       "facetOrder": ["assetcharts", "assets", "openapprovals", "approvallogs", "approvaltxs"],
-      "dxisabledFacets": {
+      "disabledFacets": {
         "statements": true,
         "balances": true,
         "transfers": true,
@@ -46,11 +46,11 @@
     },
     "names": {
       "menuOrder": 50,
-     "dxisabled": true
+     "disabled": true
     },
     "status": {
       "menuOrder": 80,
-      "dxisabled": true
+      "disabled": true
     }
   }
 }
