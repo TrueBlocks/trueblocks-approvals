@@ -134,7 +134,7 @@ Add facet configuration:
 "facetname": {
     Name:          "FacetName",
     Store:         "storename",
-    ViewMode:      "table",        // "table" (default) or "canvas"
+    ViewType:      "table",        // "table" (default) or "canvas"
     DividerBefore: false,
     Fields:        getFacetFields(),
     Actions:       []string{},
@@ -143,7 +143,7 @@ Add facet configuration:
 },
 ```
 
-**Note**: `IsForm` has been replaced with `ViewMode`. Canvas view with no renderer automatically uses CanvasView (form fields).
+**Note**: `IsForm` has been replaced with `ViewType`. Canvas view with no renderer automatically uses CanvasView (form fields).
 
 **Field Configuration**: To see available fields, check `./code_gen/templates/classDefinitions/fields/[store].csv`
 

@@ -35,7 +35,7 @@ export function useFacetForm<T extends Record<string, unknown>>({
 } {
   const facet = getCurrentDataFacet();
   const facetConfig = viewConfig?.facets?.[facet];
-  const isCanvas = facetConfig?.viewMode === 'canvas';
+  const isCanvas = facetConfig?.viewType === 'canvas';
 
   const derivedTitle = title || facetConfig?.name || viewConfig?.viewName || '';
 

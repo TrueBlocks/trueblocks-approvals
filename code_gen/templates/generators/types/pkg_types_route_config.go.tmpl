@@ -23,7 +23,9 @@ func (c *{{$class}}Collection) GetConfig() (*types.ViewConfig, error) {
 		"{{toLower .Name}}": {
 			Name:          "{{toHeader .DisplayName}}",
 			Store:         "{{toLower .StoreName}}",
-			IsForm:        {{.IsForm}},
+			{{- if .ViewType }}
+						ViewType:      "{{.ViewType}}",
+			{{- end }}
 			DividerBefore: {{and (eq .Name "Prefund") $isNames}},
 			Fields:        get{{toProper .StoreName}}Fields(),
 			Actions:       []string{ {{if ne (.RowActionsBe .Name) "\"\""}}{{.RowActionsBe .Name}}{{else}}{{end}} },

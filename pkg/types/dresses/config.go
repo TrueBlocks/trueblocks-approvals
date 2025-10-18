@@ -18,7 +18,7 @@ func (c *DressesCollection) GetConfig() (*types.ViewConfig, error) {
 		"generator": {
 			Name:          "Generator",
 			Store:         "dalledress",
-			ViewMode:      "canvas",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getDalledressFields(),
 			Actions:       []string{},
@@ -55,7 +55,7 @@ func (c *DressesCollection) GetConfig() (*types.ViewConfig, error) {
 		"gallery": {
 			Name:          "Gallery",
 			Store:         "dalledress",
-			ViewMode:      "canvas",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getDalledressFields(),
 			Actions:       []string{},

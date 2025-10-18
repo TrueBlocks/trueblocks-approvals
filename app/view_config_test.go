@@ -103,7 +103,7 @@ func TestViewConfigIntegrity(t *testing.T) {
 					if facet.HeaderActions == nil {
 						t.Errorf("%s: facet %q has nil HeaderActions (must be empty slice when none)", tc.name, facetKey)
 					}
-					reqExport := facet.ViewMode != "canvas"
+					reqExport := facet.ViewType != "canvas"
 					if ex, ok := exceptions[cfg.ViewName]; ok {
 						if ex[facetKey] {
 							reqExport = false

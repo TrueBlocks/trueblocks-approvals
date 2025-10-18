@@ -18,7 +18,7 @@ func (c *StatusCollection) GetConfig() (*types.ViewConfig, error) {
 		"status": {
 			Name:          "Status",
 			Store:         "status",
-			ViewMode:      "canvas",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getStatusFields(),
 			Actions:       []string{},

@@ -14,7 +14,7 @@ type ViewConfig struct {
 type FacetConfig struct {
 	Name          string              `json:"name"`
 	Store         string              `json:"store"`
-	ViewMode      string              `json:"viewMode,omitempty"`
+	ViewType      string              `json:"viewType,omitempty"`
 	DividerBefore bool                `json:"dividerBefore"`
 	Disabled      bool                `json:"disabled"`
 	Fields        []FieldConfig       `json:"fields"`

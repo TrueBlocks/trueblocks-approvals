@@ -48,7 +48,7 @@ func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 		"manifest": {
 			Name:          "Manifest",
 			Store:         "manifest",
-			ViewMode:      "canvas",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getManifestFields(),
 			Actions:       []string{},
