@@ -99,11 +99,12 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		"assetcharts": {
 			Name:          "Asset Charts",
 			Store:         "statements",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getStatementsFields(),
 			Actions:       []string{},
 			HeaderActions: []string{"export"},
-			RendererTypes: "",
+			RendererTypes: "facet",
 		},
 		"logs": {
 			Name:          "Logs",

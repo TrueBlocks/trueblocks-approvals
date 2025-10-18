@@ -25,3 +25,4 @@ export * from './useActiveFacet';
 export * from './buildFacetConfigs';
 export * from './useFacetColumns';
 export * from './useFacetForm';
+export * from './useFacetRenderer';

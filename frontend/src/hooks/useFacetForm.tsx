@@ -4,6 +4,8 @@ import { FormField } from '@components';
 import { FormView } from '@layout';
 import { types } from '@models';
 
+import { useFacetRenderer } from './useFacetRenderer';
+
 type RendererCtx<T extends Record<string, unknown>> = {
   data: T;
   columns: FormField<T>[];
@@ -21,6 +23,7 @@ export function useFacetForm<T extends Record<string, unknown>>({
   currentColumns,
   title,
   renderers,
+  viewName,
 }: {
   viewConfig: types.ViewConfig;
   getCurrentDataFacet: () => types.DataFacet;
@@ -28,6 +31,7 @@ export function useFacetForm<T extends Record<string, unknown>>({
   currentColumns: FormField<T>[];
   title?: string;
   renderers?: RendererMap<T>;
+  viewName?: string;
 }): {
   isCanvas: boolean;
   node: React.ReactNode | null;
@@ -37,20 +41,29 @@ export function useFacetForm<T extends Record<string, unknown>>({
   const facetConfig = viewConfig?.facets?.[facet];
   const isCanvas = facetConfig?.viewType === 'canvas';
 
+  // Use the new facet renderer for canvas views
+  const {
+    isCanvas: _rendererIsCanvas,
+    node: rendererNode,
+    facetConfig: rendererFacetConfig,
+  } = useFacetRenderer({
+    viewConfig,
+    getCurrentDataFacet,
+    currentData,
+    currentColumns,
+    renderers,
+    viewName: viewName || viewConfig?.viewName || 'unknown',
+  });
+
   const derivedTitle = title || facetConfig?.name || viewConfig?.viewName || '';
 
   const node = useMemo(() => {
-    if (!isCanvas) return null;
-    const data = currentData && currentData.length > 0 ? currentData[0] : null;
-    if (renderers && renderers[facet] && data) {
-      const renderer = renderers[facet];
-      return renderer
-        ? renderer({ data, columns: currentColumns, facet })
-        : null;
-    }
-    if (!data) {
+    if (!currentData || currentData.length === 0) {
       return <div>No data available</div>;
     }
+
+    const data = currentData[0];
+
     // Prefer columns when available; otherwise derive fields from the data object directly (e.g., MANIFEST)
     type ColumnLike = FormField<T> & {
       key?: string;
@@ -59,7 +72,7 @@ export function useFacetForm<T extends Record<string, unknown>>({
     const columnsToUse: ColumnLike[] =
       currentColumns && currentColumns.length
         ? (currentColumns as ColumnLike[])
-        : ((Object.keys(data) as Array<keyof T & string>).map((k) => ({
+        : ((Object.keys(data || {}) as Array<keyof T & string>).map((k) => ({
             key: k,
             name: k,
             header: k,
@@ -121,7 +134,16 @@ export function useFacetForm<T extends Record<string, unknown>>({
         onSubmit={() => {}}
       />
     );
-  }, [isCanvas, currentData, currentColumns, renderers, facet, derivedTitle]);
+  }, [currentData, currentColumns, derivedTitle]);
 
-  return { isCanvas, node, facetConfig };
+  // If it's a canvas view, use the renderer result, but fall back to FormView if no renderer
+  if (isCanvas) {
+    return {
+      isCanvas,
+      node: rendererNode || node, // Fall back to FormView when renderer is null (escape hatch)
+      facetConfig: rendererFacetConfig,
+    };
+  }
+
+  return { isCanvas: false, node: node, facetConfig };
 }
