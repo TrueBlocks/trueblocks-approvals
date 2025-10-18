@@ -62,7 +62,7 @@
 
 ### Header Actions Contract
 - **Backend**: Every facet config defines `HeaderActions []string` (never nil, use `[]` if empty)
-- **Data-table facets**: Must include `export` in HeaderActions (where `isForm == false`)
+- **Data-table facets**: Must include `export` in HeaderActions
 - **Frontend**: Assume `config.headerActions` is always array - no null checks, only length checks
 - **Action alignment**: Backend identifiers must match frontend `ActionType` values from `useActions()`
 

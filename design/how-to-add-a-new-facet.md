@@ -209,11 +209,9 @@ yarn test
 ### Facet Types
 **Table Facets**: Standard data table with columns
 - `renderer = ""` (default)
-- `isForm = false`
 
 **Form Facets**: Custom form interface
 - `viewType = "form"`
-- `isForm = true`
 
 **Panel Facets**: Custom detail panel
 - `renderer = "panel"`

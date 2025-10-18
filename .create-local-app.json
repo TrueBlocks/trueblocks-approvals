@@ -23,12 +23,12 @@
     },
     "dresses": {
       "menuOrder": 15,
-      "disabled": true
+      "dixsabled": true
     },
     "exports": {
       "menuOrder": 20,
       "disabled": false,
-      "facetOrder": ["assets", "openapprovals", "approvallogs", "approvaltxs"],
+      "facetOrder": ["assetcharts", "assets", "openapprovals", "approvallogs", "approvaltxs"],
       "disabledFacets": {
         "statements": true,
         "balances": true,
