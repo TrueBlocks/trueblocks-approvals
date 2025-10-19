@@ -1,1 +1,1 @@
-export { AssetChartsRenderer } from './assetcharts';
+export { AssetChartsFacet } from './assetcharts';

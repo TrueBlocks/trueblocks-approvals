@@ -1,6 +1,6 @@
 import { types } from '@models';
 
-import { AssetChartsRenderer } from './facets';
+import { AssetChartsFacet } from './facets';
 import {
   renderApprovalDetailPanel,
   renderStatementDetailPanel,
@@ -15,6 +15,6 @@ export const renderers = {
     [types.DataFacet.STATEMENTS]: renderStatementDetailPanel,
   },
   facets: {
-    [types.DataFacet.ASSETCHARTS]: AssetChartsRenderer,
+    [types.DataFacet.ASSETCHARTS]: AssetChartsFacet,
   },
 };
