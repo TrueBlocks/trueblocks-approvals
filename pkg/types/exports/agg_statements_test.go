@@ -159,7 +159,7 @@ func TestAssetChartsBucketing(t *testing.T) {
 		assetGroups := groupStatementsByAsset(testData.Data)
 
 		// Test date range diversity (should span multiple years)
-		var minYear, maxYear int = 9999, 0
+		var minYear, maxYear = 9999, 0
 		for _, stmts := range assetGroups {
 			for _, stmt := range stmts {
 				year := int((stmt.Timestamp / (365 * 24 * 3600)) + 1970) // Rough year calculation
