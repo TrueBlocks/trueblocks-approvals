@@ -44,9 +44,9 @@ func (c *ExportsCollection) GetBuckets(payload *types.Payload) (*types.Buckets, 
 		return &types.Buckets{
 			Series: make(map[string][]types.Bucket),
 			GridInfo: types.GridInfo{
-				Size:        100000,
+				Size:        86400,
 				Rows:        0,
-				Columns:     20,
+				Columns:     4,
 				BucketCount: 0,
 				MaxBlock:    0,
 			},
