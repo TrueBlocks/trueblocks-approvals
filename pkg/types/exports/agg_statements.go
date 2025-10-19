@@ -8,26 +8,18 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 )
 
-// AssetBucketingStrategy defines how to generate asset identifiers for series names
-type AssetBucketingStrategy string
-
+// AssetCharts series strategy constants
 const (
-	AddressOnly       AssetBucketingStrategy = "address"
-	SymbolOnly        AssetBucketingStrategy = "symbol"
-	AddressWithSymbol AssetBucketingStrategy = "address_symbol"
+	AddressOnly       = "address"
+	SymbolOnly        = "symbol"
+	AddressWithSymbol = "address+symbol"
 )
 
-// AssetBucketingConfig configures how assets are identified in series names
-type AssetBucketingConfig struct {
-	Strategy     AssetBucketingStrategy `json:"strategy"`
-	AddressChars int                    `json:"addressChars,omitempty"` // 8-15 chars (8=risky, 12=practical, 15=six sigma)
-}
-
 // generateAssetIdentifier creates collision-safe asset identifiers for series naming
-func generateAssetIdentifier(asset, symbol string, config AssetBucketingConfig) string {
-	switch config.Strategy {
+func generateAssetIdentifier(asset, symbol string, config types.FacetChartConfig) string {
+	switch config.SeriesStrategy {
 	case AddressOnly:
-		chars := config.AddressChars
+		chars := config.SeriesPrefixLen
 		if chars < 8 {
 			chars = 8
 		} // Minimum (risky but functional)
@@ -41,7 +33,7 @@ func generateAssetIdentifier(asset, symbol string, config AssetBucketingConfig) 
 		return symbol
 
 	case AddressWithSymbol:
-		chars := config.AddressChars
+		chars := config.SeriesPrefixLen
 		if chars < 8 {
 			chars = 8
 		}
@@ -318,10 +310,24 @@ func (c *ExportsCollection) updateAssetChartsBucket(statement *Statement) {
 		// Clear existing series and recalculate from all data
 		buckets.Series = make(map[string][]types.Bucket)
 
-		// Default to address+symbol with 12 chars for safety and readability
-		config := AssetBucketingConfig{
-			Strategy:     AddressWithSymbol,
-			AddressChars: 12,
+		// Get the actual facet configuration
+		var config types.FacetChartConfig
+		if viewConfig, err := c.GetConfig(); err == nil {
+			if facetConfig, exists := viewConfig.Facets["assetcharts"]; exists && facetConfig.FacetChartConfig != nil {
+				config = *facetConfig.FacetChartConfig
+			} else {
+				// Fallback to defaults
+				config = types.FacetChartConfig{
+					SeriesStrategy:  AddressWithSymbol,
+					SeriesPrefixLen: 12,
+				}
+			}
+		} else {
+			// Fallback if config unavailable
+			config = types.FacetChartConfig{
+				SeriesStrategy:  AddressWithSymbol,
+				SeriesPrefixLen: 12,
+			}
 		}
 
 		// Group statements by asset

@@ -32,7 +32,7 @@ func (c *{{$class}}Collection) GetConfig() (*types.ViewConfig, error) {
 			HeaderActions: []string{ {{if ne (.HeaderActionsBe .Name) "\"\""}}{{.HeaderActionsBe .Name}}{{else}}{{end}} },
 			RendererTypes: "{{.Renderer}}",
 			{{- if $isChunks}}
-						PanelConfig:   get{{.Name}}PanelConfig(),
+						PanelChartConfig:   get{{.Name}}PanelChartConfig(),
 			{{- end}}
 		},
 		{{- end}}

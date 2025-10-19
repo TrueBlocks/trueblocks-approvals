@@ -11,10 +11,10 @@ const createPanelRenderer = (dataFacet: types.DataFacet) => {
     const { config: viewConfig } = useViewConfig({ viewName: 'chunks' });
     const facetConfig = viewConfig?.facets?.[dataFacet];
 
-    if (!facetConfig?.panelConfig) return null;
+    if (!facetConfig?.panelChartConfig) return null;
 
     return ChunksPanel({
-      panelConfig: facetConfig.panelConfig,
+      panelConfig: facetConfig.panelChartConfig,
       dataFacet,
       collection: 'chunks',
       row,

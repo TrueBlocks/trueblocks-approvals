@@ -2255,6 +2255,20 @@ export namespace types {
 		    return a;
 		}
 	}
+	export class FacetChartConfig {
+	    seriesStrategy?: string;
+	    seriesPrefixLen?: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new FacetChartConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.seriesStrategy = source["seriesStrategy"];
+	        this.seriesPrefixLen = source["seriesPrefixLen"];
+	    }
+	}
 	export class MetricConfig {
 	    key: string;
 	    label: string;
@@ -2273,7 +2287,7 @@ export namespace types {
 	        this.bytes = source["bytes"];
 	    }
 	}
-	export class PanelConfig {
+	export class PanelChartConfig {
 	    type: string;
 	    defaultMetric: string;
 	    skipUntil?: string;
@@ -2281,7 +2295,7 @@ export namespace types {
 	    metrics: MetricConfig[];
 	
 	    static createFrom(source: any = {}) {
-	        return new PanelConfig(source);
+	        return new PanelChartConfig(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -2349,7 +2363,8 @@ export namespace types {
 	    actions: string[];
 	    headerActions: string[];
 	    rendererTypes: string;
-	    panelConfig?: PanelConfig;
+	    panelChartConfig?: PanelChartConfig;
+	    facetChartConfig?: FacetChartConfig;
 	
 	    static createFrom(source: any = {}) {
 	        return new FacetConfig(source);
@@ -2368,7 +2383,8 @@ export namespace types {
 	        this.actions = source["actions"];
 	        this.headerActions = source["headerActions"];
 	        this.rendererTypes = source["rendererTypes"];
-	        this.panelConfig = this.convertValues(source["panelConfig"], PanelConfig);
+	        this.panelChartConfig = this.convertValues(source["panelChartConfig"], PanelChartConfig);
+	        this.facetChartConfig = this.convertValues(source["facetChartConfig"], FacetChartConfig);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

@@ -1,4 +1,4 @@
-import { types } from '@models';
+import { exports, types } from '@models';
 
 import { AssetChartsFacet } from './facets';
 import {
@@ -15,6 +15,13 @@ export const renderers = {
     [types.DataFacet.STATEMENTS]: renderStatementDetailPanel,
   },
   facets: {
-    [types.DataFacet.ASSETCHARTS]: AssetChartsFacet,
+    [types.DataFacet.ASSETCHARTS]: ({
+      data,
+    }: {
+      data: Record<string, unknown>;
+    }) => {
+      const pageData = data as unknown as exports.ExportsPage;
+      return <AssetChartsFacet pageData={pageData} />;
+    },
   },
 };

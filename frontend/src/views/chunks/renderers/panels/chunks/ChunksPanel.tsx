@@ -5,7 +5,7 @@ import { formatNumericValue } from '@utils';
 import { useChunksPanelRenderer } from '../../hooks/useChunksPanelRenderer';
 
 interface ChunksPanelProps {
-  panelConfig: types.PanelConfig;
+  panelConfig: types.PanelChartConfig;
   dataFacet: types.DataFacet;
   collection: string;
   row: Record<string, unknown> | null;

@@ -16,45 +16,45 @@ import (
 func (c *ChunksCollection) GetConfig() (*types.ViewConfig, error) {
 	facets := map[string]types.FacetConfig{
 		"stats": {
-			Name:          "Stats",
-			Store:         "stats",
-			DividerBefore: false,
-			Fields:        getStatsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "panel",
-			PanelConfig:   getStatsPanelConfig(),
+			Name:             "Stats",
+			Store:            "stats",
+			DividerBefore:    false,
+			Fields:           getStatsFields(),
+			Actions:          []string{},
+			HeaderActions:    []string{"export"},
+			RendererTypes:    "panel",
+			PanelChartConfig: getStatsPanelConfig(),
 		},
 		"index": {
-			Name:          "Index",
-			Store:         "index",
-			DividerBefore: false,
-			Fields:        getIndexFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "panel",
-			PanelConfig:   getIndexPanelConfig(),
+			Name:             "Index",
+			Store:            "index",
+			DividerBefore:    false,
+			Fields:           getIndexFields(),
+			Actions:          []string{},
+			HeaderActions:    []string{"export"},
+			RendererTypes:    "panel",
+			PanelChartConfig: getIndexPanelConfig(),
 		},
 		"blooms": {
-			Name:          "Blooms",
-			Store:         "blooms",
-			DividerBefore: false,
-			Fields:        getBloomsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "panel",
-			PanelConfig:   getBloomsPanelConfig(),
+			Name:             "Blooms",
+			Store:            "blooms",
+			DividerBefore:    false,
+			Fields:           getBloomsFields(),
+			Actions:          []string{},
+			HeaderActions:    []string{"export"},
+			RendererTypes:    "panel",
+			PanelChartConfig: getBloomsPanelConfig(),
 		},
 		"manifest": {
-			Name:          "Manifest",
-			Store:         "manifest",
-			ViewType:      "canvas",
-			DividerBefore: false,
-			Fields:        getManifestFields(),
-			Actions:       []string{},
-			HeaderActions: []string{},
-			RendererTypes: "",
-			PanelConfig:   getManifestPanelConfig(),
+			Name:             "Manifest",
+			Store:            "manifest",
+			ViewType:         "canvas",
+			DividerBefore:    false,
+			Fields:           getManifestFields(),
+			Actions:          []string{},
+			HeaderActions:    []string{},
+			RendererTypes:    "",
+			PanelChartConfig: getManifestPanelConfig(),
 		},
 	}
 
@@ -138,8 +138,8 @@ func getStatsFields() []types.FieldConfig {
 }
 
 // EXISTING_CODE
-func getStatsPanelConfig() *types.PanelConfig {
-	return &types.PanelConfig{
+func getStatsPanelConfig() *types.PanelChartConfig {
+	return &types.PanelChartConfig{
 		Type:          "barchart",
 		DefaultMetric: "ratio",
 		SkipUntil:     "2017",
@@ -173,8 +173,8 @@ func getStatsPanelConfig() *types.PanelConfig {
 	}
 }
 
-func getIndexPanelConfig() *types.PanelConfig {
-	return &types.PanelConfig{
+func getIndexPanelConfig() *types.PanelChartConfig {
+	return &types.PanelChartConfig{
 		Type:          "heatmap",
 		DefaultMetric: "nAddresses",
 		Metrics: []types.MetricConfig{
@@ -200,8 +200,8 @@ func getIndexPanelConfig() *types.PanelConfig {
 	}
 }
 
-func getBloomsPanelConfig() *types.PanelConfig {
-	return &types.PanelConfig{
+func getBloomsPanelConfig() *types.PanelChartConfig {
+	return &types.PanelChartConfig{
 		Type:          "heatmap",
 		DefaultMetric: "nBlooms",
 		Metrics: []types.MetricConfig{
@@ -221,7 +221,7 @@ func getBloomsPanelConfig() *types.PanelConfig {
 	}
 }
 
-func getManifestPanelConfig() *types.PanelConfig {
+func getManifestPanelConfig() *types.PanelChartConfig {
 	return nil
 }
 

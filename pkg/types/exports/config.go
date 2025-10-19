@@ -97,14 +97,15 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			RendererTypes: "",
 		},
 		"assetcharts": {
-			Name:          "Asset Charts",
-			Store:         "statements",
-			ViewType:      "canvas",
-			DividerBefore: false,
-			Fields:        getStatementsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "facet",
+			Name:             "Asset Charts",
+			Store:            "statements",
+			ViewType:         "canvas",
+			DividerBefore:    false,
+			Fields:           getStatementsFields(),
+			Actions:          []string{},
+			HeaderActions:    []string{"export"},
+			RendererTypes:    "facet",
+			FacetChartConfig: getAssetChartsFacetConfig(),
 		},
 		"logs": {
 			Name:          "Logs",
@@ -492,4 +493,11 @@ func getWithdrawalsFields() []types.FieldConfig {
 }
 
 // EXISTING_CODE
+func getAssetChartsFacetConfig() *types.FacetChartConfig {
+	return &types.FacetChartConfig{
+		SeriesStrategy:  "address+symbol",
+		SeriesPrefixLen: 12,
+	}
+}
+
 // EXISTING_CODE

@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 )
 
 // TestData represents the JSON structure from our test data
@@ -210,5 +212,61 @@ func TestAssetChartsBucketing(t *testing.T) {
 		}
 
 		t.Logf("Volume diversity: %d zero-volume bucket-days, %d large-volume bucket-days", zeroVolumeAssets, largeVolumeAssets)
+	})
+
+	// Test configuration integration
+	t.Run("ConfigurationIntegration", func(t *testing.T) {
+		testCases := []struct {
+			name     string
+			config   types.FacetChartConfig
+			asset    string
+			symbol   string
+			expected string
+		}{
+			{
+				name:     "AddressOnly_12chars",
+				config:   types.FacetChartConfig{SeriesStrategy: "address", SeriesPrefixLen: 12},
+				asset:    "0x1234567890abcdef1234567890abcdef12345678",
+				symbol:   "TEST",
+				expected: "0x1234567890ab",
+			},
+			{
+				name:     "SymbolOnly",
+				config:   types.FacetChartConfig{SeriesStrategy: "symbol", SeriesPrefixLen: 12},
+				asset:    "0x1234567890abcdef1234567890abcdef12345678",
+				symbol:   "TEST",
+				expected: "TEST",
+			},
+			{
+				name:     "AddressWithSymbol_10chars",
+				config:   types.FacetChartConfig{SeriesStrategy: "address+symbol", SeriesPrefixLen: 10},
+				asset:    "0x1234567890abcdef1234567890abcdef12345678",
+				symbol:   "TEST",
+				expected: "0x1234567890_TEST",
+			},
+			{
+				name:     "PrefixLength_BelowMin",
+				config:   types.FacetChartConfig{SeriesStrategy: "address", SeriesPrefixLen: 5},
+				asset:    "0x1234567890abcdef1234567890abcdef12345678",
+				symbol:   "",
+				expected: "0x12345678", // Should default to 8 chars minimum
+			},
+			{
+				name:     "PrefixLength_AboveMax",
+				config:   types.FacetChartConfig{SeriesStrategy: "address", SeriesPrefixLen: 20},
+				asset:    "0x1234567890abcdef1234567890abcdef12345678",
+				symbol:   "",
+				expected: "0x1234567890abcde", // Should cap at 15 chars maximum
+			},
+		}
+
+		for _, tc := range testCases {
+			t.Run(tc.name, func(t *testing.T) {
+				result := generateAssetIdentifier(tc.asset, tc.symbol, tc.config)
+				if result != tc.expected {
+					t.Errorf("Expected %s, got %s", tc.expected, result)
+				}
+			})
+		}
 	})
 }
