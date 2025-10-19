@@ -1,3 +1,3 @@
-import { ViewRoute } from '../../routes';
+import { ViewRoute } from '../routes';
 
 export const ROUTE: ViewRoute = 'dresses';

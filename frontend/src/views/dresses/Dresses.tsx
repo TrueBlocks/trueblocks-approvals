@@ -34,9 +34,9 @@ import { crud, msgs, project, types } from '@models';
 import { Debugger, LogError, useErrorHandler } from '@utils';
 
 import { assertRouteConsistency } from '../routes';
+import { ROUTE } from './constants';
 import { renderers } from './renderers';
 import { SeriesModal } from './renderers/components';
-import { ROUTE } from './renderers/constants';
 import { useSeriesModal } from './renderers/hooks/seriesModal';
 import { getItemKey, useGalleryStore } from './renderers/store/useGalleryStore';
 
