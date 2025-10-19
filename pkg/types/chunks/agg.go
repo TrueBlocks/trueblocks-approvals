@@ -99,7 +99,7 @@ func (c *ChunksCollection) ensureTimeBucketsExist(bucket *types.Buckets, startBu
 
 // ensureDailyBucketExists ensures a single daily bucket exists
 func (c *ChunksCollection) ensureDailyBucketExists(bucket *types.Buckets, bucketKey string) {
-	// Check if bucket exists in any series
+	// Check if bucket exists in any legacy series
 	found := false
 	for _, series := range []*[]types.Bucket{&bucket.Series0, &bucket.Series1, &bucket.Series2, &bucket.Series3} {
 		for i := range *series {
@@ -115,10 +115,21 @@ func (c *ChunksCollection) ensureDailyBucketExists(bucket *types.Buckets, bucket
 
 	if !found {
 		newBucket := types.NewBucket(bucketKey, 0, 0)
+
+		// Add to legacy series for backwards compatibility
 		bucket.Series0 = append(bucket.Series0, newBucket)
 		bucket.Series1 = append(bucket.Series1, newBucket)
 		bucket.Series2 = append(bucket.Series2, newBucket)
 		bucket.Series3 = append(bucket.Series3, newBucket)
+
+		// Also add to new flexible series
+		metrics := []string{"ratio", "appsPerBlock", "addrsPerBlock", "appsPerAddr"}
+		for _, metricName := range metrics {
+			bucket.EnsureSeriesExists(metricName)
+			series := bucket.GetSeries(metricName)
+			series = append(series, newBucket)
+			bucket.SetSeries(metricName, series)
+		}
 	}
 }
 
@@ -135,7 +146,29 @@ func (c *ChunksCollection) distributeToTimeBuckets(bucket *types.Buckets, startB
 
 // addStatsToTimeBucket adds stats values to a specific time bucket
 func (c *ChunksCollection) addStatsToTimeBucket(bucket *types.Buckets, bucketKey string, stats *Stats) {
-	// Find the bucket and add values to it
+	// Define metrics and their values
+	metrics := map[string]float64{
+		"ratio":         float64(stats.Ratio),
+		"appsPerBlock":  float64(stats.AppsPerBlock),
+		"addrsPerBlock": float64(stats.AddrsPerBlock),
+		"appsPerAddr":   float64(stats.AppsPerAddr),
+	}
+
+	// Update new flexible series
+	for seriesName, value := range metrics {
+		bucket.EnsureSeriesExists(seriesName)
+		series := bucket.GetSeries(seriesName)
+		for i := range series {
+			if series[i].BucketKey == bucketKey {
+				series[i].Total += value
+				series[i].ColorValue += value
+				break
+			}
+		}
+		bucket.SetSeries(seriesName, series)
+	}
+
+	// Maintain backwards compatibility with legacy fields
 	for i := range bucket.Series0 {
 		if bucket.Series0[i].BucketKey == bucketKey {
 			bucket.Series0[i].Total += float64(stats.Ratio)

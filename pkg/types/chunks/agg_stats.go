@@ -47,28 +47,55 @@ func (c *ChunksCollection) updateStatsBucketBlockBase(stats *Stats, bucket *type
 	size := bucket.GridInfo.Size
 	lastBucketIndex := int(lastBlock / size)
 
-	// Ensure we have enough buckets
+	// Define metrics and their values
+	metrics := map[string]float64{
+		"ratio":         float64(stats.Ratio),
+		"appsPerBlock":  float64(stats.AppsPerBlock),
+		"addrsPerBlock": float64(stats.AddrsPerBlock),
+		"appsPerAddr":   float64(stats.AppsPerAddr),
+	}
+
+	// Process each metric using the flexible series structure
+	maxBuckets := 0
+	for seriesName, value := range metrics {
+		bucket.EnsureSeriesExists(seriesName)
+		series := bucket.GetSeries(seriesName)
+		ensureBucketsExist(&series, lastBucketIndex, size)
+		distributeToBuckets(&series, firstBlock, lastBlock, value, size)
+		bucket.SetSeries(seriesName, series)
+
+		if len(series) > maxBuckets {
+			maxBuckets = len(series)
+		}
+	}
+
+	// Maintain backwards compatibility by also updating legacy fields
 	ensureBucketsExist(&bucket.Series0, lastBucketIndex, size)
 	ensureBucketsExist(&bucket.Series1, lastBucketIndex, size)
 	ensureBucketsExist(&bucket.Series2, lastBucketIndex, size)
 	ensureBucketsExist(&bucket.Series3, lastBucketIndex, size)
 
-	// Distribute items across all affected buckets
 	distributeToBuckets(&bucket.Series0, firstBlock, lastBlock, float64(stats.Ratio), size)
 	distributeToBuckets(&bucket.Series1, firstBlock, lastBlock, float64(stats.AppsPerBlock), size)
 	distributeToBuckets(&bucket.Series2, firstBlock, lastBlock, float64(stats.AddrsPerBlock), size)
 	distributeToBuckets(&bucket.Series3, firstBlock, lastBlock, float64(stats.AppsPerAddr), size)
 
 	// Update grid info
-	maxBuckets := len(bucket.Series0)
-	if len(bucket.Series1) > maxBuckets {
-		maxBuckets = len(bucket.Series1)
+	legacyMaxBuckets := len(bucket.Series0)
+	if len(bucket.Series1) > legacyMaxBuckets {
+		legacyMaxBuckets = len(bucket.Series1)
 	}
-	if len(bucket.Series2) > maxBuckets {
-		maxBuckets = len(bucket.Series2)
+	if len(bucket.Series2) > legacyMaxBuckets {
+		legacyMaxBuckets = len(bucket.Series2)
 	}
-	if len(bucket.Series3) > maxBuckets {
-		maxBuckets = len(bucket.Series3)
+	if len(bucket.Series3) > legacyMaxBuckets {
+		legacyMaxBuckets = len(bucket.Series3)
 	}
-	updateGridInfo(&bucket.GridInfo, maxBuckets, lastBlock)
+
+	finalMaxBuckets := maxBuckets
+	if legacyMaxBuckets > finalMaxBuckets {
+		finalMaxBuckets = legacyMaxBuckets
+	}
+
+	updateGridInfo(&bucket.GridInfo, finalMaxBuckets, lastBlock)
 }

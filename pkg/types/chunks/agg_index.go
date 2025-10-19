@@ -19,24 +19,50 @@ func (c *ChunksCollection) updateIndexBucket(index *Index) {
 		size := bucket.GridInfo.Size
 		lastBucketIndex := int(lastBlock / size)
 
-		// Ensure we have enough buckets
+		// Define index metrics and their values
+		metrics := map[string]float64{
+			"nAddresses":   float64(index.NAddresses),
+			"nAppearances": float64(index.NAppearances),
+			"fileSize":     float64(index.FileSize),
+		}
+
+		// Process each metric using the flexible series structure
+		maxBuckets := 0
+		for seriesName, value := range metrics {
+			bucket.EnsureSeriesExists(seriesName)
+			series := bucket.GetSeries(seriesName)
+			ensureBucketsExist(&series, lastBucketIndex, size)
+			distributeToBuckets(&series, firstBlock, lastBlock, value, size)
+			bucket.SetSeries(seriesName, series)
+
+			if len(series) > maxBuckets {
+				maxBuckets = len(series)
+			}
+		}
+
+		// Maintain backwards compatibility with legacy fields
 		ensureBucketsExist(&bucket.Series0, lastBucketIndex, size)
 		ensureBucketsExist(&bucket.Series1, lastBucketIndex, size)
 		ensureBucketsExist(&bucket.Series2, lastBucketIndex, size)
 
-		// Distribute items across all affected buckets
 		distributeToBuckets(&bucket.Series0, firstBlock, lastBlock, float64(index.NAddresses), size)
 		distributeToBuckets(&bucket.Series1, firstBlock, lastBlock, float64(index.NAppearances), size)
 		distributeToBuckets(&bucket.Series2, firstBlock, lastBlock, float64(index.FileSize), size)
 
 		// Update grid info
-		maxBuckets := len(bucket.Series0)
-		if len(bucket.Series1) > maxBuckets {
-			maxBuckets = len(bucket.Series1)
+		legacyMaxBuckets := len(bucket.Series0)
+		if len(bucket.Series1) > legacyMaxBuckets {
+			legacyMaxBuckets = len(bucket.Series1)
 		}
-		if len(bucket.Series2) > maxBuckets {
-			maxBuckets = len(bucket.Series2)
+		if len(bucket.Series2) > legacyMaxBuckets {
+			legacyMaxBuckets = len(bucket.Series2)
 		}
-		updateGridInfo(&bucket.GridInfo, maxBuckets, lastBlock)
+
+		finalMaxBuckets := maxBuckets
+		if legacyMaxBuckets > finalMaxBuckets {
+			finalMaxBuckets = legacyMaxBuckets
+		}
+
+		updateGridInfo(&bucket.GridInfo, finalMaxBuckets, lastBlock)
 	})
 }

@@ -1,56 +1,40 @@
 {
   "Organization": "TrueBlocks, LLC",
-  "ProjectName": "approvals",
+  "ProjectName": "explorer",
   "Github": "github.com/TrueBlocks/trueblocks-core",
   "Domain": "trueblocks.io",
   "Template": "default",
   "ViewConfig": {
     "abis": {
-      "menuOrder": 40,
-      "disabled": true
+      "menuOrder": 40
     },
     "chunks": {
-      "menuOrder": 60,
-      "disabled": true
+      "menuOrder": 60
     },
     "comparitoor": {
-      "menuOrder": 100,
-      "disabled": true
+      "menuOrder": 100
     },
     "contracts": {
-      "menuOrder": 70,
-      "disabled": true
+      "menuOrder": 70
     },
     "dresses": {
-      "menuOrder": 15,
-      "disabled": true
+      "menuOrder": 90
     },
     "exports": {
       "menuOrder": 20,
-      "disabled": false,
-      "facetOrder": ["assetcharts", "assets", "openapprovals", "approvallogs", "approvaltxs"],
       "disabledFacets": {
-        "statements": true,
-        "balances": true,
-        "transfers": true,
-        "withdrawals": true,
-        "transactions": false,
-        "traces": true,
-        "logs": true,
-        "receipts": true
+        "approvals": true,
+        "approves": true
       }
     },
     "monitors": {
-      "menuOrder": 30,
-      "dixsabled": true
+      "menuOrder": 30
     },
     "names": {
-      "menuOrder": 50,
-     "disabled": true
+      "menuOrder": 50
     },
     "status": {
-      "menuOrder": 80,
-      "disabled": true
+      "menuOrder": 80
     }
   }
 }

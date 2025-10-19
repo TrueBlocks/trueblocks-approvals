@@ -24,6 +24,20 @@ import {
   formatNumber,
 } from '@utils';
 
+// Helper function to get bucket data from either new series map or legacy fields
+const getBucketData = (
+  buckets: types.Buckets,
+  field: string,
+): types.Bucket[] => {
+  // First try the new flexible series map
+  if (buckets.series && buckets.series[field]) {
+    return buckets.series[field];
+  }
+
+  // Fall back to legacy fields for backwards compatibility
+  return (buckets[field as keyof types.Buckets] as types.Bucket[]) || [];
+};
+
 interface HeatmapPanelProps {
   config: BucketsConfig;
   row: Record<string, unknown> | null;
@@ -147,8 +161,7 @@ export const HeatmapPanel = ({
       return { bucketsData: [] };
     }
 
-    const allBuckets =
-      (buckets[metConfig.bucketsField] as types.Bucket[]) || [];
+    const allBuckets = getBucketData(buckets, metConfig.bucketsField);
 
     let filteredBuckets = config.skipUntil
       ? allBuckets.filter((bucket) => bucket.bucketIndex >= config.skipUntil!)

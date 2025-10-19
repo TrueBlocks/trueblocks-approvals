@@ -8,6 +8,20 @@ import { useHotkeys } from '@mantine/hooks';
 import { msgs, types } from '@models';
 import { Log, aggregateTimeBasedBuckets, formatGroupKey } from '@utils';
 
+// Helper function to get bucket data from either new series map or legacy fields
+const getBucketData = (
+  buckets: types.Buckets,
+  field: string,
+): types.Bucket[] => {
+  // First try the new flexible series map
+  if (buckets.series && buckets.series[field]) {
+    return buckets.series[field];
+  }
+
+  // Fall back to legacy fields for backwards compatibility
+  return (buckets[field as keyof types.Buckets] as types.Bucket[]) || [];
+};
+
 interface BarchartPanelProps {
   config: BucketsConfig;
   row: Record<string, unknown> | null;
@@ -119,7 +133,7 @@ export const BarchartPanel = ({
   const currentMetric = config.metrics.find((m) => m.key === selectedMetric);
 
   const allBucketsData = buckets
-    ? (buckets[currentMetric?.bucketsField || 'series0'] as types.Bucket[])
+    ? getBucketData(buckets, currentMetric?.bucketsField || 'series0')
     : [];
 
   const filteredBuckets = config.skipUntil
