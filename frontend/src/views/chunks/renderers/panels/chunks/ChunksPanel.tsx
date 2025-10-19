@@ -35,7 +35,7 @@ export const ChunksPanel = ({
     metrics: panelConfig.metrics.map((metric) => ({
       key: metric.key,
       label: metric.label,
-      bucketsField: metric.bucketsField as keyof types.Buckets,
+      bucketsField: metric.bucketsField,
       formatValue: (value: number) =>
         formatNumericValue(value, { bytes: metric.bytes }),
       bytes: metric.bytes,

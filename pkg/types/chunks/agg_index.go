@@ -40,29 +40,7 @@ func (c *ChunksCollection) updateIndexBucket(index *Index) {
 			}
 		}
 
-		// Maintain backwards compatibility with legacy fields
-		ensureBucketsExist(&bucket.Series0, lastBucketIndex, size)
-		ensureBucketsExist(&bucket.Series1, lastBucketIndex, size)
-		ensureBucketsExist(&bucket.Series2, lastBucketIndex, size)
-
-		distributeToBuckets(&bucket.Series0, firstBlock, lastBlock, float64(index.NAddresses), size)
-		distributeToBuckets(&bucket.Series1, firstBlock, lastBlock, float64(index.NAppearances), size)
-		distributeToBuckets(&bucket.Series2, firstBlock, lastBlock, float64(index.FileSize), size)
-
 		// Update grid info
-		legacyMaxBuckets := len(bucket.Series0)
-		if len(bucket.Series1) > legacyMaxBuckets {
-			legacyMaxBuckets = len(bucket.Series1)
-		}
-		if len(bucket.Series2) > legacyMaxBuckets {
-			legacyMaxBuckets = len(bucket.Series2)
-		}
-
-		finalMaxBuckets := maxBuckets
-		if legacyMaxBuckets > finalMaxBuckets {
-			finalMaxBuckets = legacyMaxBuckets
-		}
-
-		updateGridInfo(&bucket.GridInfo, finalMaxBuckets, lastBlock)
+		updateGridInfo(&bucket.GridInfo, maxBuckets, lastBlock)
 	})
 }

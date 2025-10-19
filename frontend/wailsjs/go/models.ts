@@ -1649,10 +1649,6 @@ export namespace types {
 	}
 	export class Buckets {
 	    series: Record<string, Array<Bucket>>;
-	    series0: Bucket[];
-	    series1: Bucket[];
-	    series2: Bucket[];
-	    series3: Bucket[];
 	    gridInfo: GridInfo;
 	
 	    static createFrom(source: any = {}) {
@@ -1662,10 +1658,6 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.series = this.convertValues(source["series"], Array<Bucket>, true);
-	        this.series0 = this.convertValues(source["series0"], Bucket);
-	        this.series1 = this.convertValues(source["series1"], Bucket);
-	        this.series2 = this.convertValues(source["series2"], Bucket);
-	        this.series3 = this.convertValues(source["series3"], Bucket);
 	        this.gridInfo = this.convertValues(source["gridInfo"], GridInfo);
 	    }
 	

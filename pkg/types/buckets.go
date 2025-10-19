@@ -1,26 +1,15 @@
 package types
 
 type Buckets struct {
-	// New flexible series structure using named metrics
-	Series map[string][]Bucket `json:"series"`
-
-	// Legacy fields for backwards compatibility - will be deprecated
-	Series0 []Bucket `json:"series0"`
-	Series1 []Bucket `json:"series1"`
-	Series2 []Bucket `json:"series2"`
-	Series3 []Bucket `json:"series3"`
-
-	GridInfo GridInfo `json:"gridInfo"`
+	// Flexible series structure using named metrics
+	Series   map[string][]Bucket `json:"series"`
+	GridInfo GridInfo            `json:"gridInfo"`
 }
 
 // NewBuckets creates a new Buckets struct with proper initialization
 func NewBuckets() *Buckets {
 	return &Buckets{
 		Series:   make(map[string][]Bucket),
-		Series0:  []Bucket{},
-		Series1:  []Bucket{},
-		Series2:  []Bucket{},
-		Series3:  []Bucket{},
 		GridInfo: NewGridInfo(),
 	}
 }
@@ -62,6 +51,20 @@ func (b *Buckets) EnsureSeriesExists(name string) {
 	if _, exists := b.Series[name]; !exists {
 		b.Series[name] = []Bucket{}
 	}
+}
+
+// UpdateSeries safely updates a series by applying a function to it
+func (b *Buckets) UpdateSeries(name string, updateFunc func([]Bucket) []Bucket) {
+	if b.Series == nil {
+		b.Series = make(map[string][]Bucket)
+	}
+
+	series, exists := b.Series[name]
+	if !exists {
+		series = []Bucket{}
+	}
+
+	b.Series[name] = updateFunc(series)
 }
 
 // BucketInterface defines bucket operations that facets must implement

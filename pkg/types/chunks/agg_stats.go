@@ -69,33 +69,6 @@ func (c *ChunksCollection) updateStatsBucketBlockBase(stats *Stats, bucket *type
 		}
 	}
 
-	// Maintain backwards compatibility by also updating legacy fields
-	ensureBucketsExist(&bucket.Series0, lastBucketIndex, size)
-	ensureBucketsExist(&bucket.Series1, lastBucketIndex, size)
-	ensureBucketsExist(&bucket.Series2, lastBucketIndex, size)
-	ensureBucketsExist(&bucket.Series3, lastBucketIndex, size)
-
-	distributeToBuckets(&bucket.Series0, firstBlock, lastBlock, float64(stats.Ratio), size)
-	distributeToBuckets(&bucket.Series1, firstBlock, lastBlock, float64(stats.AppsPerBlock), size)
-	distributeToBuckets(&bucket.Series2, firstBlock, lastBlock, float64(stats.AddrsPerBlock), size)
-	distributeToBuckets(&bucket.Series3, firstBlock, lastBlock, float64(stats.AppsPerAddr), size)
-
 	// Update grid info
-	legacyMaxBuckets := len(bucket.Series0)
-	if len(bucket.Series1) > legacyMaxBuckets {
-		legacyMaxBuckets = len(bucket.Series1)
-	}
-	if len(bucket.Series2) > legacyMaxBuckets {
-		legacyMaxBuckets = len(bucket.Series2)
-	}
-	if len(bucket.Series3) > legacyMaxBuckets {
-		legacyMaxBuckets = len(bucket.Series3)
-	}
-
-	finalMaxBuckets := maxBuckets
-	if legacyMaxBuckets > finalMaxBuckets {
-		finalMaxBuckets = legacyMaxBuckets
-	}
-
-	updateGridInfo(&bucket.GridInfo, finalMaxBuckets, lastBlock)
+	updateGridInfo(&bucket.GridInfo, maxBuckets, lastBlock)
 }

@@ -99,34 +99,25 @@ func (c *ChunksCollection) ensureTimeBucketsExist(bucket *types.Buckets, startBu
 
 // ensureDailyBucketExists ensures a single daily bucket exists
 func (c *ChunksCollection) ensureDailyBucketExists(bucket *types.Buckets, bucketKey string) {
-	// Check if bucket exists in any legacy series
-	found := false
-	for _, series := range []*[]types.Bucket{&bucket.Series0, &bucket.Series1, &bucket.Series2, &bucket.Series3} {
-		for i := range *series {
-			if (*series)[i].BucketKey == bucketKey {
+	// Check if bucket exists in the flexible series
+	metrics := []string{"ratio", "appsPerBlock", "addrsPerBlock", "appsPerAddr"}
+
+	for _, metricName := range metrics {
+		bucket.EnsureSeriesExists(metricName)
+		series := bucket.GetSeries(metricName)
+
+		// Check if bucket already exists
+		found := false
+		for _, existingBucket := range series {
+			if existingBucket.BucketKey == bucketKey {
 				found = true
 				break
 			}
 		}
-		if found {
-			break
-		}
-	}
 
-	if !found {
-		newBucket := types.NewBucket(bucketKey, 0, 0)
-
-		// Add to legacy series for backwards compatibility
-		bucket.Series0 = append(bucket.Series0, newBucket)
-		bucket.Series1 = append(bucket.Series1, newBucket)
-		bucket.Series2 = append(bucket.Series2, newBucket)
-		bucket.Series3 = append(bucket.Series3, newBucket)
-
-		// Also add to new flexible series
-		metrics := []string{"ratio", "appsPerBlock", "addrsPerBlock", "appsPerAddr"}
-		for _, metricName := range metrics {
-			bucket.EnsureSeriesExists(metricName)
-			series := bucket.GetSeries(metricName)
+		if !found {
+			// Bucket doesn't exist, add it
+			newBucket := types.NewBucket(bucketKey, 0, 0)
 			series = append(series, newBucket)
 			bucket.SetSeries(metricName, series)
 		}
@@ -154,7 +145,7 @@ func (c *ChunksCollection) addStatsToTimeBucket(bucket *types.Buckets, bucketKey
 		"appsPerAddr":   float64(stats.AppsPerAddr),
 	}
 
-	// Update new flexible series
+	// Update flexible series
 	for seriesName, value := range metrics {
 		bucket.EnsureSeriesExists(seriesName)
 		series := bucket.GetSeries(seriesName)
@@ -166,38 +157,5 @@ func (c *ChunksCollection) addStatsToTimeBucket(bucket *types.Buckets, bucketKey
 			}
 		}
 		bucket.SetSeries(seriesName, series)
-	}
-
-	// Maintain backwards compatibility with legacy fields
-	for i := range bucket.Series0 {
-		if bucket.Series0[i].BucketKey == bucketKey {
-			bucket.Series0[i].Total += float64(stats.Ratio)
-			bucket.Series0[i].ColorValue += float64(stats.Ratio)
-			break
-		}
-	}
-
-	for i := range bucket.Series1 {
-		if bucket.Series1[i].BucketKey == bucketKey {
-			bucket.Series1[i].Total += float64(stats.AppsPerBlock)
-			bucket.Series1[i].ColorValue += float64(stats.AppsPerBlock)
-			break
-		}
-	}
-
-	for i := range bucket.Series2 {
-		if bucket.Series2[i].BucketKey == bucketKey {
-			bucket.Series2[i].Total += float64(stats.AddrsPerBlock)
-			bucket.Series2[i].ColorValue += float64(stats.AddrsPerBlock)
-			break
-		}
-	}
-
-	for i := range bucket.Series3 {
-		if bucket.Series3[i].BucketKey == bucketKey {
-			bucket.Series3[i].Total += float64(stats.AppsPerAddr)
-			bucket.Series3[i].ColorValue += float64(stats.AppsPerAddr)
-			break
-		}
 	}
 }

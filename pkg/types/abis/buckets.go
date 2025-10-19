@@ -24,10 +24,7 @@ func (c *AbisCollection) GetBuckets(payload *types.Payload) (*types.Buckets, err
 		facet = c.eventsFacet
 	default:
 		return &types.Buckets{
-			Series0: []types.Bucket{},
-			Series1: []types.Bucket{},
-			Series2: []types.Bucket{},
-			Series3: []types.Bucket{},
+			Series: make(map[string][]types.Bucket),
 			GridInfo: types.GridInfo{
 				Size:        100000,
 				Rows:        0,
