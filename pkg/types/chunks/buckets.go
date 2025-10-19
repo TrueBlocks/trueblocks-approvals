@@ -24,14 +24,10 @@ func (c *ChunksCollection) GetBuckets(payload *types.Payload) (*types.Buckets, e
 		facet = c.manifestFacet
 	default:
 		return &types.Buckets{
-			Series0:      []types.Bucket{},
-			Series0Stats: types.BucketStats{},
-			Series1:      []types.Bucket{},
-			Series1Stats: types.BucketStats{},
-			Series2:      []types.Bucket{},
-			Series2Stats: types.BucketStats{},
-			Series3:      []types.Bucket{},
-			Series3Stats: types.BucketStats{},
+			Series0: []types.Bucket{},
+			Series1: []types.Bucket{},
+			Series2: []types.Bucket{},
+			Series3: []types.Bucket{},
 			GridInfo: types.GridInfo{
 				Size:        100000,
 				Rows:        0,
@@ -43,9 +39,5 @@ func (c *ChunksCollection) GetBuckets(payload *types.Payload) (*types.Buckets, e
 	}
 
 	buckets := facet.GetBuckets()
-	buckets.Series0Stats = calculateBucketStatsAndColors(buckets.Series0)
-	buckets.Series1Stats = calculateBucketStatsAndColors(buckets.Series1)
-	buckets.Series2Stats = calculateBucketStatsAndColors(buckets.Series2)
-	buckets.Series3Stats = calculateBucketStatsAndColors(buckets.Series3)
 	return buckets, nil
 }

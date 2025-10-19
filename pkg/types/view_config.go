@@ -106,6 +106,5 @@ type MetricConfig struct {
 	Key          string `json:"key"`          // unique identifier
 	Label        string `json:"label"`        // display name
 	BucketsField string `json:"bucketsField"` // field name in Buckets struct
-	StatsField   string `json:"statsField"`   // stats field name in Buckets struct
 	Bytes        bool   `json:"bytes"`        // whether to format as bytes
 }

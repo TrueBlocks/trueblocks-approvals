@@ -5,6 +5,7 @@ export * from './useAppHotkeys';
 export * from './useAppNavigation';
 export * from './useAppReadiness';
 export * from './useActions';
+export * from './useBucketStats';
 export * from './useConfirmableActions';
 export * from './useColumns';
 export * from './useDateTime';

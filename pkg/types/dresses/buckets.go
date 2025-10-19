@@ -26,14 +26,10 @@ func (c *DressesCollection) GetBuckets(payload *types.Payload) (*types.Buckets, 
 		facet = c.galleryFacet
 	default:
 		return &types.Buckets{
-			Series0:      []types.Bucket{},
-			Series0Stats: types.BucketStats{},
-			Series1:      []types.Bucket{},
-			Series1Stats: types.BucketStats{},
-			Series2:      []types.Bucket{},
-			Series2Stats: types.BucketStats{},
-			Series3:      []types.Bucket{},
-			Series3Stats: types.BucketStats{},
+			Series0: []types.Bucket{},
+			Series1: []types.Bucket{},
+			Series2: []types.Bucket{},
+			Series3: []types.Bucket{},
 			GridInfo: types.GridInfo{
 				Size:        100000,
 				Rows:        0,

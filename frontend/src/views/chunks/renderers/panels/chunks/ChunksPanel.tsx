@@ -36,7 +36,6 @@ export const ChunksPanel = ({
       key: metric.key,
       label: metric.label,
       bucketsField: metric.bucketsField as keyof types.Buckets,
-      statsField: metric.statsField as keyof types.Buckets,
       formatValue: (value: number) =>
         formatNumericValue(value, { bytes: metric.bytes }),
       bytes: metric.bytes,

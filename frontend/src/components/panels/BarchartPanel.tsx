@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { BucketsConfig, MetricSelector, StatsBox } from '@components';
-import { useEvent } from '@hooks';
+import { useBucketStats, useEvent } from '@hooks';
 import { BarChart } from '@mantine/charts';
 import { Alert, Box, Stack, Text } from '@mantine/core';
 import { useHotkeys } from '@mantine/hooks';
@@ -117,19 +117,9 @@ export const BarchartPanel = ({
   }, [handleFetchBuckets]);
 
   const currentMetric = config.metrics.find((m) => m.key === selectedMetric);
-  if (!currentMetric) {
-    return (
-      <Box p="md">
-        <Alert color="orange" title="Configuration Error">
-          Invalid metric selected: {selectedMetric}
-        </Alert>
-      </Box>
-    );
-  }
 
-  // Get the buckets data and stats for the current metric
   const allBucketsData = buckets
-    ? (buckets[currentMetric.bucketsField] as types.Bucket[])
+    ? (buckets[currentMetric?.bucketsField || 'series0'] as types.Bucket[])
     : [];
 
   const filteredBuckets = config.skipUntil
@@ -144,9 +134,17 @@ export const BarchartPanel = ({
     ? aggregateTimeBasedBuckets(filteredBuckets, config.timeGroupBy)
     : filteredBuckets;
 
-  const statsData = buckets
-    ? (buckets[currentMetric.statsField] as types.BucketStats)
-    : null;
+  const statsData = useBucketStats(bucketsData);
+
+  if (!currentMetric) {
+    return (
+      <Box p="md">
+        <Alert color="orange" title="Configuration Error">
+          Invalid metric selected: {selectedMetric}
+        </Alert>
+      </Box>
+    );
+  }
 
   if (error) {
     return (

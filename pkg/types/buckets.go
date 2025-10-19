@@ -1,17 +1,10 @@
 package types
 
 type Buckets struct {
-	Series0      []Bucket    `json:"series0"`
-	Series0Stats BucketStats `json:"series0Stats"`
-
-	Series1      []Bucket    `json:"series1"`
-	Series1Stats BucketStats `json:"series1Stats"`
-
-	Series2      []Bucket    `json:"series2"`
-	Series2Stats BucketStats `json:"series2Stats"`
-
-	Series3      []Bucket    `json:"series3"`
-	Series3Stats BucketStats `json:"series3Stats"`
+	Series0 []Bucket `json:"series0"`
+	Series1 []Bucket `json:"series1"`
+	Series2 []Bucket `json:"series2"`
+	Series3 []Bucket `json:"series3"`
 
 	GridInfo GridInfo `json:"gridInfo"`
 }
@@ -19,15 +12,11 @@ type Buckets struct {
 // NewBuckets creates a new Buckets struct with proper initialization
 func NewBuckets() *Buckets {
 	return &Buckets{
-		Series0:      []Bucket{},
-		Series0Stats: NewBucketStats(),
-		Series1:      []Bucket{},
-		Series1Stats: NewBucketStats(),
-		Series2:      []Bucket{},
-		Series2Stats: NewBucketStats(),
-		Series3:      []Bucket{},
-		Series3Stats: NewBucketStats(),
-		GridInfo:     NewGridInfo(),
+		Series0:  []Bucket{},
+		Series1:  []Bucket{},
+		Series2:  []Bucket{},
+		Series3:  []Bucket{},
+		GridInfo: NewGridInfo(),
 	}
 }
 

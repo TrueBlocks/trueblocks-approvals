@@ -103,12 +103,4 @@ func TestNewBuckets(t *testing.T) {
 	if buckets.GridInfo.Columns != 20 {
 		t.Errorf("Expected GridInfo.Columns 20, got %d", buckets.GridInfo.Columns)
 	}
-
-	// Test BucketStats are initialized
-	if buckets.Series0Stats.Count != 0 {
-		t.Errorf("Expected Series0Stats.Count 0, got %d", buckets.Series0Stats.Count)
-	}
-	if buckets.Series1Stats.Total != 0 {
-		t.Errorf("Expected Series1Stats.Total 0, got %f", buckets.Series1Stats.Total)
-	}
 }

@@ -6,7 +6,6 @@ export interface MetricConfig {
   key: string;
   label: string;
   bucketsField: keyof types.Buckets;
-  statsField: keyof types.Buckets;
   formatValue: (value: number) => string;
   bytes: boolean;
 }

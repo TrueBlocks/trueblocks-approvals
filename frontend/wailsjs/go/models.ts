@@ -1627,26 +1627,6 @@ export namespace types {
 	        this.colorValue = source["colorValue"];
 	    }
 	}
-	export class BucketStats {
-	    total: number;
-	    average: number;
-	    min: number;
-	    max: number;
-	    count: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new BucketStats(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.total = source["total"];
-	        this.average = source["average"];
-	        this.min = source["min"];
-	        this.max = source["max"];
-	        this.count = source["count"];
-	    }
-	}
 	export class GridInfo {
 	    rows: number;
 	    columns: number;
@@ -1669,13 +1649,9 @@ export namespace types {
 	}
 	export class Buckets {
 	    series0: Bucket[];
-	    series0Stats: BucketStats;
 	    series1: Bucket[];
-	    series1Stats: BucketStats;
 	    series2: Bucket[];
-	    series2Stats: BucketStats;
 	    series3: Bucket[];
-	    series3Stats: BucketStats;
 	    gridInfo: GridInfo;
 	
 	    static createFrom(source: any = {}) {
@@ -1685,13 +1661,9 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.series0 = this.convertValues(source["series0"], Bucket);
-	        this.series0Stats = this.convertValues(source["series0Stats"], BucketStats);
 	        this.series1 = this.convertValues(source["series1"], Bucket);
-	        this.series1Stats = this.convertValues(source["series1Stats"], BucketStats);
 	        this.series2 = this.convertValues(source["series2"], Bucket);
-	        this.series2Stats = this.convertValues(source["series2Stats"], BucketStats);
 	        this.series3 = this.convertValues(source["series3"], Bucket);
-	        this.series3Stats = this.convertValues(source["series3Stats"], BucketStats);
 	        this.gridInfo = this.convertValues(source["gridInfo"], GridInfo);
 	    }
 	
@@ -2293,7 +2265,6 @@ export namespace types {
 	    key: string;
 	    label: string;
 	    bucketsField: string;
-	    statsField: string;
 	    bytes: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -2305,7 +2276,6 @@ export namespace types {
 	        this.key = source["key"];
 	        this.label = source["label"];
 	        this.bucketsField = source["bucketsField"];
-	        this.statsField = source["statsField"];
 	        this.bytes = source["bytes"];
 	    }
 	}

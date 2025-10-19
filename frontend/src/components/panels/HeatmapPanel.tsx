@@ -6,7 +6,7 @@ import {
   MetricSelector,
   StatsBox,
 } from '@components';
-import { useEvent } from '@hooks';
+import { useBucketStats, useEvent } from '@hooks';
 import {
   Alert,
   Box,
@@ -139,12 +139,12 @@ export const HeatmapPanel = ({
 
   const getMetricData = () => {
     if (!buckets) {
-      return { bucketsData: [], statsData: null };
+      return { bucketsData: [] };
     }
 
     const metConfig = getMetricConfig(selectedMetric);
     if (!metConfig) {
-      return { bucketsData: [], statsData: null };
+      return { bucketsData: [] };
     }
 
     const allBuckets =
@@ -163,9 +163,11 @@ export const HeatmapPanel = ({
 
     return {
       bucketsData: filteredBuckets,
-      statsData: buckets[metConfig.statsField] as types.BucketStats,
     };
   };
+
+  const { bucketsData } = getMetricData();
+  const statsData = useBucketStats(bucketsData);
 
   const getColor = (value: number, min: number, max: number) => {
     // Handle edge case where all values are the same
@@ -194,8 +196,6 @@ export const HeatmapPanel = ({
   if (!hasEverLoaded) {
     return <Text>Loading heat map...</Text>;
   }
-
-  const { bucketsData, statsData } = getMetricData();
 
   if (!bucketsData?.length || !statsData || !buckets) {
     return (
