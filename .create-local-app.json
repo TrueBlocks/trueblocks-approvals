@@ -6,61 +6,35 @@
   "Template": "default",
   "ViewConfig": {
     "abis": {
-      "menuOrder": 40,
-      "disabled": true
+      "menuOrder": 40
     },
     "chunks": {
-      "menuOrder": 60,
-      "disabled": true
+      "menuOrder": 60
     },
     "comparitoor": {
-      "menuOrder": 100,
-      "disabled": true
+      "menuOrder": 100
     },
     "contracts": {
-      "menuOrder": 70,
-      "disabled": true
+      "menuOrder": 70
     },
     "dresses": {
-      "menuOrder": 90,
-      "disabled": true
+      "menuOrder": 90
     },
     "exports": {
       "menuOrder": 20,
       "disabledFacets": {
-        "statements": true,
-        "balances": true,
-        "transfers": true,
-        "transactions": true,
-        "openapprovals": false,
-        "approvallogs": false,
-        "approvaltxs": false,
-        "withdrawals": true,
-        "assets": false,
-        "assetcharts": false,
-        "logs": true,
-        "traces": true,
-        "receipts": true
-      },
-      "facet_order": [
-        "assetcharts",
-        "assets",
-        "openapprovals",
-        "approvallogs",
-        "approvaltxs"
-      ]
+        "approvals": true,
+        "approves": true
+      }
     },
     "monitors": {
-      "menuOrder": 30,
-      "disabled": false
+      "menuOrder": 30
     },
     "names": {
-      "menuOrder": 50,
-      "disabled": true
+      "menuOrder": 50
     },
     "status": {
-      "menuOrder": 80,
-      "disabled": true
+      "menuOrder": 80
     }
   }
 }

@@ -2,12 +2,9 @@ package exports
 
 import (
 	"encoding/json"
-	"fmt"
-	"math/big"
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 )
 
 // TestData represents the JSON structure from our test data
@@ -35,6 +32,19 @@ type StatementJSON struct {
 	TotalOut     string `json:"totalOut"`
 }
 
+// convertJSONToStatement converts a StatementJSON to a Statement
+// For testing purposes, we create a minimal Statement with only the fields needed by our aggregation functions
+func convertJSONToStatement(jsonStmt StatementJSON) Statement {
+	// Create Statement using JSON unmarshaling to handle type conversions properly
+	jsonBytes, _ := json.Marshal(jsonStmt)
+	var stmt Statement
+	if err := json.Unmarshal(jsonBytes, &stmt); err != nil {
+		// In test context, we can panic on conversion errors
+		panic("Failed to convert JSON to Statement: " + err.Error())
+	}
+	return stmt
+}
+
 func TestAssetChartsBucketing(t *testing.T) {
 	// Load test data
 	testFile := filepath.Join("testdata", "tb_statements_sample.json")
@@ -48,11 +58,18 @@ func TestAssetChartsBucketing(t *testing.T) {
 		t.Fatalf("Failed to unmarshal test data: %v", err)
 	}
 
-	t.Logf("Loaded %d statements for testing", len(testData.Data))
+	// Convert JSON data to actual Statement structs for testing production functions
+	statements := make([]*Statement, len(testData.Data))
+	for i, jsonStmt := range testData.Data {
+		stmt := convertJSONToStatement(jsonStmt)
+		statements[i] = &stmt
+	}
+
+	t.Logf("Loaded %d statements for testing", len(statements))
 
 	// Test asset grouping
 	t.Run("AssetGrouping", func(t *testing.T) {
-		assetGroups := groupStatementsByAsset(testData.Data)
+		assetGroups := groupStatementsByAsset(statements)
 
 		// The test data contains 10 different assets (more diverse than initially expected)
 		expectedMinAssets := 8 // At least 8 different assets
@@ -118,7 +135,7 @@ func TestAssetChartsBucketing(t *testing.T) {
 
 	// Test frequency metric calculation
 	t.Run("FrequencyMetric", func(t *testing.T) {
-		assetGroups := groupStatementsByAsset(testData.Data)
+		assetGroups := groupStatementsByAsset(statements)
 
 		totalBuckets := 0
 		for asset, stmts := range assetGroups {
@@ -126,8 +143,8 @@ func TestAssetChartsBucketing(t *testing.T) {
 			totalBuckets += len(buckets)
 
 			t.Logf("Asset %s... frequency buckets (%d days):", asset[:10], len(buckets))
-			for bucketKey, count := range buckets {
-				t.Logf("  %s: %d transactions", bucketKey, int(count))
+			for _, bucket := range buckets {
+				t.Logf("  %s: %d transactions", bucket.BucketKey, int(bucket.Total))
 			}
 		}
 
@@ -143,20 +160,20 @@ func TestAssetChartsBucketing(t *testing.T) {
 
 	// Test volume metric calculation
 	t.Run("VolumeMetric", func(t *testing.T) {
-		assetGroups := groupStatementsByAsset(testData.Data)
+		assetGroups := groupStatementsByAsset(statements)
 
 		for asset, stmts := range assetGroups {
 			buckets := calculateVolumeBuckets(stmts)
 			t.Logf("Asset %s... volume buckets:", asset[:10])
-			for bucketKey, volume := range buckets {
-				t.Logf("  %s: %.6f", bucketKey, volume)
+			for _, bucket := range buckets {
+				t.Logf("  %s: %.6f", bucket.BucketKey, bucket.Total)
 			}
 		}
 	})
 
 	// Test edge cases and data diversity
 	t.Run("EdgeCases", func(t *testing.T) {
-		assetGroups := groupStatementsByAsset(testData.Data)
+		assetGroups := groupStatementsByAsset(statements)
 
 		// Test date range diversity (should span multiple years)
 		var minYear, maxYear = 9999, 0
@@ -183,10 +200,10 @@ func TestAssetChartsBucketing(t *testing.T) {
 		var zeroVolumeAssets, largeVolumeAssets int
 		for _, stmts := range assetGroups {
 			buckets := calculateVolumeBuckets(stmts)
-			for _, volume := range buckets {
-				if volume == 0.0 {
+			for _, bucket := range buckets {
+				if bucket.Total == 0.0 {
 					zeroVolumeAssets++
-				} else if volume > 1000 {
+				} else if bucket.Total > 1000 {
 					largeVolumeAssets++
 				}
 			}
@@ -194,67 +211,4 @@ func TestAssetChartsBucketing(t *testing.T) {
 
 		t.Logf("Volume diversity: %d zero-volume bucket-days, %d large-volume bucket-days", zeroVolumeAssets, largeVolumeAssets)
 	})
-}
-
-// groupStatementsByAsset groups statements by asset address
-func groupStatementsByAsset(statements []StatementJSON) map[string][]StatementJSON {
-	groups := make(map[string][]StatementJSON)
-	for _, stmt := range statements {
-		asset := stmt.Asset
-		groups[asset] = append(groups[asset], stmt)
-	}
-	return groups
-}
-
-// timestampToDailyBucket converts Unix timestamp to daily bucket key
-func timestampToDailyBucket(timestamp int64) string {
-	t := time.Unix(timestamp, 0).UTC()
-	return fmt.Sprintf("%04d%02d%02d", t.Year(), t.Month(), t.Day())
-}
-
-// calculateFrequencyBuckets counts transactions per day per asset
-func calculateFrequencyBuckets(statements []StatementJSON) map[string]float64 {
-	buckets := make(map[string]float64)
-	for _, stmt := range statements {
-		bucketKey := timestampToDailyBucket(stmt.Timestamp)
-		buckets[bucketKey]++
-	}
-	return buckets
-}
-
-// calculateVolumeBuckets sums amountIn + amountOut per day per asset
-func calculateVolumeBuckets(statements []StatementJSON) map[string]float64 {
-	buckets := make(map[string]float64)
-	for _, stmt := range statements {
-		bucketKey := timestampToDailyBucket(stmt.Timestamp)
-
-		// Convert amounts to float64 (simplified for testing)
-		amountIn := stringToFloat64(stmt.AmountIn, stmt.Decimals)
-		amountOut := stringToFloat64(stmt.AmountOut, stmt.Decimals)
-
-		buckets[bucketKey] += amountIn + amountOut
-	}
-	return buckets
-}
-
-// stringToFloat64 converts string amount to float64 with decimal scaling
-func stringToFloat64(amountStr string, decimals int) float64 {
-	if amountStr == "" || amountStr == "0" {
-		return 0.0
-	}
-
-	// Parse as big integer
-	bigInt, ok := new(big.Int).SetString(amountStr, 10)
-	if !ok {
-		return 0.0
-	}
-
-	// Convert to float64 with decimal adjustment
-	scale := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(decimals)), nil)
-	bigFloat := new(big.Float).SetInt(bigInt)
-	scaleFloat := new(big.Float).SetInt(scale)
-	result := new(big.Float).Quo(bigFloat, scaleFloat)
-
-	float64Result, _ := result.Float64()
-	return float64Result
 }

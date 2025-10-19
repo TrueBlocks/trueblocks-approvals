@@ -522,6 +522,9 @@ func (c *ExportsCollection) AccumulateItem(item interface{}, summary *types.Summ
 		stmtCount++
 		summary.CustomData["statementsCount"] = stmtCount
 
+		// Update AssetCharts buckets when Statement data changes
+		c.updateAssetChartsBucket(v)
+
 	case *Transfer:
 		summary.TotalCount++
 		summary.FacetCounts[ExportsTransfers]++
