@@ -79,12 +79,12 @@ func statementValueToFloat64(wei *base.Wei, decimals int) float64 {
 	return ret.Float64()
 }
 
-// timestampToBOD returns the ts to the beginning of the day
-func timestampToBOD(ts base.Timestamp) base.Timestamp {
-	t := time.Unix(int64(ts), 0).UTC()
-	bod := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
-	return base.Timestamp(bod.Unix())
-}
+// // timestampToBOD returns the ts to the beginning of the day
+// func timestampToBOD(ts base.Timestamp) base.Timestamp {
+// 	t := time.Unix(int64(ts), 0).UTC()
+// 	bod := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
+// 	return base.Timestamp(bod.Unix())
+// }
 
 // timestampToDailyBucket converts Unix timestamp to daily bucket identifier (YYYYMMDD)
 func timestampToDailyBucket(timestamp int64) string {
