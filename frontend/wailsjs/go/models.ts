@@ -871,6 +871,7 @@ export namespace preferences {
 	    recentProjects: string[];
 	    silencedDialogs: Record<string, boolean>;
 	    chunksMetrics?: Record<string, string>;
+	    exportsMetrics?: Record<string, string>;
 	    bounds?: Bounds;
 	
 	    static createFrom(source: any = {}) {
@@ -894,6 +895,7 @@ export namespace preferences {
 	        this.recentProjects = source["recentProjects"];
 	        this.silencedDialogs = source["silencedDialogs"];
 	        this.chunksMetrics = source["chunksMetrics"];
+	        this.exportsMetrics = source["exportsMetrics"];
 	        this.bounds = this.convertValues(source["bounds"], Bounds);
 	    }
 	
@@ -1302,6 +1304,12 @@ export namespace types {
 	    ALCHEMY = "alchemy",
 	    DASHBOARD = "dashboard",
 	    EXECUTE = "execute",
+	    MONITORS = "monitors",
+	    ALL = "all",
+	    CUSTOM = "custom",
+	    PREFUND = "prefund",
+	    REGULAR = "regular",
+	    BADDRESS = "baddress",
 	    STATEMENTS = "statements",
 	    BALANCES = "balances",
 	    TRANSFERS = "transfers",
@@ -1315,12 +1323,6 @@ export namespace types {
 	    LOGS = "logs",
 	    TRACES = "traces",
 	    RECEIPTS = "receipts",
-	    MONITORS = "monitors",
-	    ALL = "all",
-	    CUSTOM = "custom",
-	    PREFUND = "prefund",
-	    REGULAR = "regular",
-	    BADDRESS = "baddress",
 	    STATUS = "status",
 	    CACHES = "caches",
 	    CHAINS = "chains",
@@ -1647,8 +1649,81 @@ export namespace types {
 	        this.bucketCount = source["bucketCount"];
 	    }
 	}
+	export class NameCalcs {
+	
+	
+	    static createFrom(source: any = {}) {
+	        return new NameCalcs(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	
+	    }
+	}
+	export class Name {
+	    address: base.Address;
+	    decimals: number;
+	    deleted?: boolean;
+	    isContract?: boolean;
+	    isCustom?: boolean;
+	    isErc20?: boolean;
+	    isErc721?: boolean;
+	    isPrefund?: boolean;
+	    name: string;
+	    source: string;
+	    symbol: string;
+	    tags: string;
+	    // Go type: NameCalcs
+	    calcs?: any;
+	    // Go type: base
+	    prefund?: any;
+	    parts?: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Name(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.address = this.convertValues(source["address"], base.Address);
+	        this.decimals = source["decimals"];
+	        this.deleted = source["deleted"];
+	        this.isContract = source["isContract"];
+	        this.isCustom = source["isCustom"];
+	        this.isErc20 = source["isErc20"];
+	        this.isErc721 = source["isErc721"];
+	        this.isPrefund = source["isPrefund"];
+	        this.name = source["name"];
+	        this.source = source["source"];
+	        this.symbol = source["symbol"];
+	        this.tags = source["tags"];
+	        this.calcs = this.convertValues(source["calcs"], null);
+	        this.prefund = this.convertValues(source["prefund"], null);
+	        this.parts = source["parts"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class Buckets {
 	    series: Record<string, Array<Bucket>>;
+	    assetNames?: Record<string, Name>;
 	    gridInfo: GridInfo;
 	
 	    static createFrom(source: any = {}) {
@@ -1658,6 +1733,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.series = this.convertValues(source["series"], Array<Bucket>, true);
+	        this.assetNames = this.convertValues(source["assetNames"], Name, true);
 	        this.gridInfo = this.convertValues(source["gridInfo"], GridInfo);
 	    }
 	
@@ -2668,78 +2744,7 @@ export namespace types {
 		}
 	}
 	
-	export class NameCalcs {
 	
-	
-	    static createFrom(source: any = {}) {
-	        return new NameCalcs(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	
-	    }
-	}
-	export class Name {
-	    address: base.Address;
-	    decimals: number;
-	    deleted?: boolean;
-	    isContract?: boolean;
-	    isCustom?: boolean;
-	    isErc20?: boolean;
-	    isErc721?: boolean;
-	    isPrefund?: boolean;
-	    name: string;
-	    source: string;
-	    symbol: string;
-	    tags: string;
-	    // Go type: NameCalcs
-	    calcs?: any;
-	    // Go type: base
-	    prefund?: any;
-	    parts?: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new Name(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.address = this.convertValues(source["address"], base.Address);
-	        this.decimals = source["decimals"];
-	        this.deleted = source["deleted"];
-	        this.isContract = source["isContract"];
-	        this.isCustom = source["isCustom"];
-	        this.isErc20 = source["isErc20"];
-	        this.isErc721 = source["isErc721"];
-	        this.isPrefund = source["isPrefund"];
-	        this.name = source["name"];
-	        this.source = source["source"];
-	        this.symbol = source["symbol"];
-	        this.tags = source["tags"];
-	        this.calcs = this.convertValues(source["calcs"], null);
-	        this.prefund = this.convertValues(source["prefund"], null);
-	        this.parts = source["parts"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice && a.map) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	export class NavigationPayload {
 	    collection: string;
 	    dataFacet: DataFacet;

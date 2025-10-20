@@ -42,10 +42,6 @@ export function GetSupportedFacets() {
   return window['go']['names']['NamesCollection']['GetSupportedFacets']();
 }
 
-export function NameFromAddress(arg1) {
-  return window['go']['names']['NamesCollection']['NameFromAddress'](arg1);
-}
-
 export function NeedsUpdate(arg1) {
   return window['go']['names']['NamesCollection']['NeedsUpdate'](arg1);
 }

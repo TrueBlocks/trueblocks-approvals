@@ -230,6 +230,10 @@ export function GetExportsConfig(arg1) {
   return window['go']['app']['App']['GetExportsConfig'](arg1);
 }
 
+export function GetExportsMetric(arg1) {
+  return window['go']['app']['App']['GetExportsMetric'](arg1);
+}
+
 export function GetExportsPage(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['GetExportsPage'](arg1, arg2, arg3, arg4, arg5);
 }
@@ -536,6 +540,10 @@ export function SetChunksMetric(arg1, arg2) {
 
 export function SetDebugCollapsed(arg1) {
   return window['go']['app']['App']['SetDebugCollapsed'](arg1);
+}
+
+export function SetExportsMetric(arg1, arg2) {
+  return window['go']['app']['App']['SetExportsMetric'](arg1, arg2);
 }
 
 export function SetFilterState(arg1, arg2) {

@@ -6,8 +6,8 @@ import (
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
-func (c *NamesCollection) NameFromAddress(address base.Address) (*Name, bool) {
-	if !c.ensureLoadedSync("mainnet") {
+func NameFromAddress(address base.Address) (*Name, bool) {
+	if !ensureLoadedSync("mainnet") {
 		return nil, false
 	}
 	name, found := namesStore.GetItemFromMap(address)
@@ -16,7 +16,7 @@ func (c *NamesCollection) NameFromAddress(address base.Address) (*Name, bool) {
 
 // loadNamesSync synchronously loads names using a non-streaming context
 // This blocks until the names are fully loaded or an error occurs
-func (c *NamesCollection) loadNamesSync(chain string) error {
+func loadNamesSync(chain string) error {
 	// Lock to prevent race conditions during loading
 	namesStoreMu.Lock()
 	defer namesStoreMu.Unlock()
@@ -57,7 +57,7 @@ func (c *NamesCollection) loadNamesSync(chain string) error {
 
 // ensureLoadedSync ensures the names store is loaded synchronously
 // This will block until names are loaded or an error occurs
-func (c *NamesCollection) ensureLoadedSync(chain string) bool {
+func ensureLoadedSync(chain string) bool {
 	if namesStore == nil {
 		return false
 	}
@@ -68,7 +68,7 @@ func (c *NamesCollection) ensureLoadedSync(chain string) bool {
 	}
 
 	// Load names synchronously (this will acquire lock internally)
-	if err := c.loadNamesSync(chain); err != nil {
+	if err := loadNamesSync(chain); err != nil {
 		return false
 	}
 
