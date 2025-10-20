@@ -503,6 +503,7 @@ func (c *ExportsCollection) getStatementsStore(payload *types.Payload, facet typ
 			// EXISTING_CODE
 			// EXISTING_CODE
 			if it, ok := item.(*Statement); ok {
+				c.updateAssetChartsBucket(it)
 				return it
 			}
 			return nil

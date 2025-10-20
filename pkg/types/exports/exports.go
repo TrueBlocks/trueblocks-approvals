@@ -68,6 +68,7 @@ type ExportsCollection struct {
 	receiptsFacet      *facets.Facet[Receipt]
 	summary            types.Summary
 	summaryMutex       sync.RWMutex
+	collectionMutex    sync.RWMutex
 }
 
 func NewExportsCollection(payload *types.Payload) *ExportsCollection {

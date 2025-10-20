@@ -167,7 +167,7 @@ export const Monitors = () => {
     async (rowData: Record<string, unknown>) => {
       try {
         let payload = createPayload(
-          types.DataFacet.OPENAPPROVALS,
+          types.DataFacet.ASSETCHARTS,
         ) as types.NavigationPayload;
         payload.collection = 'exports';
         payload.recordId = String(rowData.address || '');

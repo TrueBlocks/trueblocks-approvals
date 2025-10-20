@@ -8,7 +8,9 @@
 
 package exports
 
-import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+import (
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+)
 
 func (c *ExportsCollection) GetBuckets(payload *types.Payload) (*types.Buckets, error) {
 	var facet types.BucketInterface
@@ -54,5 +56,34 @@ func (c *ExportsCollection) GetBuckets(payload *types.Payload) (*types.Buckets, 
 	}
 
 	buckets := facet.GetBuckets()
+	if payload.DataFacet == ExportsAssetCharts && c.assetchartsFacet != nil {
+		buckets = c.padSeries(buckets)
+	}
+
 	return buckets, nil
+}
+
+// padSeries applies edge padding to AssetCharts buckets
+func (c *ExportsCollection) padSeries(originalBuckets *types.Buckets) *types.Buckets {
+	if originalBuckets == nil || c.assetchartsFacet == nil {
+		return originalBuckets
+	}
+
+	c.collectionMutex.RLock()
+	defer c.collectionMutex.RUnlock()
+
+	paddedBuckets := &types.Buckets{
+		Series:   make(map[string][]types.Bucket),
+		GridInfo: originalBuckets.GridInfo,
+	}
+
+	// Use UpdateBuckets (which locks the series map) to add the padding
+	c.assetchartsFacet.UpdateBuckets(func(facetBuckets *types.Buckets) {
+		for seriesName, series := range facetBuckets.Series {
+			paddedSeries := padSeriesWithMetric(series, seriesName)
+			paddedBuckets.Series[seriesName] = paddedSeries
+		}
+	})
+
+	return paddedBuckets
 }

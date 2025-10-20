@@ -1,16 +1,20 @@
 package types
 
+import coreTypes "github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/types"
+
 type Buckets struct {
 	// Flexible series structure using named metrics
-	Series   map[string][]Bucket `json:"series"`
-	GridInfo GridInfo            `json:"gridInfo"`
+	Series     map[string][]Bucket        `json:"series"`
+	AssetNames map[string]*coreTypes.Name `json:"assetNames,omitempty"` // Maps series prefix to asset name
+	GridInfo   GridInfo                   `json:"gridInfo"`
 }
 
 // NewBuckets creates a new Buckets struct with proper initialization
 func NewBuckets() *Buckets {
 	return &Buckets{
-		Series:   make(map[string][]Bucket),
-		GridInfo: NewGridInfo(),
+		Series:     make(map[string][]Bucket),
+		AssetNames: make(map[string]*coreTypes.Name),
+		GridInfo:   NewGridInfo(),
 	}
 }
 
@@ -65,6 +69,16 @@ func (b *Buckets) UpdateSeries(name string, updateFunc func([]Bucket) []Bucket) 
 	}
 
 	b.Series[name] = updateFunc(series)
+}
+
+// SetAssetName stores the asset name for a series prefix (e.g., "0x1234567890ab_ETH")
+func (b *Buckets) SetAssetName(assetIdentifier string, assetName *coreTypes.Name) {
+	if b.AssetNames == nil {
+		b.AssetNames = make(map[string]*coreTypes.Name)
+	}
+	if assetName != nil {
+		b.AssetNames[assetIdentifier] = assetName
+	}
 }
 
 // BucketInterface defines bucket operations that facets must implement

@@ -52,6 +52,7 @@ type AppPreferences struct {
 	RecentProjects  []string          `json:"recentProjects"`
 	SilencedDialogs map[string]bool   `json:"silencedDialogs"`
 	ChunksMetrics   map[string]string `json:"chunksMetrics,omitempty"`
+	ExportsMetrics  map[string]string `json:"exportsMetrics,omitempty"`
 	Bounds          Bounds            `json:"bounds,omitempty"`
 }
 
@@ -76,6 +77,7 @@ func NewAppPreferences() *AppPreferences {
 		RecentProjects:  []string{},
 		SilencedDialogs: make(map[string]bool),
 		ChunksMetrics:   make(map[string]string),
+		ExportsMetrics:  make(map[string]string),
 		Bounds:          NewBounds(),
 	}
 }
