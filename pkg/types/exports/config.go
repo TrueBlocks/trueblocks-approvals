@@ -56,7 +56,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 			Store:         "openapprovals",
 			DividerBefore: false,
 			Fields:        getOpenapprovalsFields(),
-			Actions:       []string{},
+			Actions:       []string{"revoke"},
 			HeaderActions: []string{"export"},
 			RendererTypes: "panel",
 		},
@@ -142,6 +142,7 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "openapprovals", "approvallogs", "approvaltxs", "withdrawals", "assets", "assetcharts", "logs", "traces", "receipts"},
 		Actions: map[string]types.ActionConfig{
 			"export": {Name: "export", Label: "Export", Icon: "Export"},
+			"revoke": {Name: "revoke", Label: "Revoke", Icon: "Revoke"},
 		},
 	}
 
@@ -185,7 +186,6 @@ func getApprovaltxsFields() []types.FieldConfig {
 		{Section: "Overview", Key: "to"},
 		{Section: "Overview", Key: "value"},
 		{Section: "Gas", Key: "gasUsed"},
-		{Section: "", Key: "actions", NoDetail: true},
 		{Section: "Overview", Key: "timestamp", NoTable: true},
 		{Section: "Overview", Key: "input", NoTable: true},
 		{Section: "Overview", Key: "articulatedTx", NoTable: true},
@@ -198,6 +198,7 @@ func getApprovaltxsFields() []types.FieldConfig {
 		{Section: "Context", Key: "blockHash", NoTable: true},
 		{Section: "Details", Key: "nonce", NoTable: true},
 		{Section: "Details", Key: "type", NoTable: true},
+		{Section: "", Key: "actions", NoDetail: true},
 		// EXISTING_CODE
 	}
 	types.NormalizeFields(ret)
@@ -285,7 +286,7 @@ func getOpenapprovalsFields() []types.FieldConfig {
 		{Section: "Details", Key: "owner", Formatter: "address"},
 		{Section: "Details", Key: "token", Formatter: "address"},
 		{Section: "Details", Key: "spender", Formatter: "address"},
-		{Section: "Details", Key: "allowance", Formatter: "wei"},
+		{Section: "Details", Key: "allowance", Formatter: "weish"},
 		{Section: "Data", Key: "lastAppBlock", Formatter: "number", NoTable: true},
 		{Section: "Data", Key: "lastAppLogID", Formatter: "number", NoTable: true},
 		{Section: "Data", Key: "lastAppTs"},

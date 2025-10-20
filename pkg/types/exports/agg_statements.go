@@ -7,7 +7,6 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/logger"
 )
 
 // AssetCharts series strategy constants
@@ -78,13 +77,6 @@ func statementValueToFloat64(wei *base.Wei, decimals int) float64 {
 	ret := base.ToFloatWithDecimals(wei, decimals)
 	return ret.Float64()
 }
-
-// // timestampToBOD returns the ts to the beginning of the day
-// func timestampToBOD(ts base.Timestamp) base.Timestamp {
-// 	t := time.Unix(int64(ts), 0).UTC()
-// 	bod := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
-// 	return base.Timestamp(bod.Unix())
-// }
 
 // timestampToDailyBucket converts Unix timestamp to daily bucket identifier (YYYYMMDD)
 func timestampToDailyBucket(timestamp int64) string {
@@ -175,6 +167,7 @@ func (c *ExportsCollection) updateAssetChartsBucket(statement *Statement) {
 
 // padSeriesWithMetric adds front and back padding buckets for unified chart axes
 func padSeriesWithMetric(buckets []types.Bucket, seriesName string) []types.Bucket {
+	_ = seriesName // delint
 	nowDate := timestampToDailyBucket(time.Now().Unix())
 	if len(buckets) == 0 {
 		nowMinusOne := timestampToDailyBucket(time.Now().Unix() - 86400)
@@ -210,20 +203,27 @@ func padSeriesWithMetric(buckets []types.Bucket, seriesName string) []types.Buck
 
 	// Add front padding one day before earliest
 	if firstKey.BucketKey != "" {
+		dayBefore := func(dateStr string) (string, error) {
+			t, err := time.Parse("20060102", dateStr)
+			if err != nil {
+				return "", fmt.Errorf("invalid date format: %v", err)
+			}
+			previousDay := t.AddDate(0, 0, -1)
+			return previousDay.Format("20060102"), nil
+		}
+		db, _ := dayBefore(firstKey.BucketKey)
 		buckets = append([]types.Bucket{{
-			BucketKey:  firstKey.BucketKey,
+			BucketKey:  db,
 			Total:      0,
 			StartBlock: 0,
 			EndBlock:   0,
 			ColorValue: 0,
 		}}, buckets...)
-		logger.InfoG(fmt.Sprintf("prepending: %s %s", firstKey.BucketKey, buckets[0].BucketKey))
 	}
 
 	if latestKey.BucketKey != "" && nowDate > latestKey.BucketKey {
 		copy := latestKey
 		copy.BucketKey = nowDate
-		logger.InfoBY(fmt.Sprintf("appending: %s %s", buckets[len(buckets)-1].BucketKey, latestKey.BucketKey))
 		buckets = append(buckets, copy)
 	}
 
