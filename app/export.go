@@ -42,7 +42,7 @@ func (a *App) ExportData(payload *types.Payload) error {
 	cmd := "open \"" + exportFilename + "\""
 	exitCode := utils.System(cmd)
 	if exitCode != 0 {
-		logging.LogBackend(fmt.Sprintf("Failed to open export file, exit code: %d", exitCode))
+		logging.LogBEError(fmt.Sprintf("Failed to open export file, exit code: %d", exitCode))
 	}
 
 	statusMsg := fmt.Sprintf("Export completed: %s %s data", payload.Collection, payload.DataFacet)

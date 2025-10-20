@@ -103,7 +103,7 @@ func (c *ExportsCollection) GetPage(
 			}
 			for i := range result.Items {
 				if err := result.Items[i].EnsureCalcs(props, nil); err != nil {
-					logging.LogBackend(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
 				}
 			}
 			page.Statements, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
@@ -269,7 +269,7 @@ func (c *ExportsCollection) GetPage(
 			}
 			for i := range result.Items {
 				if err := result.Items[i].EnsureCalcs(props, nil); err != nil {
-					logging.LogBackend(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
 				}
 			}
 			page.Statements, page.TotalItems, page.State = result.Items, result.TotalItems, result.State
@@ -664,8 +664,6 @@ func (c *ExportsCollection) GetPageForRecord(
 			allData = result.Items
 		}
 
-		logging.LogBackend(fmt.Sprintf("GetPageForRecord: Searching for recordId='%s' in %d assets", recordId, len(allData)))
-
 		// Find the record index in the properly filtered and sorted data
 		recordIndex := -1
 		for i, asset := range allData {
@@ -678,19 +676,13 @@ func (c *ExportsCollection) GetPageForRecord(
 			}
 
 			// Log first few addresses and the exact comparison
-			if i < 10 {
-				logging.LogBackend(fmt.Sprintf("GetPageForRecord: Asset[%d] address='%s', comparing with target='%s'", i, fieldValue, recordId))
-			}
-
 			if strings.EqualFold(fieldValue, recordId) {
-				logging.LogBackend(fmt.Sprintf("GetPageForRecord: FOUND MATCH at index %d: '%s' == '%s'", i, fieldValue, recordId))
 				recordIndex = i
 				break
 			}
 		}
 
 		if recordIndex == -1 {
-			logging.LogBackend(fmt.Sprintf("GetPageForRecord: Record NOT FOUND. Searched %d assets for recordId='%s'", len(allData), recordId))
 			return nil, fmt.Errorf("record with ID %s not found in field %s", recordId, recordIdField)
 		}
 

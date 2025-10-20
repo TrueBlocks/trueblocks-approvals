@@ -66,7 +66,7 @@ func (c *ChunksCollection) getBloomsStore(payload *types.Payload, facet types.Da
 			if _, _, err := opts.ChunksBlooms(); err != nil {
 				// Create structured error with proper context
 				wrappedErr := types.NewSDKError("chunks", ChunksBlooms, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Chunks blooms SDK query error: %v", wrappedErr))
+				logging.LogBEWarning(fmt.Sprintf("Chunks blooms SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE
@@ -125,7 +125,7 @@ func (c *ChunksCollection) getIndexStore(payload *types.Payload, facet types.Dat
 			if _, _, err := opts.ChunksIndex(); err != nil {
 				// Create structured error with proper context
 				wrappedErr := types.NewSDKError("chunks", ChunksIndex, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Chunks index SDK query error: %v", wrappedErr))
+				logging.LogBEWarning(fmt.Sprintf("Chunks index SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE
@@ -188,7 +188,7 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 			if _, _, err := opts.ChunksManifest(); err != nil {
 				// Create structured error with proper context
 				wrappedErr := types.NewSDKError("chunks", ChunksManifest, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Chunks manifest SDK query error: %v", wrappedErr))
+				logging.LogBEWarning(fmt.Sprintf("Chunks manifest SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE
@@ -247,7 +247,7 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 			if _, _, err := opts.ChunksStats(); err != nil {
 				// Create structured error with proper context
 				wrappedErr := types.NewSDKError("chunks", ChunksStats, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Chunks stats SDK query error: %v", wrappedErr))
+				logging.LogBEWarning(fmt.Sprintf("Chunks stats SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE

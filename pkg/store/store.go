@@ -223,7 +223,7 @@ func (s *Store[T]) Fetch() error {
 						s.dataMap = &tempMap
 					}
 					if existingItem, ok := (*s.dataMap)[key]; ok {
-						logging.LogBackend(fmt.Sprintf("Store.Fetch: Overwriting item in dataMap for key key %s existing_item %v new_item %v", key, existingItem, itemPtr))
+						logging.LogBEWarning(fmt.Sprintf("Store.Fetch: Overwriting item in dataMap for key key %s existing_item %v new_item %v", key, existingItem, itemPtr))
 					}
 					(*s.dataMap)[key] = itemPtr
 				}

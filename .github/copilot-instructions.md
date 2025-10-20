@@ -13,6 +13,25 @@
 - **After backend changes**: Run `wails generate module` to update TypeScript bindings
 - **File deletion**: Use `rm -f` for files, `rm -R` for folders, ask confirmation, then explicitly remove from context memory
 
+### Step-by-Step Mode (Alternative Rules of Engagement)
+When I say "We want to go into step-by-step" mode, switch to these rules:
+
+🚫 **Never Run:**
+- `yarn lint`
+- `yarn test`
+- `yarn start`
+
+🛑 **Stop Between Steps:**
+- Never run amok or jump ahead
+- Stop after each step for your review and approval
+- Wait for you to say "go ahead" before proceeding
+
+📋 **Planning Process:**
+- Show you what I want to do WITHOUT modifying code first
+- Explain WHY I want to make each change
+- Wait for your approval before making any code changes
+- One step at a time with your review
+
 ### VS Code Problems Server Reset
 When VS Code shows stale errors for deleted files or incorrect TypeScript diagnostics:
 ```bash

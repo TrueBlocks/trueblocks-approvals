@@ -50,7 +50,7 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 			if _, _, err := listOpts.MonitorsList(); err != nil {
 				// Create structured error with proper context
 				wrappedErr := types.NewSDKError("monitors", MonitorsMonitors, "fetch", err)
-				logging.LogBackend(fmt.Sprintf("Monitors SDK query error: %v", wrappedErr))
+				logging.LogBEWarning(fmt.Sprintf("Monitors SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE

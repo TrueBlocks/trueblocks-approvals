@@ -95,7 +95,7 @@ func (c *{{.Class}}Collection) GetPage(
 			}
 			for i := range result.Items {
 				if err := result.Items[i].EnsureCalcs(props, nil); err != nil {
-					logging.LogBackend(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields for item %d: %v", i, err))
 				}
 			}
 			{{- end}}
