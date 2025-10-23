@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	dalle "github.com/TrueBlocks/trueblocks-dalle/v2"
 	"github.com/TrueBlocks/trueblocks-dalle/v2/pkg/model"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 

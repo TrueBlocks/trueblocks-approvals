@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	storePkg "github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 

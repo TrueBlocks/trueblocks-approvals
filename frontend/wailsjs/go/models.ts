@@ -1288,6 +1288,11 @@ export namespace status {
 
 export namespace types {
 	
+	export enum StoreState {
+	    STALE = "stale",
+	    FETCHING = "fetching",
+	    LOADED = "loaded",
+	}
 	export enum DataFacet {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",
@@ -1330,11 +1335,6 @@ export namespace types {
 	    SERIES = "series",
 	    DATABASES = "databases",
 	    GALLERY = "gallery",
-	}
-	export enum StoreState {
-	    STALE = "stale",
-	    FETCHING = "fetching",
-	    LOADED = "loaded",
 	}
 	export class AbiCalcs {
 	    name?: string;

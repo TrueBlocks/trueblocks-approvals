@@ -199,7 +199,6 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 			// EXISTING_CODE
 			// EXISTING_CODE
 			if it, ok := item.(*Manifest); ok {
-				c.updateManifestBucket(it)
 				return it
 			}
 			return nil

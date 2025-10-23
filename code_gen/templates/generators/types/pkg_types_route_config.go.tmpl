@@ -31,8 +31,14 @@ func (c *{{$class}}Collection) GetConfig() (*types.ViewConfig, error) {
 			Actions:       []string{ {{if ne (.RowActionsBe .Name) "\"\""}}{{.RowActionsBe .Name}}{{else}}{{end}} },
 			HeaderActions: []string{ {{if ne (.HeaderActionsBe .Name) "\"\""}}{{.HeaderActionsBe .Name}}{{else}}{{end}} },
 			RendererTypes: "{{.Renderer}}",
-			{{- if $isChunks}}
-						PanelChartConfig:   get{{.Name}}PanelChartConfig(),
+			{{- if .PanelChart }}
+				PanelChartConfig:   get{{.Name}}PanelConfig(),
+			{{- end}}
+			{{- if .FacetChart }}
+				FacetChartConfig:   get{{.Name}}FacetConfig(),
+			{{- end}}
+			{{- if .NavigateTo }}
+				RowAction:   {{.NavigateTo}},
 			{{- end}}
 		},
 		{{- end}}
@@ -55,11 +61,68 @@ func (c *{{$class}}Collection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 {{- range .Stores }}
+{{- $hasActions := false }}
+{{- $storeName := .Name }}
+{{- range $.Facets }}
+{{- if eq .StoreName $storeName }}
+{{- if .HasActions }}
+{{- $hasActions = true }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 func get{{firstUpper (toLower .Name)}}Fields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		// EXISTING_CODE
-		// EXISTING_CODE
+		{{- range .Members }}
+			{{- /* Skip array and pointer types */ -}}
+			{{- if or (contains .Type "[]") (contains .Type "*") }}
+				{{- /* Skip this field */ -}}
+			{{- else }}
+				{{- $section := .Section }}
+				{{- if eq $section "" }}
+					{{- $section = "General" }}
+				{{- end }}
+				{{- $formatter := "" }}
+				{{- /* Skip formatter if field name starts with 'n', ends with 'Bytes', or contains 'Per' */ -}}
+				{{- if or (hasPrefix .Name "n") (or (hasSuffix .Name "Bytes") (contains .Name "Per")) }}
+					{{- /* No formatter for these fields */ -}}
+				{{- else if eq .Type "address" }}
+					{{- $formatter = "address" }}
+				{{- else if or (hasSuffix .Name "Eth") (eq .Type "ether") }}
+					{{- $formatter = "ether" }}
+				{{- else if or (or (eq .Type "wei") (eq .Type "int256")) (eq .Type "uint256") }}
+					{{- $formatter = "wei" }}
+				{{- else if eq .Type "blkrange" }}
+					{{- $formatter = "blkrange" }}
+				{{- else if and (eq .Name "size") (contains .Description "on disc") }}
+					{{- $formatter = "calc.fileSize" }}
+				{{- else if or (hasSuffix .Name "num") (hasSuffix .Type "num") }}
+					{{- $formatter = "number" }}
+				{{- else if or (hasPrefix .Type "uint") (hasPrefix .Type "float") }}
+					{{- $formatter = "number" }}
+				{{- else if eq .Name "count" }}
+					{{- $formatter = "number" }}
+				{{- else if and (eq .Type "bool") (not (or (hasPrefix .Name "is") (hasPrefix .Name "has"))) }}
+					{{- $formatter = "boolean" }}
+				{{- else if hasSuffix (toLower .Name) "url" }}
+					{{- $formatter = "url" }}
+				{{- else if or (eq .Name "fileName") (hasSuffix .Name "Path") }}
+					{{- $formatter = "path" }}
+				{{- else if eq .Name "path" }}
+					{{- $formatter = "path" }}
+				{{- else if eq .Type "timestamp" }}
+					{{- $formatter = "datetime" }}
+				{{- else if or (eq .Type "hash") (eq .Type "ipfshash") }}
+					{{- $formatter = "hash" }}
+				{{- else if hasSuffix .Name "Date" }}
+					{{- $formatter = "datetime" }}
+				{{- end }}
+		{Section: "{{ $section }}", Key: "{{.Name}}"{{if ne $formatter ""}}, Formatter: "{{$formatter}}"{{end}}{{if .IsNoTable}}, NoTable: true{{end}}{{if .IsSortable}}, Sortable: true{{end}}},
+			{{- end }}
+		{{- end }}
+		{{- if $hasActions }}
+		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{{- end }}
 	}
 	types.NormalizeFields(ret)
 	return ret

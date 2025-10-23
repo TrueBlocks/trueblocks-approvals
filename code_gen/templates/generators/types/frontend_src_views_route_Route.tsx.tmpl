@@ -270,8 +270,8 @@ export const {{$class}} = () => {
       createDetailPanel(
         viewConfig,
         getCurrentDataFacet,
-{{- if eq .RendererTypes "panel" }}
-        renderers,
+{{- if .HasCustomPanel }}
+        renderers.panels,
 {{- end }}
       ),
     [viewConfig, getCurrentDataFacet],
@@ -285,9 +285,10 @@ export const {{$class}} = () => {
       currentColumns as unknown as import('@components').FormField<
         Record<string, unknown>
       >[],
-{{- if eq .RendererTypes "facet" }}
-    renderers: renderers(pageData, fetchData),
+{{- if .HasCustomFacet }}
+    renderers: renderers.facets,
 {{- end }}
+    viewName: ROUTE,
   });
 
   const perTabContent = useMemo(() => {
