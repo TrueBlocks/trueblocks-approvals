@@ -8,11 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Abis View
 
-// EXISTING_CODE
-
 Welcome to the **Abis** view! This section provides information about managing abis in your application.
-
-// EXISTING_CODE
 
 ## Facets
 

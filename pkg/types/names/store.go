@@ -26,7 +26,7 @@ type Name = sdk.Name
 // EXISTING_CODE
 
 var (
-	namesStore   *store.Store[Name]
+	namesStore   = make(map[string]*store.Store[Name])
 	namesStoreMu sync.Mutex
 )
 
@@ -37,14 +37,13 @@ func (c *NamesCollection) getNamesStore(payload *types.Payload, facet types.Data
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := namesStore
+	storeKey := getStoreKey(payload)
+	theStore := namesStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			listOpts := sdk.NamesOptions{
-				Globals:   sdk.Globals{Verbose: true, Chain: chain},
+				Globals:   sdk.Globals{Verbose: true, Chain: payload.ActiveChain},
 				RenderCtx: ctx,
 				All:       true,
 			}
@@ -76,23 +75,21 @@ func (c *NamesCollection) getNamesStore(payload *types.Payload, facet types.Data
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		namesStore = theStore
+		namesStore[storeKey] = theStore
 	}
 
 	return theStore
 }
 
-func (c *NamesCollection) GetStoreName(dataFacet types.DataFacet, chain, address string) string {
-	_ = chain
-	_ = address
+func (c *NamesCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
-	switch dataFacet {
+	switch facet {
 	case NamesAll:
 		name = "names-names"
 	case NamesCustom:
@@ -106,6 +103,7 @@ func (c *NamesCollection) GetStoreName(dataFacet types.DataFacet, chain, address
 	default:
 		return ""
 	}
+	name = fmt.Sprintf("%s-%s-%s", name, payload.ActiveChain, payload.ActiveAddress)
 	return name
 }
 
@@ -119,8 +117,8 @@ func GetNamesCollection(payload *types.Payload) *NamesCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	pl.Address = ""
-	pl.Chain = ""
+	pl.ActiveAddress = ""
+	pl.ActiveChain = ""
 
 	key := store.GetCollectionKey(&pl)
 	if collection, exists := collections[key]; exists {
@@ -130,6 +128,16 @@ func GetNamesCollection(payload *types.Payload) *NamesCollection {
 	collection := NewNamesCollection(payload)
 	collections[key] = collection
 	return collection
+}
+
+func getStoreKey(payload *types.Payload) string {
+	// EXISTING_CODE
+	if payload.DataFacet == NamesPrefund {
+		return payload.ActiveChain
+	}
+	// EXISTING_CODE
+	_ = payload
+	return "singleton"
 }
 
 // EXISTING_CODE

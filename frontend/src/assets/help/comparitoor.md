@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Comparitoor View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Comparitoor** view! This section provides information about managing comparitoor in your application.
 
 ## Facets
 

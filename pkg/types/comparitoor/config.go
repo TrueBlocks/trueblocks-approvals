@@ -18,6 +18,7 @@ func (c *ComparitoorCollection) GetConfig() (*types.ViewConfig, error) {
 		"comparitoor": {
 			Name:          "Comparitoor",
 			Store:         "transaction",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getTransactionFields(),
 			Actions:       []string{},

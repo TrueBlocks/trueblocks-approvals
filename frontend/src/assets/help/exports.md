@@ -8,9 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Exports View
 
-// EXISTING_CODE
-This is the help file for the Exports view.
-// EXISTING_CODE
+Welcome to the **Exports** view! This section provides information about managing exports in your application.
 
 ## Facets
 
@@ -135,20 +133,20 @@ This is the help file for the Exports view.
 
 - **Receipts Store (14 members)**
 
-  - logsBloom: 
-  - to: 
-  - cumulativeGasUsed: 
-  - effectiveGasPrice: 
-  - from: 
-  - blockHash: 
-  - blockNumber: 
-  - contractAddress: the address of the newly created contract, if any
+  - blockNumber: the number of the block
+  - transactionIndex: the zero-indexed position of the transaction in the block
+  - transactionHash: the hash of the transaction
+  - from: the sender of the transaction
+  - to: the recipient of the transaction
   - gasUsed: the amount of gas actually used by the transaction
-  - isError: 
-  - logs: a possibly empty array of logs
   - status: `1` on transaction suceess, `null` if tx precedes Byzantium, `0` otherwise
-  - transactionHash: 
-  - transactionIndex: 
+  - isError: whether the transaction resulted in an error
+  - contractAddress: the address of the newly created contract, if any
+  - cumulativeGasUsed: cumulative gas used
+  - effectiveGasPrice: effective gas price
+  - blockHash: the hash of the block
+  - logsBloom: the logs bloom filter
+  - logs: a possibly empty array of logs
 
 - **Statements Store (43 members)**
 

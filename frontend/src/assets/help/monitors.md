@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Monitors View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Monitors** view! This section provides information about managing monitors in your application.
 
 ## Facets
 

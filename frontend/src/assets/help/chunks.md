@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Chunks View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Chunks** view! This section provides information about managing chunks in your application.
 
 ## Facets
 

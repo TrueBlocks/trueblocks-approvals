@@ -18,9 +18,10 @@ import (
 )
 
 // EXISTING_CODE
+
 type NamesPage struct {
 	Facet         types.DataFacet  `json:"facet"`
-	Names         []*Name          `json:"names"`
+	Names         []Name           `json:"names"`
 	TotalItems    int              `json:"totalItems"`
 	ExpectedTotal int              `json:"expectedTotal"`
 	State         types.StoreState `json:"state"`
@@ -50,15 +51,15 @@ func (c *NamesCollection) GetPage(
 	sortSpec sdk.SortSpec,
 	filter string,
 ) (types.Page, error) {
+	filter = strings.ToLower(filter)
 	dataFacet := payload.DataFacet
-
 	page := &NamesPage{
 		Facet: dataFacet,
 	}
-	filter = strings.ToLower(filter)
+	_ = preprocessPage(c, page, payload, first, pageSize, sortSpec)
 
 	if c.shouldSummarize(payload) {
-		return c.getSummaryPage(dataFacet, payload.Period, first, pageSize, sortSpec, filter)
+		return c.getSummaryPage(dataFacet, payload.ActivePeriod, first, pageSize, sortSpec, filter)
 	}
 
 	switch dataFacet {
@@ -77,11 +78,9 @@ func (c *NamesCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("names", dataFacet, "GetPage", err)
 		} else {
-			all := make([]*Name, 0, len(result.Items))
-			for i := range result.Items {
-				all = append(all, &result.Items[i])
-			}
-			page.Names, page.TotalItems, page.State = all, result.TotalItems, result.State
+			page.Names = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesCustom:
@@ -98,11 +97,9 @@ func (c *NamesCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("names", dataFacet, "GetPage", err)
 		} else {
-			custom := make([]*Name, 0, len(result.Items))
-			for i := range result.Items {
-				custom = append(custom, &result.Items[i])
-			}
-			page.Names, page.TotalItems, page.State = custom, result.TotalItems, result.State
+			page.Names = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesPrefund:
@@ -119,11 +116,9 @@ func (c *NamesCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("names", dataFacet, "GetPage", err)
 		} else {
-			prefund := make([]*Name, 0, len(result.Items))
-			for i := range result.Items {
-				prefund = append(prefund, &result.Items[i])
-			}
-			page.Names, page.TotalItems, page.State = prefund, result.TotalItems, result.State
+			page.Names = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesRegular:
@@ -140,11 +135,9 @@ func (c *NamesCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("names", dataFacet, "GetPage", err)
 		} else {
-			regular := make([]*Name, 0, len(result.Items))
-			for i := range result.Items {
-				regular = append(regular, &result.Items[i])
-			}
-			page.Names, page.TotalItems, page.State = regular, result.TotalItems, result.State
+			page.Names = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	case NamesBaddress:
@@ -161,11 +154,9 @@ func (c *NamesCollection) GetPage(
 		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
 			return nil, types.NewStoreError("names", dataFacet, "GetPage", err)
 		} else {
-			baddress := make([]*Name, 0, len(result.Items))
-			for i := range result.Items {
-				baddress = append(baddress, &result.Items[i])
-			}
-			page.Names, page.TotalItems, page.State = baddress, result.TotalItems, result.State
+			page.Names = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
 	default:
@@ -189,7 +180,7 @@ func (c *NamesCollection) shouldSummarize(payload *types.Payload) bool {
 // getSummaryPage returns paginated summary data for a given period
 func (c *NamesCollection) getSummaryPage(
 	dataFacet types.DataFacet,
-	period string,
+	period types.Period,
 	first, pageSize int,
 	sortSpec sdk.SortSpec,
 	filter string,
@@ -220,7 +211,7 @@ func (c *NamesCollection) getSummaryPage(
 }
 
 // generateSummariesForPeriod ensures summaries are generated for the given period
-func (c *NamesCollection) generateSummariesForPeriod(dataFacet types.DataFacet, period string) error {
+func (c *NamesCollection) generateSummariesForPeriod(dataFacet types.DataFacet, period types.Period) error {
 	// TODO: Use this
 	_ = period
 	switch dataFacet {
@@ -229,6 +220,24 @@ func (c *NamesCollection) generateSummariesForPeriod(dataFacet types.DataFacet, 
 	default:
 		return fmt.Errorf("[generateSummariesForPeriod] unsupported dataFacet for summary: %v", dataFacet)
 	}
+}
+
+func preprocessPage(
+	c *NamesCollection,
+	page *NamesPage,
+	payload *types.Payload,
+	first, pageSize int,
+	sortSpec sdk.SortSpec,
+) error {
+	_ = page
+	_ = c
+	_ = payload
+	_ = first
+	_ = pageSize
+	_ = sortSpec
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return nil
 }
 
 // EXISTING_CODE

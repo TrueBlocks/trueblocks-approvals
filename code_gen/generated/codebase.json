@@ -33,6 +33,7 @@
                     "doc_route": "300-abis",
                     "doc_descr": "a human-readable representation of a Solidity smart contract",
                     "produced_by": "abis",
+                    "store_type": "chain-scoped",
                     "members": [
                         {
                             "name": "address",
@@ -135,7 +136,9 @@
                         {
                             "display_name": "Downloaded",
                             "name": "Downloaded",
-                            "store": "Abis",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Abis",
+                            "storeSource": "sdk",
                             "actions": [
                                 "remove",
                                 "export"
@@ -152,7 +155,9 @@
                         {
                             "display_name": "Known",
                             "name": "Known",
-                            "store": "Abis",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Abis",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -168,7 +173,9 @@
                         {
                             "display_name": "Functions",
                             "name": "Functions",
-                            "store": "Functions",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Functions",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -184,7 +191,9 @@
                         {
                             "display_name": "Events",
                             "name": "Events",
-                            "store": "Functions",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Functions",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -787,6 +796,7 @@
                     "doc_route": "500-chunks",
                     "doc_descr": "internal-use only data model detailing a single index chunk file",
                     "produced_by": "chunks",
+                    "store_type": "chain-scoped",
                     "members": [
                         {
                             "name": "range",
@@ -841,7 +851,9 @@
                         {
                             "display_name": "Stats",
                             "name": "Stats",
-                            "store": "Stats",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Stats",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -857,7 +869,9 @@
                         {
                             "display_name": "Index",
                             "name": "Index",
-                            "store": "Index",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Index",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -873,7 +887,9 @@
                         {
                             "display_name": "Blooms",
                             "name": "Blooms",
-                            "store": "Blooms",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Blooms",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -889,7 +905,9 @@
                         {
                             "display_name": "Manifest",
                             "name": "Manifest",
-                            "store": "Manifest",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Manifest",
+                            "storeSource": "sdk",
                             "actions": null,
                             "viewType": "canvas",
                             "renderer": "",
@@ -1849,7 +1867,9 @@
                         {
                             "display_name": "Statements",
                             "name": "Statements",
-                            "store": "Statements",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Statements",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1865,7 +1885,9 @@
                         {
                             "display_name": "Balances",
                             "name": "Balances",
-                            "store": "Balances",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Balances",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1881,7 +1903,9 @@
                         {
                             "display_name": "Transfers",
                             "name": "Transfers",
-                            "store": "Transfers",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Transfers",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1897,7 +1921,9 @@
                         {
                             "display_name": "Transactions",
                             "name": "Transactions",
-                            "store": "Transactions",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Transactions",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1913,7 +1939,9 @@
                         {
                             "display_name": "OpenApprovals",
                             "name": "OpenApprovals",
-                            "store": "OpenApprovals",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "OpenApprovals",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1929,7 +1957,9 @@
                         {
                             "display_name": "ApprovalLogs",
                             "name": "ApprovalLogs",
-                            "store": "ApprovalLogs",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "ApprovalLogs",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1945,7 +1975,9 @@
                         {
                             "display_name": "ApprovalTxs",
                             "name": "ApprovalTxs",
-                            "store": "ApprovalTxs",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "ApprovalTxs",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1961,7 +1993,9 @@
                         {
                             "display_name": "Withdrawals",
                             "name": "Withdrawals",
-                            "store": "Withdrawals",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Withdrawals",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1977,7 +2011,9 @@
                         {
                             "display_name": "Assets",
                             "name": "Assets",
-                            "store": "Assets",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Assets",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -1993,7 +2029,9 @@
                         {
                             "display_name": "AssetCharts",
                             "name": "AssetCharts",
-                            "store": "Statements",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Statements",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -2009,7 +2047,9 @@
                         {
                             "display_name": "Logs",
                             "name": "Logs",
-                            "store": "Logs",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Logs",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -2025,7 +2065,9 @@
                         {
                             "display_name": "Traces",
                             "name": "Traces",
-                            "store": "Traces",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Traces",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -2041,7 +2083,9 @@
                         {
                             "display_name": "Receipts",
                             "name": "Receipts",
-                            "store": "Receipts",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Receipts",
+                            "storeSource": "sdk",
                             "actions": [
                                 "export"
                             ],
@@ -2470,6 +2514,7 @@
                     "doc_descr": "a local file indicating a user's interest in an address. Includes caches for reconicilations, transactions, and appearances as well as an optional association to named account",
                     "produced_by": "monitors,list,export,slurp",
                     "cache_type": "marshal_only",
+                    "store_type": "chain-scoped",
                     "members": [
                         {
                             "name": "address",
@@ -2545,7 +2590,9 @@
                         {
                             "display_name": "Monitors",
                             "name": "Monitors",
-                            "store": "Monitors",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Monitors",
+                            "storeSource": "sdk",
                             "actions": [
                                 "delete",
                                 "undelete",
@@ -2583,6 +2630,7 @@
                     "doc_route": "400-names",
                     "doc_descr": "an association between a human-readable name and an address",
                     "produced_by": "names",
+                    "store_type": "singleton",
                     "members": [
                         {
                             "name": "address",
@@ -2715,7 +2763,9 @@
                         {
                             "display_name": "All",
                             "name": "All",
-                            "store": "Names",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Names",
+                            "storeSource": "sdk",
                             "actions": [
                                 "autoname",
                                 "create",
@@ -2734,7 +2784,9 @@
                         {
                             "display_name": "Custom",
                             "name": "Custom",
-                            "store": "Names",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Names",
+                            "storeSource": "sdk",
                             "actions": [
                                 "autoname",
                                 "create",
@@ -2758,7 +2810,9 @@
                         {
                             "display_name": "Prefund",
                             "name": "Prefund",
-                            "store": "Names",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Names",
+                            "storeSource": "sdk",
                             "actions": [
                                 "create",
                                 "export",
@@ -2776,7 +2830,9 @@
                         {
                             "display_name": "Regular",
                             "name": "Regular",
-                            "store": "Names",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Names",
+                            "storeSource": "sdk",
                             "actions": [
                                 "autoname",
                                 "create",
@@ -2795,7 +2851,9 @@
                         {
                             "display_name": "Baddress",
                             "name": "Baddress",
-                            "store": "Names",
+                            "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                            "storeName": "Names",
+                            "storeSource": "sdk",
                             "actions": [
                                 "create",
                                 "export"
@@ -2886,7 +2944,9 @@
                 {
                     "display_name": "Statements",
                     "name": "Statements",
-                    "store": "Statements",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Statements",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2902,7 +2962,9 @@
                 {
                     "display_name": "Balances",
                     "name": "Balances",
-                    "store": "Balances",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Balances",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2918,7 +2980,9 @@
                 {
                     "display_name": "Transfers",
                     "name": "Transfers",
-                    "store": "Transfers",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transfers",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2934,7 +2998,9 @@
                 {
                     "display_name": "Transactions",
                     "name": "Transactions",
-                    "store": "Transactions",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transactions",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2950,7 +3016,9 @@
                 {
                     "display_name": "OpenApprovals",
                     "name": "OpenApprovals",
-                    "store": "OpenApprovals",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "OpenApprovals",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2966,7 +3034,9 @@
                 {
                     "display_name": "ApprovalLogs",
                     "name": "ApprovalLogs",
-                    "store": "ApprovalLogs",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "ApprovalLogs",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2982,7 +3052,9 @@
                 {
                     "display_name": "ApprovalTxs",
                     "name": "ApprovalTxs",
-                    "store": "ApprovalTxs",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "ApprovalTxs",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -2998,7 +3070,9 @@
                 {
                     "display_name": "Withdrawals",
                     "name": "Withdrawals",
-                    "store": "Withdrawals",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Withdrawals",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -3014,7 +3088,9 @@
                 {
                     "display_name": "Assets",
                     "name": "Assets",
-                    "store": "Assets",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Assets",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -3030,7 +3106,9 @@
                 {
                     "display_name": "AssetCharts",
                     "name": "AssetCharts",
-                    "store": "Statements",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Statements",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -3046,7 +3124,9 @@
                 {
                     "display_name": "Logs",
                     "name": "Logs",
-                    "store": "Logs",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Logs",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -3062,7 +3142,9 @@
                 {
                     "display_name": "Traces",
                     "name": "Traces",
-                    "store": "Traces",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Traces",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -3078,7 +3160,9 @@
                 {
                     "display_name": "Receipts",
                     "name": "Receipts",
-                    "store": "Receipts",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Receipts",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -4167,6 +4251,7 @@
             "doc_descr": "a local file indicating a user's interest in an address. Includes caches for reconicilations, transactions, and appearances as well as an optional association to named account",
             "produced_by": "monitors,list,export,slurp",
             "cache_type": "marshal_only",
+            "store_type": "chain-scoped",
             "members": [
                 {
                     "name": "address",
@@ -4242,7 +4327,9 @@
                 {
                     "display_name": "Monitors",
                     "name": "Monitors",
-                    "store": "Monitors",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Monitors",
+                    "storeSource": "sdk",
                     "actions": [
                         "delete",
                         "undelete",
@@ -4632,95 +4719,126 @@
             "disable_go": true,
             "members": [
                 {
-                    "name": "blockHash",
-                    "type": "hash",
+                    "name": "blockNumber",
+                    "type": "blknum",
+                    "section": "Context",
                     "docOrder": 1,
+                    "description": "the number of the block",
                     "num": 1
                 },
                 {
-                    "name": "blockNumber",
-                    "type": "blknum",
+                    "name": "transactionIndex",
+                    "type": "txnum",
+                    "section": "Context",
                     "docOrder": 2,
+                    "description": "the zero-indexed position of the transaction in the block",
                     "num": 2
                 },
                 {
-                    "name": "contractAddress",
-                    "type": "address",
-                    "attributes": "readOnly",
+                    "name": "transactionHash",
+                    "type": "hash",
+                    "section": "Context",
                     "docOrder": 3,
-                    "description": "the address of the newly created contract, if any",
+                    "description": "the hash of the transaction",
                     "num": 3
-                },
-                {
-                    "name": "cumulativeGasUsed",
-                    "type": "gas",
-                    "upgrades": "2.5.8:string",
-                    "num": 4
                 },
                 {
                     "name": "from",
                     "type": "address",
-                    "attributes": "readOnly",
+                    "section": "Context",
+                    "docOrder": 4,
+                    "description": "the sender of the transaction",
+                    "num": 4
+                },
+                {
+                    "name": "to",
+                    "type": "address",
+                    "section": "Context",
+                    "docOrder": 5,
+                    "description": "the recipient of the transaction",
                     "num": 5
                 },
                 {
                     "name": "gasUsed",
                     "type": "gas",
-                    "docOrder": 4,
+                    "section": "Details",
+                    "docOrder": 6,
                     "description": "the amount of gas actually used by the transaction",
                     "num": 6
                 },
                 {
-                    "name": "effectiveGasPrice",
-                    "type": "gas",
+                    "name": "status",
+                    "type": "value",
+                    "section": "Details",
+                    "docOrder": 7,
+                    "upgrades": "2.5.9:uint32",
+                    "description": "`1` on transaction suceess, `null` if tx precedes Byzantium, `0` otherwise",
                     "num": 7
                 },
                 {
                     "name": "isError",
                     "type": "bool",
-                    "docOrder": 5,
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 8,
+                    "description": "whether the transaction resulted in an error",
                     "num": 8
                 },
                 {
-                    "name": "logs",
-                    "type": "Log",
-                    "attributes": "noui",
-                    "docOrder": 6,
-                    "description": "a possibly empty array of logs",
-                    "num": 9,
-                    "isArray": true
+                    "name": "contractAddress",
+                    "type": "address",
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 9,
+                    "description": "the address of the newly created contract, if any",
+                    "num": 9
+                },
+                {
+                    "name": "cumulativeGasUsed",
+                    "type": "gas",
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 10,
+                    "upgrades": "2.5.8:string",
+                    "description": "cumulative gas used",
+                    "num": 10
+                },
+                {
+                    "name": "effectiveGasPrice",
+                    "type": "gas",
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 11,
+                    "description": "effective gas price",
+                    "num": 11
+                },
+                {
+                    "name": "blockHash",
+                    "type": "hash",
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 12,
+                    "description": "the hash of the block",
+                    "num": 12
                 },
                 {
                     "name": "logsBloom",
                     "type": "string",
-                    "attributes": "noui|removed",
-                    "num": 10
-                },
-                {
-                    "name": "status",
-                    "type": "value",
-                    "docOrder": 7,
-                    "upgrades": "2.5.9:uint32",
-                    "description": "`1` on transaction suceess, `null` if tx precedes Byzantium, `0` otherwise",
-                    "num": 11
-                },
-                {
-                    "name": "to",
-                    "type": "address",
-                    "attributes": "readOnly",
-                    "num": 12
-                },
-                {
-                    "name": "transactionHash",
-                    "type": "hash",
-                    "docOrder": 8,
+                    "attributes": "noTable",
+                    "section": "Details",
+                    "docOrder": 13,
+                    "description": "the logs bloom filter",
                     "num": 13
                 },
                 {
-                    "name": "transactionIndex",
-                    "type": "txnum",
-                    "docOrder": 9,
-                    "num": 14
+                    "name": "logs",
+                    "type": "Log",
+                    "attributes": "noTable",
+                    "section": "Data",
+                    "docOrder": 14,
+                    "description": "a possibly empty array of logs",
+                    "num": 14,
+                    "isArray": true
                 }
             ]
         },
@@ -5887,6 +6005,7 @@
             "doc_route": "300-abis",
             "doc_descr": "a human-readable representation of a Solidity smart contract",
             "produced_by": "abis",
+            "store_type": "chain-scoped",
             "members": [
                 {
                     "name": "address",
@@ -5989,7 +6108,9 @@
                 {
                     "display_name": "Downloaded",
                     "name": "Downloaded",
-                    "store": "Abis",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Abis",
+                    "storeSource": "sdk",
                     "actions": [
                         "remove",
                         "export"
@@ -6006,7 +6127,9 @@
                 {
                     "display_name": "Known",
                     "name": "Known",
-                    "store": "Abis",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Abis",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -6022,7 +6145,9 @@
                 {
                     "display_name": "Functions",
                     "name": "Functions",
-                    "store": "Functions",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Functions",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -6038,7 +6163,9 @@
                 {
                     "display_name": "Events",
                     "name": "Events",
-                    "store": "Functions",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Functions",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -6060,6 +6187,7 @@
             "doc_route": "400-names",
             "doc_descr": "an association between a human-readable name and an address",
             "produced_by": "names",
+            "store_type": "singleton",
             "members": [
                 {
                     "name": "address",
@@ -6192,7 +6320,9 @@
                 {
                     "display_name": "All",
                     "name": "All",
-                    "store": "Names",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Names",
+                    "storeSource": "sdk",
                     "actions": [
                         "autoname",
                         "create",
@@ -6211,7 +6341,9 @@
                 {
                     "display_name": "Custom",
                     "name": "Custom",
-                    "store": "Names",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Names",
+                    "storeSource": "sdk",
                     "actions": [
                         "autoname",
                         "create",
@@ -6235,7 +6367,9 @@
                 {
                     "display_name": "Prefund",
                     "name": "Prefund",
-                    "store": "Names",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Names",
+                    "storeSource": "sdk",
                     "actions": [
                         "create",
                         "export",
@@ -6253,7 +6387,9 @@
                 {
                     "display_name": "Regular",
                     "name": "Regular",
-                    "store": "Names",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Names",
+                    "storeSource": "sdk",
                     "actions": [
                         "autoname",
                         "create",
@@ -6272,7 +6408,9 @@
                 {
                     "display_name": "Baddress",
                     "name": "Baddress",
-                    "store": "Names",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Names",
+                    "storeSource": "sdk",
                     "actions": [
                         "create",
                         "export"
@@ -7140,6 +7278,7 @@
             "doc_route": "500-chunks",
             "doc_descr": "internal-use only data model detailing a single index chunk file",
             "produced_by": "chunks",
+            "store_type": "chain-scoped",
             "members": [
                 {
                     "name": "range",
@@ -7194,7 +7333,9 @@
                 {
                     "display_name": "Stats",
                     "name": "Stats",
-                    "store": "Stats",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Stats",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -7210,7 +7351,9 @@
                 {
                     "display_name": "Index",
                     "name": "Index",
-                    "store": "Index",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Index",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -7226,7 +7369,9 @@
                 {
                     "display_name": "Blooms",
                     "name": "Blooms",
-                    "store": "Blooms",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Blooms",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -7242,7 +7387,9 @@
                 {
                     "display_name": "Manifest",
                     "name": "Manifest",
-                    "store": "Manifest",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Manifest",
+                    "storeSource": "sdk",
                     "actions": null,
                     "viewType": "canvas",
                     "renderer": "",
@@ -7330,7 +7477,9 @@
                 {
                     "display_name": "Dashboard",
                     "name": "Dashboard",
-                    "store": "Contracts",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Contracts",
+                    "storeSource": "sdk",
                     "actions": null,
                     "viewType": "canvas",
                     "renderer": "facet",
@@ -7344,7 +7493,9 @@
                 {
                     "display_name": "Execute",
                     "name": "Execute",
-                    "store": "Contracts",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Contracts",
+                    "storeSource": "sdk",
                     "actions": null,
                     "viewType": "canvas",
                     "renderer": "facet",
@@ -7358,7 +7509,9 @@
                 {
                     "display_name": "Events",
                     "name": "Events",
-                    "store": "Logs",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Logs",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -7802,6 +7955,7 @@
             "doc_route": "600-status",
             "doc_descr": "data model for various status facets",
             "produced_by": "status",
+            "store_type": "chain-scoped",
             "members": [
                 {
                     "name": "cachePath",
@@ -7952,7 +8106,9 @@
                 {
                     "display_name": "Status",
                     "name": "Status",
-                    "store": "Status",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Status",
+                    "storeSource": "sdk",
                     "actions": null,
                     "viewType": "canvas",
                     "renderer": "",
@@ -7966,7 +8122,9 @@
                 {
                     "display_name": "Caches",
                     "name": "Caches",
-                    "store": "Caches",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Caches",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -7982,7 +8140,9 @@
                 {
                     "display_name": "Chains",
                     "name": "Chains",
-                    "store": "Chains",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Chains",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -8354,7 +8514,9 @@
                 {
                     "display_name": "Generator",
                     "name": "Generator",
-                    "store": "DalleDress",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "DalleDress",
+                    "storeSource": "dalle",
                     "actions": [],
                     "viewType": "canvas",
                     "renderer": "facet",
@@ -8368,7 +8530,9 @@
                 {
                     "display_name": "Series",
                     "name": "Series",
-                    "store": "Series",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Series",
+                    "storeSource": "dalle",
                     "actions": [
                         "update",
                         "create",
@@ -8376,8 +8540,8 @@
                         "remove",
                         "export"
                     ],
-                    "viewType": "",
-                    "renderer": "",
+                    "viewType": "canvas",
+                    "renderer": "facet",
                     "navigate": "",
                     "attributes": "",
                     "disabled": false,
@@ -8388,7 +8552,9 @@
                 {
                     "display_name": "Databases",
                     "name": "Databases",
-                    "store": "Databases",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Databases",
+                    "storeSource": "dalle",
                     "actions": [
                         "export"
                     ],
@@ -8404,7 +8570,9 @@
                 {
                     "display_name": "Events",
                     "name": "Events",
-                    "store": "Logs",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Logs",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -8420,7 +8588,9 @@
                 {
                     "display_name": "Gallery",
                     "name": "Gallery",
-                    "store": "DalleDress",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "DalleDress",
+                    "storeSource": "dalle",
                     "actions": [
                         "export"
                     ],
@@ -8668,11 +8838,13 @@
                 {
                     "display_name": "Comparitoor",
                     "name": "Comparitoor",
-                    "store": "Transaction",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transaction",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
-                    "viewType": "",
+                    "viewType": "canvas",
                     "renderer": "facet",
                     "navigate": "",
                     "attributes": "",
@@ -8684,7 +8856,9 @@
                 {
                     "display_name": "Chifra",
                     "name": "Chifra",
-                    "store": "Transaction",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transaction",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -8700,7 +8874,9 @@
                 {
                     "display_name": "Etherscan",
                     "name": "Etherscan",
-                    "store": "Transaction",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transaction",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -8716,7 +8892,9 @@
                 {
                     "display_name": "Covalent",
                     "name": "Covalent",
-                    "store": "Transaction",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transaction",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],
@@ -8732,7 +8910,9 @@
                 {
                     "display_name": "Alchemy",
                     "name": "Alchemy",
-                    "store": "Transaction",
+                    "store": "NOT NEEDED AFTER LOAD - THIS MESSAGE PROVES IT",
+                    "storeName": "Transaction",
+                    "storeSource": "sdk",
                     "actions": [
                         "export"
                     ],

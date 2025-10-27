@@ -142,98 +142,19 @@ export namespace chunks {
 
 export namespace comparitoor {
 	
-	export class AnnotatedTransaction {
-	    articulatedTx?: types.Function;
-	    blockHash: base.Hash;
-	    blockNumber: number;
-	    from: base.Address;
-	    gas: number;
-	    gasPrice: number;
-	    gasUsed: number;
-	    hasToken: boolean;
-	    hash: base.Hash;
-	    input: string;
-	    isError: boolean;
-	    maxFeePerGas: number;
-	    maxPriorityFeePerGas: number;
-	    nonce: number;
-	    receipt?: types.Receipt;
-	    timestamp: number;
-	    to: base.Address;
-	    traces: types.Trace[];
-	    transactionIndex: number;
-	    type: string;
-	    // Go type: base
-	    value: any;
-	    calcs?: types.TransactionCalcs;
-	    statements?: types.Statement[];
-	    missing: boolean;
-	    unique: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new AnnotatedTransaction(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.articulatedTx = this.convertValues(source["articulatedTx"], types.Function);
-	        this.blockHash = this.convertValues(source["blockHash"], base.Hash);
-	        this.blockNumber = source["blockNumber"];
-	        this.from = this.convertValues(source["from"], base.Address);
-	        this.gas = source["gas"];
-	        this.gasPrice = source["gasPrice"];
-	        this.gasUsed = source["gasUsed"];
-	        this.hasToken = source["hasToken"];
-	        this.hash = this.convertValues(source["hash"], base.Hash);
-	        this.input = source["input"];
-	        this.isError = source["isError"];
-	        this.maxFeePerGas = source["maxFeePerGas"];
-	        this.maxPriorityFeePerGas = source["maxPriorityFeePerGas"];
-	        this.nonce = source["nonce"];
-	        this.receipt = this.convertValues(source["receipt"], types.Receipt);
-	        this.timestamp = source["timestamp"];
-	        this.to = this.convertValues(source["to"], base.Address);
-	        this.traces = this.convertValues(source["traces"], types.Trace);
-	        this.transactionIndex = source["transactionIndex"];
-	        this.type = source["type"];
-	        this.value = this.convertValues(source["value"], null);
-	        this.calcs = this.convertValues(source["calcs"], types.TransactionCalcs);
-	        this.statements = this.convertValues(source["statements"], types.Statement);
-	        this.missing = source["missing"];
-	        this.unique = source["unique"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice && a.map) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	export class ComparitoorPage {
 	    facet: types.DataFacet;
-	    transaction: AnnotatedTransaction[];
+	    transaction: types.Transaction[];
 	    totalItems: number;
 	    expectedTotal: number;
 	    state: types.StoreState;
-	    chifra: AnnotatedTransaction[];
+	    chifra: types.Transaction[];
 	    chifraCount: number;
-	    etherscan: AnnotatedTransaction[];
+	    etherscan: types.Transaction[];
 	    etherscanCount: number;
-	    covalent: AnnotatedTransaction[];
+	    covalent: types.Transaction[];
 	    covalentCount: number;
-	    alchemy: AnnotatedTransaction[];
+	    alchemy: types.Transaction[];
 	    alchemyCount: number;
 	    overlapCount: number;
 	    unionCount: number;
@@ -247,17 +168,17 @@ export namespace comparitoor {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.facet = source["facet"];
-	        this.transaction = this.convertValues(source["transaction"], AnnotatedTransaction);
+	        this.transaction = this.convertValues(source["transaction"], types.Transaction);
 	        this.totalItems = source["totalItems"];
 	        this.expectedTotal = source["expectedTotal"];
 	        this.state = source["state"];
-	        this.chifra = this.convertValues(source["chifra"], AnnotatedTransaction);
+	        this.chifra = this.convertValues(source["chifra"], types.Transaction);
 	        this.chifraCount = source["chifraCount"];
-	        this.etherscan = this.convertValues(source["etherscan"], AnnotatedTransaction);
+	        this.etherscan = this.convertValues(source["etherscan"], types.Transaction);
 	        this.etherscanCount = source["etherscanCount"];
-	        this.covalent = this.convertValues(source["covalent"], AnnotatedTransaction);
+	        this.covalent = this.convertValues(source["covalent"], types.Transaction);
 	        this.covalentCount = source["covalentCount"];
-	        this.alchemy = this.convertValues(source["alchemy"], AnnotatedTransaction);
+	        this.alchemy = this.convertValues(source["alchemy"], types.Transaction);
 	        this.alchemyCount = source["alchemyCount"];
 	        this.overlapCount = source["overlapCount"];
 	        this.unionCount = source["unionCount"];
@@ -1069,7 +990,7 @@ export namespace project {
 	    activeChain: string;
 	    contracts: string[];
 	    activeContract: string;
-	    activePeriod: string;
+	    activePeriod: types.Period;
 	    filterStates: Record<string, FilterState>;
 	
 	    static createFrom(source: any = {}) {
@@ -1288,11 +1209,6 @@ export namespace status {
 
 export namespace types {
 	
-	export enum StoreState {
-	    STALE = "stale",
-	    FETCHING = "fetching",
-	    LOADED = "loaded",
-	}
 	export enum DataFacet {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",
@@ -1335,6 +1251,20 @@ export namespace types {
 	    SERIES = "series",
 	    DATABASES = "databases",
 	    GALLERY = "gallery",
+	}
+	export enum StoreState {
+	    STALE = "stale",
+	    FETCHING = "fetching",
+	    LOADED = "loaded",
+	}
+	export enum Period {
+	    BLOCKLY = "blockly",
+	    HOURLY = "hourly",
+	    DAILY = "daily",
+	    WEEKLY = "weekly",
+	    MONTHLY = "monthly",
+	    QUARTERLY = "quarterly",
+	    ANNUAL = "annual",
 	}
 	export class AbiCalcs {
 	    name?: string;
@@ -2842,9 +2772,10 @@ export namespace types {
 	export class Payload {
 	    collection: string;
 	    dataFacet: DataFacet;
-	    chain?: string;
-	    address?: string;
-	    period?: string;
+	    activeChain?: string;
+	    activeAddress?: string;
+	    activePeriod?: Period;
+	    targetAddress?: string;
 	    format?: string;
 	    projectPath?: string;
 	
@@ -2856,9 +2787,10 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.collection = source["collection"];
 	        this.dataFacet = source["dataFacet"];
-	        this.chain = source["chain"];
-	        this.address = source["address"];
-	        this.period = source["period"];
+	        this.activeChain = source["activeChain"];
+	        this.activeAddress = source["activeAddress"];
+	        this.activePeriod = source["activePeriod"];
+	        this.targetAddress = source["targetAddress"];
 	        this.format = source["format"];
 	        this.projectPath = source["projectPath"];
 	    }
@@ -2866,7 +2798,7 @@ export namespace types {
 	export class ProjectPayload {
 	    hasProject: boolean;
 	    activeChain: string;
-	    activePeriod: string;
+	    activePeriod: Period;
 	    activeAddress: string;
 	    activeContract: string;
 	    lastView: string;
@@ -3021,9 +2953,10 @@ export namespace types {
 	export class RowActionPayload {
 	    collection: string;
 	    dataFacet: DataFacet;
-	    chain?: string;
-	    address?: string;
-	    period?: string;
+	    activeChain?: string;
+	    activeAddress?: string;
+	    activePeriod?: Period;
+	    targetAddress?: string;
 	    format?: string;
 	    projectPath?: string;
 	    rowData: Record<string, any>;
@@ -3038,9 +2971,10 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.collection = source["collection"];
 	        this.dataFacet = source["dataFacet"];
-	        this.chain = source["chain"];
-	        this.address = source["address"];
-	        this.period = source["period"];
+	        this.activeChain = source["activeChain"];
+	        this.activeAddress = source["activeAddress"];
+	        this.activePeriod = source["activePeriod"];
+	        this.targetAddress = source["targetAddress"];
 	        this.format = source["format"];
 	        this.projectPath = source["projectPath"];
 	        this.rowData = source["rowData"];

@@ -20,14 +20,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
 )
 
-// AnnotatedTransaction wraps sdk.Transaction with missing/unique flags for frontend rendering
-type AnnotatedTransaction struct {
-	sdk.Transaction
-	Missing bool `json:"missing"`
-	Unique  bool `json:"unique"`
-}
-
-type Transaction = AnnotatedTransaction
+type Transaction = sdk.Transaction
 
 // EXISTING_CODE
 
@@ -43,9 +36,7 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	storeKey := getStoreKey(chain, address)
+	storeKey := getStoreKey(payload)
 	theStore := transactionStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
@@ -94,7 +85,7 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -106,9 +97,9 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 	return theStore
 }
 
-func (c *ComparitoorCollection) GetStoreName(dataFacet types.DataFacet, chain, address string) string {
+func (c *ComparitoorCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
-	switch dataFacet {
+	switch facet {
 	case ComparitoorComparitoor:
 		name = "comparitoor-transaction"
 	case ComparitoorChifra:
@@ -122,7 +113,7 @@ func (c *ComparitoorCollection) GetStoreName(dataFacet types.DataFacet, chain, a
 	default:
 		return ""
 	}
-	name = fmt.Sprintf("%s-%s-%s", name, chain, address)
+	name = fmt.Sprintf("%s-%s-%s", name, payload.ActiveChain, payload.ActiveAddress)
 	return name
 }
 
@@ -136,7 +127,6 @@ func GetComparitoorCollection(payload *types.Payload) *ComparitoorCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-
 	key := store.GetCollectionKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
@@ -147,8 +137,10 @@ func GetComparitoorCollection(payload *types.Payload) *ComparitoorCollection {
 	return collection
 }
 
-func getStoreKey(chain, address string) string {
-	return fmt.Sprintf("%s_%s", chain, address)
+func getStoreKey(payload *types.Payload) string {
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return fmt.Sprintf("%s_%s", payload.ActiveChain, payload.ActiveAddress)
 }
 
 // EXISTING_CODE

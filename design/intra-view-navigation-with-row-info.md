@@ -30,11 +30,11 @@ The system follows a collection-specific pattern where each collection handles i
 // App layer delegates to collection-specific handlers
 func (a *App) HandleExportsRowAction(payload *types.RowActionPayload) error {
     collection := exports.GetExportsCollection(&types.Payload{
-        Collection: payload.Collection,
-        DataFacet:  payload.DataFacet,
-        Chain:      payload.Chain,
-        Address:    payload.Address,  // Critical for data fetching
-        Period:     payload.Period,
+        Collection:   payload.Collection,
+        DataFacet:    payload.DataFacet,
+        ActiveChain:  payload.ActiveChain,
+        Address:      payload.ActiveAddress,  // Critical for data fetching
+        ActivePeriod: payload.ActivePeriod,
     })
     return collection.HandleRowAction(payload)
 }
@@ -67,13 +67,13 @@ Critical lesson learned: Address context must be preserved and passed correctly 
 
 ```go
 // When traces/transactions data not loaded, create fresh collection with correct address
-if payload.Address != "" {
+if payload.ActiveAddress != "" {
     freshPayload := &types.Payload{
-        Collection: payload.Collection,
-        DataFacet:  ExportsTransactions, // or ExportsTraces
-        Chain:      payload.Chain,
-        Address:    payload.Address,      // Essential for SDK operations
-        Period:     payload.Period,
+        Collection:   payload.Collection,
+        DataFacet:    ExportsTransactions, // or ExportsTraces
+        ActiveChain:  payload.ActiveChain,
+        Address:      payload.ActiveAddress,      // Essential for SDK operations
+        ActivePeriod: payload.ActivePeriod,
     }
     freshCollection := GetExportsCollection(freshPayload)
     go func() {
@@ -131,20 +131,20 @@ func (c *ExportsCollection) searchInTransactions(searchCriteria map[string]inter
     
     if len(transactions) == 0 {
         // Trigger async fetch with proper address context
-        if payload.Address != "" {
+        if payload.ActiveAddress != "" {
             freshPayload := &types.Payload{
-                Collection: payload.Collection,
-                DataFacet:  ExportsTransactions,
-                Chain:      payload.Chain,
-                Address:    payload.Address,
-                Period:     payload.Period,
+                Collection:   payload.Collection,
+                DataFacet:    ExportsTransactions,
+                ActiveChain:  payload.ActiveChain,
+                Address:      payload.ActiveAddress,
+                ActivePeriod: payload.ActivePeriod,
             }
             freshCollection := GetExportsCollection(freshPayload)
             go func() {
                 freshCollection.FetchByFacet(ExportsTransactions)
             }()
         }
-        return nil, fmt.Errorf("transactions data not yet loaded - navigating to transactions facet where data will be fetched with address: %s", payload.Address)
+        return nil, fmt.Errorf("transactions data not yet loaded - navigating to transactions facet where data will be fetched with address: %s", payload.ActiveAddress)
     }
 
     // Search for matching transaction
@@ -206,13 +206,13 @@ func (c *ExportsCollection) searchInTraces(searchCriteria map[string]interface{}
 
 **Solution**: Always create fresh collections with the complete payload including address:
 ```go
-if payload.Address != "" {
+if payload.ActiveAddress != "" {
     freshPayload := &types.Payload{
-        Collection: payload.Collection,
-        DataFacet:  targetFacet,
-        Chain:      payload.Chain,
-        Address:    payload.Address,  // Must be included
-        Period:     payload.Period,
+        Collection:   payload.Collection,
+        DataFacet:    targetFacet,
+        ActiveChain:  payload.ActiveChain,
+        Address:      payload.ActiveAddress,  // Must be included
+        ActivePeriod: payload.ActivePeriod,
     }
     freshCollection := GetExportsCollection(freshPayload)
 }
@@ -251,7 +251,7 @@ if len(targetData) == 0 {
 ### 4. Collection Caching and Key Management
 **Problem**: Collections are cached by key, and improper key generation could lead to stale data.
 
-**Understanding**: The `GetExportsCollection()` function caches collections based on a key derived from the payload. This ensures that collections with the same address/chain combination reuse cached data but different addresses get fresh collections.
+**Understanding**: The `GetExportsCollection()` function caches collections based on a key derived from the payload. This ensures that collections with the same address/activeChain combination reuse cached data but different addresses get fresh collections.
 
 ### 5. Tab Highlighting Synchronization
 **Problem**: Mantine tabs didn't update highlights when facet changed via row actions.
@@ -555,11 +555,11 @@ function NavigationButton({ sourceRow, targetFacet, transactionHash }: Navigatio
 // Add to app/api_exports.go
 func (a *App) CheckTargetRowAvailability(payload *types.TargetCheckPayload) (*types.TargetAvailabilityResult, error) {
     collection := exports.GetExportsCollection(&types.Payload{
-        Collection: payload.Collection,
-        DataFacet:  payload.TargetFacet,
-        Chain:      payload.Chain,
-        Address:    payload.Address,
-        Period:     payload.Period,
+        Collection:   payload.Collection,
+        DataFacet:    payload.TargetFacet,
+        ActiveChain:  payload.ActiveChain,
+        Address:      payload.ActiveAddress,
+        ActivePeriod: payload.ActivePeriod,
     })
     
     return collection.CheckTargetAvailability(payload)
@@ -606,12 +606,12 @@ func (c *ExportsCollection) CheckTargetAvailability(payload *types.TargetCheckPa
 ```go
 // Add to pkg/types/payloads.go
 type TargetCheckPayload struct {
-    Collection  string `json:"collection"`
-    TargetFacet string `json:"targetFacet"`
-    Chain       string `json:"chain"`
-    Address     string `json:"address"`
-    Period      string `json:"period,omitempty"`
-    SearchHash  string `json:"searchHash"`
+    Collection   string `json:"collection"`
+    TargetFacet  string `json:"targetFacet"`
+    ActiveChain  string `json:"activeChain"`
+    Address      string `json:"address"`
+    ActivePeriod string `json:"activePeriod,omitempty"`
+    SearchHash   string `json:"searchHash"`
 }
 
 type TargetAvailabilityResult struct {

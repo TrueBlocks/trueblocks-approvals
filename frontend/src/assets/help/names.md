@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Names View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Names** view! This section provides information about managing names in your application.
 
 ## Facets
 

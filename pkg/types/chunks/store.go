@@ -29,16 +29,16 @@ type Stats = sdk.Stats
 // EXISTING_CODE
 
 var (
-	bloomsStore   *store.Store[Bloom]
+	bloomsStore   = make(map[string]*store.Store[Bloom])
 	bloomsStoreMu sync.Mutex
 
-	indexStore   *store.Store[Index]
+	indexStore   = make(map[string]*store.Store[Index])
 	indexStoreMu sync.Mutex
 
-	manifestStore   *store.Store[Manifest]
+	manifestStore   = make(map[string]*store.Store[Manifest])
 	manifestStoreMu sync.Mutex
 
-	statsStore   *store.Store[Stats]
+	statsStore   = make(map[string]*store.Store[Stats])
 	statsStoreMu sync.Mutex
 )
 
@@ -49,16 +49,15 @@ func (c *ChunksCollection) getBloomsStore(payload *types.Payload, facet types.Da
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := bloomsStore
+	storeKey := getStoreKey(payload)
+	theStore := bloomsStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ChunksOptions{
 				Globals: sdk.Globals{
 					Verbose: false, // Set to false to avoid weird output issues
-					Chain:   chain,
+					Chain:   payload.ActiveChain,
 				},
 				RenderCtx: ctx,
 			}
@@ -89,13 +88,13 @@ func (c *ChunksCollection) getBloomsStore(payload *types.Payload, facet types.Da
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		bloomsStore = theStore
+		bloomsStore[storeKey] = theStore
 	}
 
 	return theStore
@@ -108,16 +107,15 @@ func (c *ChunksCollection) getIndexStore(payload *types.Payload, facet types.Dat
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := indexStore
+	storeKey := getStoreKey(payload)
+	theStore := indexStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ChunksOptions{
 				Globals: sdk.Globals{
 					Verbose: true,
-					Chain:   chain,
+					Chain:   payload.ActiveChain,
 				},
 				RenderCtx: ctx,
 			}
@@ -152,13 +150,13 @@ func (c *ChunksCollection) getIndexStore(payload *types.Payload, facet types.Dat
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		indexStore = theStore
+		indexStore[storeKey] = theStore
 	}
 
 	return theStore
@@ -171,16 +169,15 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := manifestStore
+	storeKey := getStoreKey(payload)
+	theStore := manifestStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ChunksOptions{
 				Globals: sdk.Globals{
 					Verbose: true,
-					Chain:   chain,
+					Chain:   payload.ActiveChain,
 				},
 				RenderCtx: ctx,
 			}
@@ -210,13 +207,13 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		manifestStore = theStore
+		manifestStore[storeKey] = theStore
 	}
 
 	return theStore
@@ -229,16 +226,15 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := statsStore
+	storeKey := getStoreKey(payload)
+	theStore := statsStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ChunksOptions{
 				Globals: sdk.Globals{
 					Verbose: true,
-					Chain:   chain,
+					Chain:   payload.ActiveChain,
 				},
 				RenderCtx: ctx,
 			}
@@ -269,23 +265,21 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		statsStore = theStore
+		statsStore[storeKey] = theStore
 	}
 
 	return theStore
 }
 
-func (c *ChunksCollection) GetStoreName(dataFacet types.DataFacet, chain, address string) string {
-	_ = chain
-	_ = address
+func (c *ChunksCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
-	switch dataFacet {
+	switch facet {
 	case ChunksStats:
 		name = "chunks-stats"
 	case ChunksIndex:
@@ -297,6 +291,7 @@ func (c *ChunksCollection) GetStoreName(dataFacet types.DataFacet, chain, addres
 	default:
 		return ""
 	}
+	name = fmt.Sprintf("%s-%s-%s", name, payload.ActiveChain, payload.ActiveAddress)
 	return name
 }
 
@@ -310,8 +305,6 @@ func GetChunksCollection(payload *types.Payload) *ChunksCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	pl.Address = ""
-
 	key := store.GetCollectionKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
@@ -320,6 +313,12 @@ func GetChunksCollection(payload *types.Payload) *ChunksCollection {
 	collection := NewChunksCollection(payload)
 	collections[key] = collection
 	return collection
+}
+
+func getStoreKey(payload *types.Payload) string {
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return payload.ActiveChain
 }
 
 // EXISTING_CODE

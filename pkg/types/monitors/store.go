@@ -26,7 +26,7 @@ type Monitor = sdk.Monitor
 // EXISTING_CODE
 
 var (
-	monitorsStore   *store.Store[Monitor]
+	monitorsStore   = make(map[string]*store.Store[Monitor])
 	monitorsStoreMu sync.Mutex
 )
 
@@ -37,14 +37,13 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 	// EXISTING_CODE
 	// EXISTING_CODE
 
-	chain := payload.Chain
-	address := payload.Address
-	theStore := monitorsStore
+	storeKey := getStoreKey(payload)
+	theStore := monitorsStore[storeKey]
 	if theStore == nil {
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			listOpts := sdk.MonitorsOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: chain},
+				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
 				RenderCtx: ctx,
 			}
 			if _, _, err := listOpts.MonitorsList(); err != nil {
@@ -72,28 +71,27 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 			return nil, false
 		}
 
-		storeName := c.GetStoreName(facet, chain, address)
+		storeName := c.GetStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
 		// EXISTING_CODE
 
-		monitorsStore = theStore
+		monitorsStore[storeKey] = theStore
 	}
 
 	return theStore
 }
 
-func (c *MonitorsCollection) GetStoreName(dataFacet types.DataFacet, chain, address string) string {
-	_ = chain
-	_ = address
+func (c *MonitorsCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
-	switch dataFacet {
+	switch facet {
 	case MonitorsMonitors:
 		name = "monitors-monitors"
 	default:
 		return ""
 	}
+	name = fmt.Sprintf("%s-%s-%s", name, payload.ActiveChain, payload.ActiveAddress)
 	return name
 }
 
@@ -107,8 +105,6 @@ func GetMonitorsCollection(payload *types.Payload) *MonitorsCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	pl.Address = ""
-
 	key := store.GetCollectionKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
@@ -117,6 +113,12 @@ func GetMonitorsCollection(payload *types.Payload) *MonitorsCollection {
 	collection := NewMonitorsCollection(payload)
 	collections[key] = collection
 	return collection
+}
+
+func getStoreKey(payload *types.Payload) string {
+	// EXISTING_CODE
+	// EXISTING_CODE
+	return payload.ActiveChain
 }
 
 // EXISTING_CODE

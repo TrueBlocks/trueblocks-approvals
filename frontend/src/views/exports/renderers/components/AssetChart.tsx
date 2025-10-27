@@ -183,15 +183,19 @@ export const AssetChart = ({
     >
       <Stack
         gap="xs"
-        bg="var(--mantine-color-white)"
+        bg="var(--skin-surface-base)"
+        c="var(--skin-text-primary)"
         style={{
           padding: '3px',
           border: '2px solid var(--mantine-color-gray-3)',
         }}
       >
+        {/* Asset Header */}
         <div style={{ marginLeft: '8px' }}>
           <AssetHeader assetKey={assetKey} assetNames={assetNames} />
         </div>
+
+        {/* Chart */}
         <LineChart
           h={200}
           w="100%"
@@ -201,7 +205,7 @@ export const AssetChart = ({
           series={[
             {
               name: 'value',
-              color: 'blue.6',
+              color: 'var(--skin-text-primary)',
               label: `${formatAssetName(assetKey)} - ${selectedMetric}`,
             },
           ]}

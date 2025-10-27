@@ -16,22 +16,30 @@ function validatePayloadAddress(address: string, context: string) {
   }
 }
 
-// TODO: BOGUS - THIS SHOULD INCLUDE ACTIVE CONTRACT
+// Single payload function - backend decides what data to use for collection sharing
 export const usePayload = () => {
   const { activeAddress, activeChain, activePeriod } = useActiveProject();
   return useCallback(
-    (dataFacet: types.DataFacet, address?: string) => {
-      const finalAddress = address || activeAddress;
+    (dataFacet: types.DataFacet, targetAddress?: string) => {
       validatePayloadAddress(
-        finalAddress,
-        `usePayload - dataFacet: ${dataFacet}, provided address: ${address}, activeAddress: ${activeAddress}`,
+        activeAddress,
+        `usePayload - dataFacet: ${dataFacet}, activeAddress: ${activeAddress}`,
       );
+
+      // Validate targetAddress if provided
+      if (targetAddress) {
+        validatePayloadAddress(
+          targetAddress,
+          `usePayload - dataFacet: ${dataFacet}, targetAddress: ${targetAddress}`,
+        );
+      }
 
       return types.Payload.createFrom({
         dataFacet,
-        chain: activeChain,
-        address: finalAddress,
-        period: activePeriod,
+        activeChain: activeChain,
+        activeAddress: activeAddress,
+        activePeriod: activePeriod,
+        targetAddress: targetAddress || '', // Send specific target address when provided
       });
     },
     [activeChain, activeAddress, activePeriod],

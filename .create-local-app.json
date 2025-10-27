@@ -36,9 +36,7 @@
         "transactions": false,
         "transfers": true,
         "withdrawals": true
-      },
-      "disabled": false,
-      "facetOrder": ["assetcharts", "assets", "openapprovals", "approvallogs", "approvaltxs"]
+      }
     },
     "monitors": {
       "menuOrder": 30

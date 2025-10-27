@@ -18,6 +18,8 @@ navigate = "dresses|gallery|address|original"
 [[facets]]
 name = "Series"
 store = "dalle.Series"
+renderer = "facet"
+viewType = "canvas"
 actions = ["update","create","delete","remove","export"]
 
 [[facets]]

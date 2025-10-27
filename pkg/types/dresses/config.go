@@ -29,11 +29,12 @@ func (c *DressesCollection) GetConfig() (*types.ViewConfig, error) {
 		"series": {
 			Name:          "Series",
 			Store:         "series",
+			ViewType:      "canvas",
 			DividerBefore: false,
 			Fields:        getSeriesFields(),
 			Actions:       []string{"update", "delete", "remove"},
 			HeaderActions: []string{"create", "export"},
-			RendererTypes: "",
+			RendererTypes: "facet",
 		},
 		"databases": {
 			Name:          "Databases",

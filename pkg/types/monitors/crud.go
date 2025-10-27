@@ -17,12 +17,10 @@ func (c *MonitorsCollection) Crud(
 	op crud.Operation,
 	item interface{},
 ) error {
-	var monitor = &Monitor{Address: base.HexToAddress(payload.Address)}
+	var monitor = &Monitor{Address: base.HexToAddress(payload.ActiveAddress)}
 	if cast, ok := item.(*Monitor); ok && cast != nil {
 		monitor = cast
 	}
-
-	chain := payload.Chain
 
 	var err error
 	switch op {
@@ -30,21 +28,21 @@ func (c *MonitorsCollection) Crud(
 		opts := sdk.MonitorsOptions{
 			Addrs:   []string{monitor.Address.Hex()},
 			Remove:  true,
-			Globals: sdk.Globals{Chain: chain},
+			Globals: sdk.Globals{Chain: payload.ActiveChain},
 		}
 		_, _, err = opts.Monitors()
 	case crud.Delete:
 		opts := sdk.MonitorsOptions{
 			Addrs:   []string{monitor.Address.Hex()},
 			Delete:  true,
-			Globals: sdk.Globals{Cache: true, Chain: chain},
+			Globals: sdk.Globals{Cache: true, Chain: payload.ActiveChain},
 		}
 		_, _, err = opts.Monitors()
 	case crud.Undelete:
 		opts := sdk.MonitorsOptions{
 			Addrs:    []string{monitor.Address.Hex()},
 			Undelete: true,
-			Globals:  sdk.Globals{Cache: true, Chain: chain},
+			Globals:  sdk.Globals{Cache: true, Chain: payload.ActiveChain},
 		}
 		_, _, err = opts.Monitors()
 	default:
@@ -110,9 +108,8 @@ func (c *MonitorsCollection) updateMonitorInData(data []*Monitor, monitor *Monit
 }
 
 func (c *MonitorsCollection) Clean(payload *types.Payload, addresses []string) error {
-	chain := payload.Chain
 	opts := sdk.MonitorsOptions{
-		Globals: sdk.Globals{Cache: true, Chain: chain},
+		Globals: sdk.Globals{Cache: true, Chain: payload.ActiveChain},
 	}
 
 	if len(addresses) > 0 {

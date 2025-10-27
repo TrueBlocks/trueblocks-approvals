@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Dresses View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Dresses** view! This section provides information about managing dresses in your application.
 
 ## Facets
 

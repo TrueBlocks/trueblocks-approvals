@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Contracts View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Contracts** view! This section provides information about managing contracts in your application.
 
 ## Facets
 

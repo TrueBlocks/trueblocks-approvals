@@ -8,8 +8,7 @@ the code inside of 'EXISTING_CODE' tags.
 -->
 # Status View
 
-// EXISTING_CODE
-// EXISTING_CODE
+Welcome to the **Status** view! This section provides information about managing status in your application.
 
 ## Facets
 

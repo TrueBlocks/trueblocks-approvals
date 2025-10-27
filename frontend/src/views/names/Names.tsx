@@ -8,7 +8,8 @@
 // === SECTION 1: Imports & Dependencies ===
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { GetNamesPage, NamesCrud, Reload } from '@app';
+import { GetNamesPage, Reload } from '@app';
+import { NamesCrud } from '@app';
 import { BaseTab, usePagination } from '@components';
 import { Action, ConfirmModal, ExportFormatModal } from '@components';
 import { createDetailPanel } from '@components';
@@ -167,7 +168,6 @@ export const Names = () => {
     createPayload,
     getCurrentDataFacet,
   });
-
   const { handleAutoname, handleRemove, handleToggle, handleUpdate } = handlers;
   const headerActions = useMemo(() => {
     if (!config.headerActions.length) return null;
