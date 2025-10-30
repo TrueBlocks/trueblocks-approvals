@@ -547,17 +547,6 @@ func (c *ExportsCollection) AccumulateItem(item interface{}, summary *types.Summ
 		balanceCount++
 		summary.CustomData["balancesCount"] = balanceCount
 
-	case *Asset:
-		summary.TotalCount++
-		summary.FacetCounts[ExportsAssets]++
-		if summary.CustomData == nil {
-			summary.CustomData = make(map[string]interface{})
-		}
-
-		assetCount, _ := summary.CustomData["assetsCount"].(int)
-		assetCount++
-		summary.CustomData["assetsCount"] = assetCount
-
 	case *Transaction:
 		summary.TotalCount++
 		summary.FacetCounts[ExportsTransactions]++
