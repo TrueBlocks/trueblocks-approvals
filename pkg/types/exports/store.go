@@ -21,19 +21,21 @@ import (
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
 )
 
-type OpenApproval = sdk.Approval
-type ApprovalLog = sdk.Log
-type ApprovalTx = sdk.Transaction
-type Asset = sdk.Asset
-type Assetchart = sdk.Statement
-type Balance = sdk.Balance
-type Log = sdk.Log
-type Receipt = sdk.Receipt
-type Statement = sdk.Statement
-type Trace = sdk.Trace
-type Transaction = sdk.Transaction
-type Transfer = sdk.Transfer
-type Withdrawal = sdk.Withdrawal
+type (
+	OpenApproval = sdk.Approval
+	ApprovalLog  = sdk.Log
+	ApprovalTx   = sdk.Transaction
+	Asset        = sdk.Statement
+	Assetchart   = sdk.Statement
+	Balance      = sdk.Balance
+	Log          = sdk.Log
+	Receipt      = sdk.Receipt
+	Statement    = sdk.Statement
+	Trace        = sdk.Trace
+	Transaction  = sdk.Transaction
+	Transfer     = sdk.Transfer
+	Withdrawal   = sdk.Withdrawal
+)
 
 // EXISTING_CODE
 
