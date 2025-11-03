@@ -17,25 +17,23 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
-type (
-	OpenApproval = sdk.Approval
-	ApprovalLog  = sdk.Log
-	ApprovalTx   = sdk.Transaction
-	Asset        = sdk.Statement
-	Assetchart   = sdk.Statement
-	Balance      = sdk.Balance
-	Log          = sdk.Log
-	Receipt      = sdk.Receipt
-	Statement    = sdk.Statement
-	Trace        = sdk.Trace
-	Transaction  = sdk.Transaction
-	Transfer     = sdk.Transfer
-	Withdrawal   = sdk.Withdrawal
-)
+type OpenApproval = sdk.Approval
+type ApprovalLog = sdk.Log
+type ApprovalTx = sdk.Transaction
+type Asset = sdk.Statement
+type Assetchart = sdk.Statement
+type Balance = sdk.Balance
+type Log = sdk.Log
+type Receipt = sdk.Receipt
+type Statement = sdk.Statement
+type Trace = sdk.Trace
+type Transaction = sdk.Transaction
+type Transfer = sdk.Transfer
+type Withdrawal = sdk.Withdrawal
 
 // EXISTING_CODE
 
@@ -104,28 +102,26 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 		}
 
 		processFunc := func(item interface{}) *ApprovalLog {
-			// EXISTING_CODE
-			if tx, ok := item.(*sdk.Transaction); ok {
-				for _, log := range tx.Receipt.Logs {
-					if len(log.Topics) > 0 {
-						return (*ApprovalLog)(&log)
+			if it, ok := item.(*ApprovalLog); ok {
+				// EXISTING_CODE
+				if tx, ok := item.(*sdk.Transaction); ok {
+					for _, log := range tx.Receipt.Logs {
+						if len(log.Topics) > 0 {
+							return (*ApprovalLog)(&log)
+						}
 					}
 				}
-			}
-			// EXISTING_CODE
-			if it, ok := item.(*ApprovalLog); ok {
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *ApprovalLog) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *ApprovalLog) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -164,21 +160,19 @@ func (c *ExportsCollection) getApprovalTxsStore(payload *types.Payload, facet ty
 		}
 
 		processFunc := func(item interface{}) *ApprovalTx {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*ApprovalTx); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *ApprovalTx) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *ApprovalTx) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -203,13 +197,14 @@ func (c *ExportsCollection) getAssetsStore(payload *types.Payload, facet types.D
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			exportOpts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Accounting: true, // Enable accounting for statements
 			}
-			if _, _, err := exportOpts.ExportAssets(); err != nil {
-				wrappedErr := types.NewSDKError("exports", ExportsAssets, "fetch", err)
-				logging.LogBEWarning(fmt.Sprintf("Exports assets SDK query error: %v", wrappedErr))
+			if _, _, err := exportOpts.ExportStatements(); err != nil {
+				wrappedErr := types.NewSDKError("exports", ExportsStatements, "fetch", err)
+				logging.LogBEWarning(fmt.Sprintf("Exports statements SDK query error: %v", wrappedErr))
 				return wrappedErr
 			}
 			// EXISTING_CODE
@@ -217,24 +212,38 @@ func (c *ExportsCollection) getAssetsStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Asset {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Asset); ok {
+				// EXISTING_CODE
+				if existing, ok := theStore.GetItemFromMap(it.Asset.Hex()); ok {
+					it.StatementId = existing.StatementId + 1
+				} else {
+					it.StatementId = 1
+				}
+				// EXISTING_CODE
+				c.updateAssetsBucket(it)
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Asset) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Asset) (key string, includeInMap bool) {
+			testVal := item.Asset.Hex()
+			return testVal, testVal != ""
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
+		theStore.SetMapSortFunc(func(a, b *Asset) bool {
+			if a.StatementId == b.StatementId {
+				if a.SpotPrice.Equal(&b.SpotPrice) {
+					return a.Asset.Hex() < b.Asset.Hex()
+				}
+				return a.SpotPrice.GreaterThan(&b.SpotPrice)
+			}
+			return a.StatementId > b.StatementId
+		})
 		// EXISTING_CODE
 
 		assetsStore[storeKey] = theStore
@@ -270,21 +279,19 @@ func (c *ExportsCollection) getBalancesStore(payload *types.Payload, facet types
 		}
 
 		processFunc := func(item interface{}) *Balance {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Balance); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Balance) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Balance) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -324,21 +331,19 @@ func (c *ExportsCollection) getLogsStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Log {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Log); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Log) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Log) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -378,21 +383,19 @@ func (c *ExportsCollection) getOpenApprovalsStore(payload *types.Payload, facet 
 		}
 
 		processFunc := func(item interface{}) *OpenApproval {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*OpenApproval); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *OpenApproval) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *OpenApproval) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -432,21 +435,19 @@ func (c *ExportsCollection) getReceiptsStore(payload *types.Payload, facet types
 		}
 
 		processFunc := func(item interface{}) *Receipt {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Receipt); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Receipt) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Receipt) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -486,22 +487,21 @@ func (c *ExportsCollection) getStatementsStore(payload *types.Payload, facet typ
 		}
 
 		processFunc := func(item interface{}) *Statement {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Statement); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				c.updateStatementsBucket(it)
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Statement) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Statement) (key string, includeInMap bool) {
+			testVal := item.Asset.Hex()
+			return testVal, testVal != ""
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -541,21 +541,19 @@ func (c *ExportsCollection) getTracesStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Trace {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Trace); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Trace) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Trace) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -594,21 +592,19 @@ func (c *ExportsCollection) getTransactionsStore(payload *types.Payload, facet t
 		}
 
 		processFunc := func(item interface{}) *Transaction {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Transaction); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Transaction) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Transaction) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -648,21 +644,19 @@ func (c *ExportsCollection) getTransfersStore(payload *types.Payload, facet type
 		}
 
 		processFunc := func(item interface{}) *Transfer {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Transfer); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Transfer) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Transfer) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -701,21 +695,19 @@ func (c *ExportsCollection) getWithdrawalsStore(payload *types.Payload, facet ty
 		}
 
 		processFunc := func(item interface{}) *Withdrawal {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Withdrawal); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Withdrawal) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Withdrawal) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -727,7 +719,7 @@ func (c *ExportsCollection) getWithdrawalsStore(payload *types.Payload, facet ty
 	return theStore
 }
 
-func (c *ExportsCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *ExportsCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case ExportsStatements:
@@ -764,7 +756,7 @@ func (c *ExportsCollection) GetStoreName(payload *types.Payload, facet types.Dat
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*ExportsCollection)
+	collections   = make(map[string]*ExportsCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -773,7 +765,7 @@ func GetExportsCollection(payload *types.Payload) *ExportsCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}
@@ -785,6 +777,10 @@ func GetExportsCollection(payload *types.Payload) *ExportsCollection {
 
 func getStoreKey(payload *types.Payload) string {
 	// EXISTING_CODE
+	if payload.DataFacet == ExportsAssets {
+		key := payload.ActiveChain
+		return key
+	}
 	// EXISTING_CODE
 	return fmt.Sprintf("%s_%s", payload.ActiveChain, payload.ActiveAddress)
 }

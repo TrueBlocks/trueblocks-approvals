@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Monitor = sdk.Monitor
@@ -57,21 +57,19 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 		}
 
 		processFunc := func(item interface{}) *Monitor {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Monitor); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Monitor) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Monitor) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -83,7 +81,7 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 	return theStore
 }
 
-func (c *MonitorsCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *MonitorsCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case MonitorsMonitors:
@@ -96,7 +94,7 @@ func (c *MonitorsCollection) GetStoreName(payload *types.Payload, facet types.Da
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*MonitorsCollection)
+	collections   = make(map[string]*MonitorsCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -105,7 +103,7 @@ func GetMonitorsCollection(payload *types.Payload) *MonitorsCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

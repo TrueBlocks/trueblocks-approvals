@@ -20,7 +20,7 @@ func (c *AbisCollection) GetConfig() (*types.ViewConfig, error) {
 			Store:         "abis",
 			DividerBefore: false,
 			Fields:        getAbisFields(),
-			Actions:       []string{"remove"},
+			Actions:       []string{"autoname", "remove"},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
 		},
@@ -58,8 +58,9 @@ func (c *AbisCollection) GetConfig() (*types.ViewConfig, error) {
 		Facets:     facets,
 		FacetOrder: []string{"downloaded", "known", "functions", "events"},
 		Actions: map[string]types.ActionConfig{
-			"export": {Name: "export", Label: "Export", Icon: "Export"},
-			"remove": {Name: "remove", Label: "Remove", Icon: "Remove"},
+			"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
+			"export":   {Name: "export", Label: "Export", Icon: "Export"},
+			"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
 		},
 	}
 
@@ -71,9 +72,9 @@ func (c *AbisCollection) GetConfig() (*types.ViewConfig, error) {
 
 func getAbisFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Identity", Key: "address", Formatter: "address"},
+		{Section: "Identity", Key: "address", Type: "address"},
 		{Section: "Identity", Key: "name"},
-		{Section: "Identity", Key: "path", Formatter: "path", NoTable: true},
+		{Section: "Identity", Key: "path", Type: "path", NoTable: true},
 		{Section: "Statistics", Key: "nFunctions"},
 		{Section: "Statistics", Key: "nEvents"},
 		{Section: "Statistics", Key: "fileSize"},
@@ -81,10 +82,10 @@ func getAbisFields() []types.FieldConfig {
 		{Section: "Properties", Key: "isKnown", NoTable: true},
 		{Section: "Properties", Key: "hasConstructor", NoTable: true},
 		{Section: "Properties", Key: "hasFallback", NoTable: true},
-		{Section: "Metadata", Key: "lastModDate", Formatter: "datetime"},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{Section: "Metadata", Key: "lastModDate", Type: "datetime"},
+		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 
@@ -95,14 +96,14 @@ func getFunctionsFields() []types.FieldConfig {
 		{Section: "Overview", Key: "encoding"},
 		{Section: "Overview", Key: "signature"},
 		{Section: "Properties", Key: "stateMutability"},
-		{Section: "Properties", Key: "constant", Formatter: "boolean"},
-		{Section: "Properties", Key: "anonymous", Formatter: "boolean", NoTable: true},
+		{Section: "Properties", Key: "constant", Type: "boolean"},
+		{Section: "Properties", Key: "anonymous", Type: "boolean", NoTable: true},
 		{Section: "Parameters", Key: "inputs", NoTable: true},
 		{Section: "Parameters", Key: "outputs", NoTable: true},
 		{Section: "Parameters", Key: "message", NoTable: true},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 

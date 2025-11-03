@@ -371,7 +371,7 @@ export namespace exports {
 	    facet: types.DataFacet;
 	    approvallogs: types.Log[];
 	    approvaltxs: types.Transaction[];
-	    assets: types.Name[];
+	    assets: types.Statement[];
 	    balances: types.Token[];
 	    logs: types.Log[];
 	    openapprovals: types.Approval[];
@@ -394,7 +394,7 @@ export namespace exports {
 	        this.facet = source["facet"];
 	        this.approvallogs = this.convertValues(source["approvallogs"], types.Log);
 	        this.approvaltxs = this.convertValues(source["approvaltxs"], types.Transaction);
-	        this.assets = this.convertValues(source["assets"], types.Name);
+	        this.assets = this.convertValues(source["assets"], types.Statement);
 	        this.balances = this.convertValues(source["balances"], types.Token);
 	        this.logs = this.convertValues(source["logs"], types.Log);
 	        this.openapprovals = this.convertValues(source["openapprovals"], types.Approval);
@@ -1210,10 +1210,6 @@ export namespace status {
 export namespace types {
 	
 	export enum DataFacet {
-	    DOWNLOADED = "downloaded",
-	    KNOWN = "known",
-	    FUNCTIONS = "functions",
-	    EVENTS = "events",
 	    STATS = "stats",
 	    INDEX = "index",
 	    BLOOMS = "blooms",
@@ -1225,12 +1221,15 @@ export namespace types {
 	    ALCHEMY = "alchemy",
 	    DASHBOARD = "dashboard",
 	    EXECUTE = "execute",
-	    MONITORS = "monitors",
+	    EVENTS = "events",
 	    ALL = "all",
 	    CUSTOM = "custom",
 	    PREFUND = "prefund",
 	    REGULAR = "regular",
 	    BADDRESS = "baddress",
+	    DOWNLOADED = "downloaded",
+	    KNOWN = "known",
+	    FUNCTIONS = "functions",
 	    STATEMENTS = "statements",
 	    BALANCES = "balances",
 	    TRANSFERS = "transfers",
@@ -1244,6 +1243,7 @@ export namespace types {
 	    LOGS = "logs",
 	    TRACES = "traces",
 	    RECEIPTS = "receipts",
+	    MONITORS = "monitors",
 	    STATUS = "status",
 	    CACHES = "caches",
 	    CHAINS = "chains",
@@ -2135,7 +2135,7 @@ export namespace types {
 	    header: string;
 	    width: number;
 	    sortable: boolean;
-	    formatter: string;
+	    type: string;
 	    order: number;
 	
 	    static createFrom(source: any = {}) {
@@ -2148,7 +2148,7 @@ export namespace types {
 	        this.header = source["header"];
 	        this.width = source["width"];
 	        this.sortable = source["sortable"];
-	        this.formatter = source["formatter"];
+	        this.type = source["type"];
 	        this.order = source["order"];
 	    }
 	}
@@ -2209,28 +2209,28 @@ export namespace types {
 		}
 	}
 	
-	export class DetailFieldConfig {
+	export class DetailRendererConfig {
 	    key: string;
 	    label: string;
-	    formatter: string;
+	    type: string;
 	    detailOrder: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new DetailFieldConfig(source);
+	        return new DetailRendererConfig(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.key = source["key"];
 	        this.label = source["label"];
-	        this.formatter = source["formatter"];
+	        this.type = source["type"];
 	        this.detailOrder = source["detailOrder"];
 	    }
 	}
 	export class DetailPanelConfig {
 	    title: string;
 	    collapsed: boolean;
-	    fields: DetailFieldConfig[];
+	    fields: DetailRendererConfig[];
 	
 	    static createFrom(source: any = {}) {
 	        return new DetailPanelConfig(source);
@@ -2240,7 +2240,7 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.title = source["title"];
 	        this.collapsed = source["collapsed"];
-	        this.fields = this.convertValues(source["fields"], DetailFieldConfig);
+	        this.fields = this.convertValues(source["fields"], DetailRendererConfig);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -2261,6 +2261,7 @@ export namespace types {
 		    return a;
 		}
 	}
+	
 	export class FacetChartConfig {
 	    seriesStrategy?: string;
 	    seriesPrefixLen?: number;
@@ -2422,7 +2423,7 @@ export namespace types {
 	export class FieldConfig {
 	    key: string;
 	    label: string;
-	    formatter: string;
+	    type: string;
 	    section: string;
 	    width: number;
 	    sortable: boolean;
@@ -2437,7 +2438,7 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.key = source["key"];
 	        this.label = source["label"];
-	        this.formatter = source["formatter"];
+	        this.type = source["type"];
 	        this.section = source["section"];
 	        this.width = source["width"];
 	        this.sortable = source["sortable"];

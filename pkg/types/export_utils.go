@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 // ExportData is the unified export function that handles file creation with proper extension and format
@@ -35,7 +35,7 @@ func ExportData[T any](data []T, payload *Payload, typeName string) (string, err
 	addressPart := "noaddr"
 	if address != "" && address != "0x0" {
 		if len(address) >= 10 {
-			addressPart = address[:6] + "-" + address[len(address)-4:]
+			addressPart = address[:7] + "-" + address[len(address)-4:]
 		} else {
 			addressPart = address
 		}

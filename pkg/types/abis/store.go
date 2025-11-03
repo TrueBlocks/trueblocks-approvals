@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Parameter = sdk.Parameter
@@ -62,21 +62,19 @@ func (c *AbisCollection) getAbisStore(payload *types.Payload, facet types.DataFa
 		}
 
 		processFunc := func(item interface{}) *Abi {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Abi); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Abi) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Abi) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -115,21 +113,19 @@ func (c *AbisCollection) getFunctionsStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Function {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Function); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Function) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Function) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -141,7 +137,7 @@ func (c *AbisCollection) getFunctionsStore(payload *types.Payload, facet types.D
 	return theStore
 }
 
-func (c *AbisCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *AbisCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case AbisDownloaded:
@@ -160,7 +156,7 @@ func (c *AbisCollection) GetStoreName(payload *types.Payload, facet types.DataFa
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*AbisCollection)
+	collections   = make(map[string]*AbisCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -169,7 +165,7 @@ func GetAbisCollection(payload *types.Payload) *AbisCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

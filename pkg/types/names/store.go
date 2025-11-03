@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Name = sdk.Name
@@ -58,24 +58,20 @@ func (c *NamesCollection) getNamesStore(payload *types.Payload, facet types.Data
 		}
 
 		processFunc := func(item interface{}) *Name {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Name); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Name) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			if item != nil && !item.Address.IsZero() {
-				return item.Address, true
-			}
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Name) (key string, includeInMap bool) {
+			testVal := item.Address.Hex()
+			return testVal, testVal != ""
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -87,7 +83,7 @@ func (c *NamesCollection) getNamesStore(payload *types.Payload, facet types.Data
 	return theStore
 }
 
-func (c *NamesCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *NamesCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case NamesAll:
@@ -108,7 +104,7 @@ func (c *NamesCollection) GetStoreName(payload *types.Payload, facet types.DataF
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*NamesCollection)
+	collections   = make(map[string]*NamesCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -120,7 +116,7 @@ func GetNamesCollection(payload *types.Payload) *NamesCollection {
 	pl.ActiveAddress = ""
 	pl.ActiveChain = ""
 
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

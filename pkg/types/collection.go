@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Page interface {
@@ -16,8 +16,6 @@ type Collection interface {
 	FetchByFacet(facet DataFacet)
 	Reset(facet DataFacet)
 	NeedsUpdate(facet DataFacet) bool
-	GetSupportedFacets() []DataFacet
-	GetStoreName(payload *Payload, facet DataFacet) string
 	GetSummary() Summary
 	ExportData(payload *Payload) (string, error)
 	GetConfig() (*ViewConfig, error)

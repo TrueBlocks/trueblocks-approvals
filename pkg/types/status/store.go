@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Cache = sdk.Cache
@@ -64,21 +64,19 @@ func (c *StatusCollection) getCachesStore(payload *types.Payload, facet types.Da
 		}
 
 		processFunc := func(item interface{}) *Cache {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Cache); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Cache) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Cache) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -116,21 +114,19 @@ func (c *StatusCollection) getChainsStore(payload *types.Payload, facet types.Da
 		}
 
 		processFunc := func(item interface{}) *Chain {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Chain); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Chain) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Chain) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -168,21 +164,19 @@ func (c *StatusCollection) getStatusStore(payload *types.Payload, facet types.Da
 		}
 
 		processFunc := func(item interface{}) *Status {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Status); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Status) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Status) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -194,7 +188,7 @@ func (c *StatusCollection) getStatusStore(payload *types.Payload, facet types.Da
 	return theStore
 }
 
-func (c *StatusCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *StatusCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case StatusStatus:
@@ -211,7 +205,7 @@ func (c *StatusCollection) GetStoreName(payload *types.Payload, facet types.Data
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*StatusCollection)
+	collections   = make(map[string]*StatusCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -220,7 +214,7 @@ func GetStatusCollection(payload *types.Payload) *StatusCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

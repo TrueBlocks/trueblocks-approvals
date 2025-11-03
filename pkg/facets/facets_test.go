@@ -12,8 +12,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -108,6 +108,7 @@ func TestFacetLoad(t *testing.T) {
 			singleItemStore,
 			"test",
 			nil,
+			false,
 		)
 
 		assert.Equal(t, types.StateStale, facet.GetState(), "Initial state for single item store facet should be Stale")

@@ -3,13 +3,13 @@ package abis
 import (
 	"fmt"
 
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/crud"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/base"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/crud"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 func (c *AbisCollection) Crud(
@@ -17,13 +17,20 @@ func (c *AbisCollection) Crud(
 	op crud.Operation,
 	item interface{},
 ) error {
-	var abi = &Abi{Address: base.HexToAddress(payload.ActiveAddress)}
+	var abi = &Abi{Address: base.HexToAddress(payload.TargetAddress)}
 	if cast, ok := item.(*Abi); ok && cast != nil {
 		abi = cast
 	}
 
 	var err error
 	switch op {
+	case crud.Autoname:
+		if err = names.AutonameAddress(abi.Address.Hex()); err != nil {
+			msgs.EmitError("Abis.Crud.Autoname", err)
+			return err
+		}
+		msgs.EmitStatus(fmt.Sprintf("completed autoname operation for address: %s", abi.Address))
+		return nil
 	case crud.Remove:
 		opts := sdk.AbisOptions{
 			Addrs:   []string{abi.Address.Hex()},
@@ -31,7 +38,6 @@ func (c *AbisCollection) Crud(
 		}
 		_, _, err = opts.Abis()
 	default:
-		logging.LogBEError(fmt.Sprintf("ABI operation %s not implemented for address: %s", op, abi.Address))
 		return fmt.Errorf("operation %s not yet implemented for Abis", op)
 	}
 

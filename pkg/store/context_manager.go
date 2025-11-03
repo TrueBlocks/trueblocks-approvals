@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
 )
 
 var (
@@ -72,7 +72,7 @@ func CancelFetch(contextKey string) {
 	}
 }
 
-func CancelAllFetches() int {
+func CancelFetches() int {
 	cm := GetContextManager()
 	cm.renderCtxsMutex.Lock()
 	defer cm.renderCtxsMutex.Unlock()

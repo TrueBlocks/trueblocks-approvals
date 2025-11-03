@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Bloom = sdk.Bloom
@@ -73,22 +73,20 @@ func (c *ChunksCollection) getBloomsStore(payload *types.Payload, facet types.Da
 		}
 
 		processFunc := func(item interface{}) *Bloom {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Bloom); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				c.updateBloomsBucket(it)
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Bloom) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Bloom) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -131,26 +129,20 @@ func (c *ChunksCollection) getIndexStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Index {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Index); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				c.updateIndexBucket(it)
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Index) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// TODO: Do we need a mapping function for chunks. I think yes
-			// if item != nil {
-			// 	return item.Range, true
-			// }
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Index) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -193,21 +185,19 @@ func (c *ChunksCollection) getManifestStore(payload *types.Payload, facet types.
 		}
 
 		processFunc := func(item interface{}) *Manifest {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Manifest); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Manifest) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Manifest) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -250,22 +240,20 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 		}
 
 		processFunc := func(item interface{}) *Stats {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Stats); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				c.updateStatsBucket(it)
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Stats) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Stats) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -277,7 +265,7 @@ func (c *ChunksCollection) getStatsStore(payload *types.Payload, facet types.Dat
 	return theStore
 }
 
-func (c *ChunksCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *ChunksCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case ChunksStats:
@@ -296,7 +284,7 @@ func (c *ChunksCollection) GetStoreName(payload *types.Payload, facet types.Data
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*ChunksCollection)
+	collections   = make(map[string]*ChunksCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -305,7 +293,7 @@ func GetChunksCollection(payload *types.Payload) *ChunksCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

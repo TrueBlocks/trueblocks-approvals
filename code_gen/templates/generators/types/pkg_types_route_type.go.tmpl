@@ -1,3 +1,8 @@
+/*
+output: pkg/types/[[route]]/[[type]].go
+scope: type
+*/
+
 {{- $class := .Class -}}
 {{- $lower := toLower $class -}}
 // Copyright 2016, 2026 The Authors. All rights reserved.
@@ -55,6 +60,7 @@ func (c *{{$class}}Collection) initializeFacets(payload *types.Payload) {
 		c.get{{.StoreName}}Store(payload, {{$class}}{{.Name}}),
 		"{{toLower $class}}",
 		c,
+		{{.UseMapKey}},
 	)
 	{{end}}}
 
@@ -111,14 +117,6 @@ func (c *{{$class}}Collection) NeedsUpdate(dataFacet types.DataFacet) bool {
 	{{- end}}
 	default:
 		return false
-	}
-}
-
-func (c *{{$class}}Collection) GetSupportedFacets() []types.DataFacet {
-	return []types.DataFacet{
-		{{- range .Facets}}
-		{{$class}}{{.Name}},
-		{{- end}}
 	}
 }
 

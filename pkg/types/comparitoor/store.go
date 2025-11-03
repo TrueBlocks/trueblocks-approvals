@@ -15,9 +15,9 @@ import (
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
 )
 
 type Transaction = sdk.Transaction
@@ -71,21 +71,19 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 		}
 
 		processFunc := func(item interface{}) *Transaction {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Transaction); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Transaction) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Transaction) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -97,7 +95,7 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 	return theStore
 }
 
-func (c *ComparitoorCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *ComparitoorCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case ComparitoorComparitoor:
@@ -118,7 +116,7 @@ func (c *ComparitoorCollection) GetStoreName(payload *types.Payload, facet types
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*ComparitoorCollection)
+	collections   = make(map[string]*ComparitoorCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -127,7 +125,7 @@ func GetComparitoorCollection(payload *types.Payload) *ComparitoorCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

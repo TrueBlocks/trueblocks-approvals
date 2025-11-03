@@ -17,8 +17,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type Contract = sdk.Contract
@@ -52,21 +52,19 @@ func (c *ContractsCollection) getContractsStore(payload *types.Payload, facet ty
 		}
 
 		processFunc := func(item interface{}) *Contract {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Contract); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Contract) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Contract) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -114,21 +112,19 @@ func (c *ContractsCollection) getLogsStore(payload *types.Payload, facet types.D
 		}
 
 		processFunc := func(item interface{}) *Log {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*Log); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *Log) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *Log) (key string, includeInMap bool) {
+			return "", false
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -140,7 +136,7 @@ func (c *ContractsCollection) getLogsStore(payload *types.Payload, facet types.D
 	return theStore
 }
 
-func (c *ContractsCollection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *ContractsCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	case ContractsDashboard:
@@ -157,7 +153,7 @@ func (c *ContractsCollection) GetStoreName(payload *types.Payload, facet types.D
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*ContractsCollection)
+	collections   = make(map[string]*ContractsCollection)
 	collectionsMu sync.Mutex
 )
 
@@ -166,7 +162,7 @@ func GetContractsCollection(payload *types.Payload) *ContractsCollection {
 	defer collectionsMu.Unlock()
 
 	pl := *payload
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

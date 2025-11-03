@@ -1,3 +1,8 @@
+/*
+output: pkg/types/[[route]]/store.go
+scope: type
+*/
+
 {{- $class := .Class -}}
 {{- $isNames := eq .Class "Names" -}}
 // Copyright 2016, 2026 The Authors. All rights reserved.
@@ -38,22 +43,25 @@ func (c *{{$class}}Collection) get{{.Name}}Store(payload *types.Payload, facet t
 		}
 
 		processFunc := func(item interface{}) *{{toSingular .Name}} {
-			// EXISTING_CODE
-			// EXISTING_CODE
 			if it, ok := item.(*{{toSingular .Name}}); ok {
+				// EXISTING_CODE
+				// EXISTING_CODE
 {{if .NeedsBuckets}}				c.update{{.Name}}Bucket(it)
 {{end}}				return it
 			}
 			return nil
 		}
 
-		mappingFunc := func(item *{{toSingular .Name}}) (key interface{}, includeInMap bool) {
-			// EXISTING_CODE
-			// EXISTING_CODE
-			return nil, false
+		mappingFunc := func(item *{{toSingular .Name}}) (key string, includeInMap bool) {
+			{{- if .GetMapKey }}
+			testVal := {{.GetMapKey}}
+			return testVal, testVal != ""
+			{{- else}}
+			return "", false
+			{{- end}}
 		}
 
-		storeName := c.GetStoreName(payload, facet)
+		storeName := c.getStoreName(payload, facet)
 		theStore = store.NewStore(storeName, queryFunc, processFunc, mappingFunc)
 
 		// EXISTING_CODE
@@ -66,7 +74,7 @@ func (c *{{$class}}Collection) get{{.Name}}Store(payload *types.Payload, facet t
 }
 {{end}}
 
-func (c *{{$class}}Collection) GetStoreName(payload *types.Payload, facet types.DataFacet) string {
+func (c *{{$class}}Collection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
 	{{range .Facets}}case {{$class}}{{.Name}}:
@@ -80,7 +88,7 @@ func (c *{{$class}}Collection) GetStoreName(payload *types.Payload, facet types.
 }
 
 var (
-	collections   = make(map[store.CollectionKey]*{{.Class}}Collection)
+	collections   = make(map[string]*{{.Class}}Collection)
 	collectionsMu sync.Mutex
 )
 
@@ -93,7 +101,7 @@ func Get{{.Class}}Collection(payload *types.Payload) *{{.Class}}Collection {
 		pl.ActiveAddress = ""
 		pl.ActiveChain = ""
 	{{end}}
-	key := store.GetCollectionKey(&pl)
+	key := getStoreKey(&pl)
 	if collection, exists := collections[key]; exists {
 		return collection
 	}

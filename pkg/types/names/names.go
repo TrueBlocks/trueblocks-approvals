@@ -14,7 +14,7 @@ import (
 	"time"
 
 	// EXISTING_CODE
-	coreTypes "github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/types"
+	coreTypes "github.com/TrueBlocks/trueblocks-chifra/v6/pkg/types"
 	// EXISTING_CODE
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/facets"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
@@ -62,6 +62,7 @@ func (c *NamesCollection) initializeFacets(payload *types.Payload) {
 		c.getNamesStore(payload, NamesAll),
 		"names",
 		c,
+		false,
 	)
 
 	c.customFacet = facets.NewFacet(
@@ -71,6 +72,7 @@ func (c *NamesCollection) initializeFacets(payload *types.Payload) {
 		c.getNamesStore(payload, NamesCustom),
 		"names",
 		c,
+		false,
 	)
 
 	c.prefundFacet = facets.NewFacet(
@@ -80,6 +82,7 @@ func (c *NamesCollection) initializeFacets(payload *types.Payload) {
 		c.getNamesStore(payload, NamesPrefund),
 		"names",
 		c,
+		false,
 	)
 
 	c.regularFacet = facets.NewFacet(
@@ -89,6 +92,7 @@ func (c *NamesCollection) initializeFacets(payload *types.Payload) {
 		c.getNamesStore(payload, NamesRegular),
 		"names",
 		c,
+		false,
 	)
 
 	c.baddressFacet = facets.NewFacet(
@@ -98,6 +102,7 @@ func (c *NamesCollection) initializeFacets(payload *types.Payload) {
 		c.getNamesStore(payload, NamesBaddress),
 		"names",
 		c,
+		false,
 	)
 }
 
@@ -202,16 +207,6 @@ func (c *NamesCollection) NeedsUpdate(dataFacet types.DataFacet) bool {
 		return c.baddressFacet.NeedsUpdate()
 	default:
 		return false
-	}
-}
-
-func (c *NamesCollection) GetSupportedFacets() []types.DataFacet {
-	return []types.DataFacet{
-		NamesAll,
-		NamesCustom,
-		NamesPrefund,
-		NamesRegular,
-		NamesBaddress,
 	}
 }
 

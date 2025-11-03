@@ -7,8 +7,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/output"
-	coreTypes "github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/types"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	coreTypes "github.com/TrueBlocks/trueblocks-chifra/v6/pkg/types"
 )
 
 // -------------------- Helper/Mock Functions and Types --------------------
@@ -77,6 +77,7 @@ func createTestFacet(store *store.Store[TestItem]) *Facet[TestItem] {
 		store,
 		"test",
 		nil,
+		false,
 	)
 }
 
@@ -90,6 +91,7 @@ func createFilteredFacet(store *store.Store[TestItem], minValue int) *Facet[Test
 		store,
 		"test",
 		nil,
+		false,
 	)
 }
 
@@ -108,6 +110,7 @@ func createDedupedFacet(store *store.Store[TestItem]) *Facet[TestItem] {
 		store,
 		"test",
 		nil,
+		false,
 	)
 }
 

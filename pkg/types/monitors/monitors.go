@@ -49,6 +49,7 @@ func (c *MonitorsCollection) initializeFacets(payload *types.Payload) {
 		c.getMonitorsStore(payload, MonitorsMonitors),
 		"monitors",
 		c,
+		false,
 	)
 }
 
@@ -97,12 +98,6 @@ func (c *MonitorsCollection) NeedsUpdate(dataFacet types.DataFacet) bool {
 		return c.monitorsFacet.NeedsUpdate()
 	default:
 		return false
-	}
-}
-
-func (c *MonitorsCollection) GetSupportedFacets() []types.DataFacet {
-	return []types.DataFacet{
-		MonitorsMonitors,
 	}
 }
 

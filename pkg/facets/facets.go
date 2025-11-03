@@ -11,7 +11,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 type (
@@ -38,6 +38,7 @@ type Facet[T any] struct {
 	collectionName  string
 	buckets         *types.Buckets
 	bucketsMu       sync.RWMutex
+	useMapKey       bool
 }
 
 func NewFacet[T any](
@@ -47,6 +48,7 @@ func NewFacet[T any](
 	store *store.Store[T],
 	collectionName string,
 	summaryProvider types.SummaryAccumulator,
+	useMapKey bool,
 ) *Facet[T] {
 	facet := &Facet[T]{
 		store:           store,
@@ -60,6 +62,7 @@ func NewFacet[T any](
 		progress:        progress.NewProgressWithSummary(dataFacet, collectionName, summaryProvider, nil),
 		buckets:         types.NewBuckets(),
 		bucketsMu:       sync.RWMutex{},
+		useMapKey:       useMapKey,
 	}
 	store.RegisterObserver(facet)
 
@@ -257,7 +260,7 @@ func (r *Facet[T]) SyncWithStore() {
 		return
 	}
 
-	storeItems := store.GetItems()
+	storeItems := store.GetItems(r.useMapKey)
 
 	r.mutex.Lock()
 	r.view = make([]*T, 0, len(storeItems))

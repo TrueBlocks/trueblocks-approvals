@@ -20,7 +20,7 @@ func (c *MonitorsCollection) GetConfig() (*types.ViewConfig, error) {
 			Store:         "monitors",
 			DividerBefore: false,
 			Fields:        getMonitorsFields(),
-			Actions:       []string{"delete", "remove"},
+			Actions:       []string{"autoname", "delete", "remove"},
 			HeaderActions: []string{"export"},
 			RendererTypes: "",
 			RowAction:     types.NewRowActionNavigation("exports", "<latest>", "address", "address"),
@@ -32,9 +32,10 @@ func (c *MonitorsCollection) GetConfig() (*types.ViewConfig, error) {
 		Facets:     facets,
 		FacetOrder: []string{"monitors"},
 		Actions: map[string]types.ActionConfig{
+			"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
 			"delete":   {Name: "delete", Label: "Delete", Icon: "Delete"},
 			"export":   {Name: "export", Label: "Export", Icon: "Export"},
-			"remove":   {Name: "remove", Label: "Remove", Icon: "Remove", Confirmation: true},
+			"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
 			"undelete": {Name: "undelete", Label: "Undelete", Icon: "Undelete"},
 		},
 	}
@@ -47,17 +48,17 @@ func (c *MonitorsCollection) GetConfig() (*types.ViewConfig, error) {
 
 func getMonitorsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Overview", Key: "address", Formatter: "address"},
+		{Section: "Overview", Key: "address", Type: "address"},
 		{Section: "Overview", Key: "name"},
-		{Section: "Overview", Key: "deleted", Formatter: "boolean", NoTable: true},
+		{Section: "Overview", Key: "deleted", Type: "boolean", NoTable: true},
 		{Section: "Overview", Key: "isStaged", NoTable: true},
 		{Section: "Statistics", Key: "nRecords"},
 		{Section: "Statistics", Key: "fileSize"},
 		{Section: "Statistics", Key: "isEmpty", NoTable: true},
-		{Section: "Statistics", Key: "lastScanned", Formatter: "number"},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{Section: "Statistics", Key: "lastScanned", Type: "number"},
+		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 

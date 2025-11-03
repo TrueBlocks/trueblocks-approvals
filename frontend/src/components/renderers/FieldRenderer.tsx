@@ -1,11 +1,28 @@
 import { ChangeEvent, forwardRef, isValidElement } from 'react';
 
-import { FormField, StyledBadge, StyledText } from '@components';
+import { FormField, StyledText } from '@components';
 import { Fieldset, Stack, TextInput } from '@mantine/core';
-import { formatWeiToEther, formatWeiToGigawei } from '@utils';
+
+import {
+  BooleanRenderer,
+  DateTimeRenderer,
+  EtherRenderer,
+  FileSizeRenderer,
+  IdentifierRenderer,
+  WeiRenderer,
+} from './FieldRenderer.renderers';
+import {
+  formatNumberWithFallback,
+  formatWeiToGigawei,
+  isNullOrEmpty,
+  safeToNumber,
+  withFallback,
+} from './utils';
 
 export interface FieldRendererProps {
   field: FormField<Record<string, unknown>>;
+  row?: Record<string, unknown>;
+  rowData?: Record<string, unknown>; // Alias for row - backwards compatibility
   mode?: 'display' | 'edit';
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -17,7 +34,18 @@ export interface FieldRendererProps {
 
 export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
   (
-    { field, mode, onChange, onBlur, loading, keyProp, autoFocus, tableCell },
+    {
+      field,
+      row,
+      rowData,
+      mode,
+      onChange,
+      onBlur,
+      loading,
+      keyProp,
+      autoFocus,
+      tableCell = true,
+    },
     ref,
   ) => {
     if (field.fields && field.fields.length > 0) {
@@ -33,6 +61,7 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
                 onChange={onChange}
                 onBlur={onBlur}
                 loading={loading}
+                tableCell={tableCell}
               />
             ))}
           </Stack>
@@ -45,115 +74,42 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
     }
 
     if (mode === 'display') {
-      let displayValue;
-      if (field.type === 'weish') {
-        displayValue = field.value as string;
-        if (
-          displayValue.startsWith('1157920892373161954235709850086879078532')
-        ) {
-          displayValue = <div style={{ fontStyle: 'italic' }}>infinite</div>;
-        }
-      } else if (field.type === 'wei' && field.value) {
-        // Try to format as Wei, but if it fails (e.g., already in Ether format), format as ether
-        try {
-          displayValue = formatWeiToEther(field.value as string);
-        } catch {
-          // If Wei formatting fails, field might already be in Ether format - format consistently
-          const etherValue = String(field.value);
-          const numericValue = parseFloat(etherValue);
-          if (isNaN(numericValue)) {
-            displayValue = '0.000000';
-          } else {
-            displayValue = numericValue.toFixed(6);
-          }
-        }
-        if (
-          displayValue.startsWith('1157920892373161954235709850086879078532')
-        ) {
-          displayValue = <div style={{ fontStyle: 'italic' }}>infinite</div>;
-        }
-      } else if (field.type === 'ether') {
-        // Fields with type 'ether' are already in Ether format - format to exactly 6 decimal places
-        if (!field.value) {
-          displayValue = '0.000000';
-        } else {
-          const etherValue = String(field.value);
-          const numericValue = parseFloat(etherValue);
-          if (isNaN(numericValue)) {
-            displayValue = '0.000000';
-          } else {
-            // Format to exactly 6 decimal places, ensuring at least one digit before decimal
-            displayValue = numericValue.toFixed(6);
-          }
-        }
-      } else if (field.type === 'gas' && field.value) {
-        displayValue = formatWeiToGigawei(field.value as string);
-      } else if (field.type === 'timestamp' && field.value) {
-        // Convert numerical Unix timestamp to formatted date
-        displayValue = new Date(Number(field.value) * 1000).toLocaleString();
-      } else if (
-        (field.type as string) === 'fileSize' &&
-        field.value !== undefined &&
-        field.value !== null
-      ) {
-        // Format file size in bytes to human readable format
-        const bytes = Number(field.value);
-        if (bytes === 0 || isNaN(bytes)) {
-          displayValue = '0 b';
-        } else {
-          const k = 1024;
-          const sizes = ['b', 'kb', 'mb', 'gb'];
-          const i = Math.floor(Math.log(bytes) / Math.log(k));
-          const sizeUnit = sizes[i] || 'gb'; // Fallback to 'gb' for very large values
-          const value = bytes / Math.pow(k, i);
+      // Extract value from rowData if available, otherwise use field.value
+      const rowDataSource = rowData || row; // Support both prop names
+      const value =
+        rowDataSource && field.key ? rowDataSource[field.key] : field.value;
 
-          // If kb > 100, show as mb with 3 decimal places
-          if (sizeUnit === 'kb' && value > 100) {
-            const mbValue = bytes / Math.pow(k, 2);
-            displayValue = mbValue.toFixed(2) + ' mb';
-          } else {
-            displayValue = parseFloat(value.toFixed(2)) + ' ' + sizeUnit;
-          }
-        }
+      let displayValue: React.ReactNode;
+      if (field.type === 'wei') {
+        displayValue = <WeiRenderer value={value} />;
+      } else if (field.type === 'ether') {
+        displayValue = <EtherRenderer value={value} />;
+      } else if (field.type === 'gas') {
+        displayValue = value ? formatWeiToGigawei(value as string) : '0.000';
+      } else if (
+        field.type === 'timestamp' ||
+        (field.type && (field.type as string).toLowerCase() === 'timestamp')
+      ) {
+        displayValue = <DateTimeRenderer value={value} />;
       } else if ((field.type as string) === 'fileSize') {
-        // Handle empty/null fileSize values
-        displayValue = '0 b';
-      } else if (
-        field.type === 'number' &&
-        (field.value === undefined ||
-          field.value === null ||
-          field.value === '')
-      ) {
-        // Handle empty/null number values
-        displayValue = '0';
+        displayValue = <FileSizeRenderer value={value} />;
       } else if (field.type === 'number') {
-        // Handle non-empty number values
-        displayValue = Number(field.value).toLocaleString();
-      } else if ((field.type as string) === 'boolean') {
-        // Handle boolean values - show badge only for true, nothing for false
-        const isTrue = field.value === true || field.value === 'true';
-        displayValue = isTrue ? (
-          <StyledBadge variant="boolean">true</StyledBadge>
-        ) : (
-          ''
-        );
-      } else if (
-        (field.type as string) === 'float64' &&
-        field.value !== undefined &&
-        field.value !== null
-      ) {
-        // Handle float64 values - always show two decimal places with at least one zero before decimal
-        const floatValue = Number(field.value);
-        if (isNaN(floatValue)) {
-          displayValue = '0.00';
+        if (isNullOrEmpty(value)) {
+          displayValue = '0';
         } else {
-          displayValue = floatValue.toFixed(2);
+          const num = safeToNumber(value);
+          displayValue = isNaN(num) ? '0' : num.toLocaleString();
         }
+      } else if ((field.type as string) === 'boolean') {
+        displayValue = <BooleanRenderer value={value} tableCell={tableCell} />;
+      } else if ((field.type as string) === 'identifier') {
+        displayValue = (
+          <IdentifierRenderer value={value} rowDataSource={rowDataSource} />
+        );
       } else if ((field.type as string) === 'float64') {
-        // Handle empty/null float64 values
-        displayValue = '0.00';
+        displayValue = formatNumberWithFallback(value, 2, '0.00');
       } else {
-        displayValue = field.value || 'N/A';
+        displayValue = withFallback(value, 'N/A');
       }
 
       if (typeof displayValue === 'object') {
@@ -167,7 +123,6 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
       }
 
       if (tableCell) {
-        // Right align fileSize and number types like numeric data
         const shouldRightAlign =
           (field.type as string) === 'fileSize' ||
           (field.type as string) === 'float64' ||
@@ -184,27 +139,16 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
 
       // For date/datetime fields, split on '|' and render each part on its own line
       if (field.type === 'datetime') {
-        const parts = String(displayValue)
-          .split('|')
-          .map((p) => p.trim());
         return (
-          <div key={keyProp}>
-            {parts.map((part, idx) => (
-              <StyledText variant="primary" size="sm" key={idx}>
-                {idx === 0 ? `${field.label}: ${part}` : part}
-              </StyledText>
-            ))}
-          </div>
+          <DateTimeRenderer
+            value={displayValue}
+            field={field}
+            keyProp={keyProp || ''}
+          />
         );
       }
 
-      return (
-        <div key={keyProp}>
-          <StyledText variant="primary" size="sm" fw={600}>
-            {field.label}: {displayValue}
-          </StyledText>
-        </div>
-      );
+      return <div key={keyProp}>{displayValue}</div>;
     }
 
     const isGasField = field.type === 'gas';
@@ -240,7 +184,7 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
           label={field.label}
           placeholder={placeHolder}
           withAsterisk={field.required}
-          value={field.value as string}
+          value={(row && field.key ? row[field.key] : field.value) as string}
           onChange={(e) => {
             if (!field.readOnly) {
               field.onChange?.(e);
@@ -257,7 +201,9 @@ export const FieldRenderer = forwardRef<HTMLInputElement, FieldRendererProps>(
           }}
           error={
             (!loading && field.error) ||
-            (field.required && !field.value && `${field.label} is required`)
+            (field.required &&
+              !(row && field.key ? row[field.key] : field.value) &&
+              `${field.label} is required`)
           }
           styles={{
             label: {

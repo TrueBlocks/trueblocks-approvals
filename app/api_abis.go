@@ -13,8 +13,8 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/abis"
 
 	//
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/crud"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/crud"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 	// EXISTING_CODE
 	// EXISTING_CODE
 )
@@ -28,6 +28,14 @@ func (a *App) GetAbisPage(
 	collection := abis.GetAbisCollection(payload)
 	ret, err := getCollectionPage[*abis.AbisPage](collection, payload, first, pageSize, sort, filter)
 	// EXISTING_CODE
+	if err == nil {
+		for i := range ret.Abis {
+			address := ret.Abis[i].Address.Hex()
+			if namePtr, ok := a.NameFromAddress(address); ok && namePtr != nil {
+				ret.Abis[i].Name = namePtr.Name
+			}
+		}
+	}
 	// EXISTING_CODE
 	return ret, err
 }

@@ -11,18 +11,18 @@ func DeriveFacets(vc *ViewConfig) {
 			continue
 		}
 		cols := make([]ColumnConfig, 0, len(facet.Fields))
-		panelsMap := map[string][]DetailFieldConfig{}
+		panelsMap := map[string][]DetailRendererConfig{}
 
 		for _, f := range facet.Fields {
 			if !f.NoTable {
 				header := f.ColumnLabel
 				cols = append(cols, ColumnConfig{
-					Key:       f.Key,
-					Header:    header,
-					Width:     f.Width,
-					Sortable:  f.Sortable,
-					Formatter: f.Formatter,
-					Order:     f.Order,
+					Key:      f.Key,
+					Header:   header,
+					Width:    f.Width,
+					Sortable: f.Sortable,
+					Type:     f.Type,
+					Order:    f.Order,
 				})
 			}
 			if !f.NoDetail {
@@ -31,10 +31,10 @@ func DeriveFacets(vc *ViewConfig) {
 					sec = "General"
 				}
 				label := f.DetailLabel
-				panelsMap[sec] = append(panelsMap[sec], DetailFieldConfig{
+				panelsMap[sec] = append(panelsMap[sec], DetailRendererConfig{
 					Key:         f.Key,
 					Label:       label,
-					Formatter:   f.Formatter,
+					Type:        f.Type,
 					DetailOrder: f.DetailOrder,
 				})
 			}

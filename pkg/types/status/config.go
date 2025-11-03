@@ -63,36 +63,36 @@ func (c *StatusCollection) GetConfig() (*types.ViewConfig, error) {
 func getCachesFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "General", Key: "type"},
-		{Section: "General", Key: "path", Formatter: "path"},
+		{Section: "General", Key: "path", Type: "path"},
 		{Section: "Statistics", Key: "nFiles"},
 		{Section: "Statistics", Key: "nFolders"},
 		{Section: "Statistics", Key: "sizeInBytes"},
 		{Section: "Timestamps", Key: "lastCached"},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 
 func getChainsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "General", Key: "chain"},
-		{Section: "General", Key: "chainId", Formatter: "number"},
+		{Section: "General", Key: "chainId", Type: "number"},
 		{Section: "General", Key: "symbol"},
 		{Section: "Providers", Key: "rpcProvider"},
 		{Section: "Providers", Key: "ipfsGateway"},
 		{Section: "Explorers", Key: "localExplorer"},
 		{Section: "Explorers", Key: "remoteExplorer"},
-		{Section: "", Key: "actions", Formatter: "actions", NoDetail: true},
+		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 
 func getStatusFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Paths", Key: "cachePath", Formatter: "path"},
-		{Section: "Paths", Key: "indexPath", Formatter: "path"},
+		{Section: "Paths", Key: "cachePath", Type: "path"},
+		{Section: "Paths", Key: "indexPath", Type: "path"},
 		{Section: "Chain", Key: "chain"},
 		{Section: "Chain", Key: "chainId"},
 		{Section: "Chain", Key: "networkId"},
@@ -110,7 +110,7 @@ func getStatusFields() []types.FieldConfig {
 		{Section: "Flags", Key: "isTesting"},
 		{Section: "Flags", Key: "isTracing"},
 	}
-	types.NormalizeFields(ret)
+	types.NormalizeFields(&ret)
 	return ret
 }
 

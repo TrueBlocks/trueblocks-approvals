@@ -1,9 +1,9 @@
 package names
 
 import (
-	"github.com/TrueBlocks/trueblocks-core/src/apps/chifra/pkg/base"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/base"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
-	sdk "github.com/TrueBlocks/trueblocks-sdk/v5"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 func NameFromAddress(address base.Address) (*Name, bool) {
@@ -16,7 +16,7 @@ func NameFromAddress(address base.Address) (*Name, bool) {
 	if store == nil {
 		return nil, false
 	}
-	name, found := store.GetItemFromMap(address)
+	name, found := store.GetItemFromMap(address.Hex())
 	return name, found
 }
 

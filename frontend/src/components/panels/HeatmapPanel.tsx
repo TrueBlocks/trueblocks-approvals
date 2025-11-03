@@ -21,8 +21,10 @@ import {
   Log,
   aggregateTimeBasedBuckets,
   formatGroupKey,
-  formatNumber,
+  formatNumericValue,
 } from '@utils';
+
+import { PanelDataWarning } from './PanelDataWarning';
 
 // Helper function to get bucket data from the series map
 const getBucketData = (
@@ -205,6 +207,11 @@ export const HeatmapPanel = ({
   }
 
   if (!bucketsData?.length || !statsData || !buckets) {
+    // If we've loaded data before but now have no buckets, this may indicate a configuration issue
+    if (hasEverLoaded && (!bucketsData?.length || !statsData)) {
+      return <PanelDataWarning facet={config.dataFacet} />;
+    }
+
     return (
       <Box p="md" ta="center">
         <Text c="dimmed" mb="md">
@@ -285,8 +292,8 @@ export const HeatmapPanel = ({
                       </Text>
                     ) : (
                       <Text size="xs">
-                        Blocks: {formatNumber(dataPoint.startBlock)} -{' '}
-                        {formatNumber(dataPoint.endBlock)}
+                        Blocks: {formatNumericValue(dataPoint.startBlock)} -{' '}
+                        {formatNumericValue(dataPoint.endBlock)}
                       </Text>
                     )}
                     <Text size="xs">
@@ -313,11 +320,11 @@ export const HeatmapPanel = ({
 
         <Box mt="md">
           <Text size="xs" c="dimmed">
-            {formatNumber(statsData.count)} buckets,{' '}
+            {formatNumericValue(statsData.count)} buckets,{' '}
             {getMetricConfig(selectedMetric)?.formatValue(statsData.total)}{' '}
             total,{' '}
             {getMetricConfig(selectedMetric)?.formatValue(statsData.average)}{' '}
-            avg per {formatNumber(buckets.gridInfo.size)}-block range
+            avg per {formatNumericValue(buckets.gridInfo.size)}-block range
           </Text>
         </Box>
 
