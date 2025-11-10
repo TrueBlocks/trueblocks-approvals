@@ -4,7 +4,6 @@ package project
 import (
 	"errors"
 	"fmt"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -97,7 +96,7 @@ func (m *Manager) Open(path string) (*Project, error) {
 		return nil, err
 	}
 
-	id := filepath.Base(path)
+	id := path
 	m.OpenProjects[id] = project
 	m.ActiveID = id
 
@@ -174,8 +173,8 @@ func (m *Manager) SaveActiveAs(path string) error {
 	return err
 }
 
-// GetOpenProjectIDs returns a slice of IDs for all open projects
-func (m *Manager) GetOpenProjectIDs() []string {
+// GetOpenIDs returns a slice of IDs for all open projects
+func (m *Manager) GetOpenIDs() []string {
 	ids := make([]string, 0, len(m.OpenProjects))
 	for id := range m.OpenProjects {
 		ids = append(ids, id)

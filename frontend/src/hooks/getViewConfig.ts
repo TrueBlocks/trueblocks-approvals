@@ -7,6 +7,7 @@ import {
   GetExportsConfig,
   GetMonitorsConfig,
   GetNamesConfig,
+  GetProjectsConfig,
   GetStatusConfig,
 } from '@app';
 import { types } from '@models';
@@ -50,6 +51,7 @@ export async function initializeAllViewConfigs(): Promise<{
 
       // Define all view configs to load
       const viewConfigs = [
+        { name: 'projects', getter: GetProjectsConfig },
         { name: 'exports', getter: GetExportsConfig },
         { name: 'monitors', getter: GetMonitorsConfig },
         { name: 'abis', getter: GetAbisConfig },
@@ -171,5 +173,72 @@ function validateViewConfigOnce(cfg: types.ViewConfig) {
     LogError(
       '[FACET_ORDER_VALIDATION ' + cfg.viewName + '] ' + errs.join('; '),
     );
+  }
+}
+
+/**
+ * Refresh a specific ViewConfig (for dynamic content like Projects).
+ * Forces a reload of the ViewConfig from the backend.
+ */
+export async function refreshViewConfig(viewName: string): Promise<void> {
+  if (!isInitialized) {
+    LogError(`Cannot refresh ViewConfig before initialization: ${viewName}`);
+    return;
+  }
+
+  try {
+    // Create base payload
+    const basePayload: Omit<types.Payload, 'collection'> = {
+      dataFacet: types.DataFacet.ALL,
+      activeChain: 'mainnet',
+      activeAddress: '0x0000000000000000000000000000000000000000',
+      activePeriod: types.Period.BLOCKLY,
+    };
+
+    const payload = { ...basePayload, collection: viewName };
+
+    // Get the appropriate config getter
+    let getter;
+    switch (viewName) {
+      case 'projects':
+        getter = GetProjectsConfig;
+        break;
+      case 'exports':
+        getter = GetExportsConfig;
+        break;
+      case 'monitors':
+        getter = GetMonitorsConfig;
+        break;
+      case 'abis':
+        getter = GetAbisConfig;
+        break;
+      case 'names':
+        getter = GetNamesConfig;
+        break;
+      case 'chunks':
+        getter = GetChunksConfig;
+        break;
+      case 'contracts':
+        getter = GetContractsConfig;
+        break;
+      case 'status':
+        getter = GetStatusConfig;
+        break;
+      case 'dresses':
+        getter = GetDressesConfig;
+        break;
+      case 'comparitoor':
+        getter = GetComparitoorConfig;
+        break;
+      default:
+        LogError(`Unknown view name for refresh: ${viewName}`);
+        return;
+    }
+
+    // Fetch fresh config and update cache
+    const config = await getter(payload);
+    configCache.set(viewName, config);
+  } catch (error) {
+    LogError(`Failed to refresh ViewConfig for ${viewName}: ${error}`);
   }
 }

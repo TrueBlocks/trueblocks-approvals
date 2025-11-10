@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 
 import { StyledDivider } from '@components';
 import { useActiveProject, useEvent } from '@hooks';
-import { Tabs } from '@mantine/core';
+import { ActionIcon, Tabs } from '@mantine/core';
 import { msgs, types } from '@models';
 
 import './TabView.css';
@@ -12,25 +12,29 @@ interface Tab {
   value: string;
   content: React.ReactNode;
   dividerBefore?: boolean;
+  hideable?: boolean;
+  hidden?: boolean;
 }
 
 interface TabViewProps {
   tabs: Tab[];
   route: string;
   onTabChange?: (newTab: string) => void;
+  onHideFacet?: (facetId: string, e: React.MouseEvent) => void;
 }
 
-export const TabView = ({ tabs, route, onTabChange }: TabViewProps) => {
+export const TabView = ({
+  tabs,
+  route,
+  onTabChange,
+  onHideFacet,
+}: TabViewProps) => {
   const { getLastFacet, setLastFacet, loading, lastFacetMap } =
     useActiveProject();
-
   const [activeTab, setActiveTab] = useState<string>('');
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
+    if (loading) return;
     const vR = route.replace(/^\/+/, '');
     const savedTab = getLastFacet(vR);
     const isValidSavedTab =
@@ -38,8 +42,6 @@ export const TabView = ({ tabs, route, onTabChange }: TabViewProps) => {
       String(savedTab) !== 'undefined' &&
       tabs.some((tab) => tab.value === savedTab);
     const targetTab = isValidSavedTab ? savedTab : tabs[0]?.value || '';
-
-    // Update active tab whenever lastFacetMap changes or on initial load
     if (targetTab && targetTab !== activeTab) {
       setActiveTab(targetTab);
     }
@@ -93,21 +95,43 @@ export const TabView = ({ tabs, route, onTabChange }: TabViewProps) => {
         }}
       >
         <Tabs.List>
-          {tabs.map((tab, index) => (
-            <Fragment key={`tab-${index}`}>
-              {tab.dividerBefore && <StyledDivider key={`divider-${index}`} />}
-              <Tabs.Tab key={tab.value} value={tab.value}>
-                {tab.label}
-              </Tabs.Tab>
-            </Fragment>
-          ))}
+          {tabs
+            .filter((tab) => !tab.hidden)
+            .map((tab, index) => (
+              <Fragment key={`tab-${index}`}>
+                {tab.dividerBefore && (
+                  <StyledDivider key={`divider-${index}`} />
+                )}
+                <Tabs.Tab
+                  key={tab.value}
+                  value={tab.value}
+                  rightSection={
+                    tab.hideable ? (
+                      <ActionIcon
+                        variant="subtle"
+                        size="xs"
+                        onClick={(e) => onHideFacet?.(tab.value, e)}
+                        tabIndex={0}
+                        c="error"
+                      >
+                        &#10005;
+                      </ActionIcon>
+                    ) : null
+                  }
+                >
+                  {tab.label}
+                </Tabs.Tab>
+              </Fragment>
+            ))}
         </Tabs.List>
 
-        {tabs.map((tab) => (
-          <Tabs.Panel key={tab.value} value={tab.value}>
-            {tab.content}
-          </Tabs.Panel>
-        ))}
+        {tabs
+          .filter((tab) => !tab.hidden)
+          .map((tab) => (
+            <Tabs.Panel key={tab.value} value={tab.value}>
+              {tab.content}
+            </Tabs.Panel>
+          ))}
       </Tabs>
     </div>
   );

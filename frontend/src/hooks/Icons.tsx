@@ -34,6 +34,7 @@ import {
 // EXISTING_CODE
 
 // Add new icons to the above list for each of these views
+// Projects
 // Exports
 // Monitors
 // Abis
@@ -148,6 +149,7 @@ export {
 // EXISTING_CODE
 export const FaStatus = FaCircleNotch;
 export const FaMonitors = FaDesktop;
+export const FaProjects = FaUser;
 export const FaExports = FaHistory;
 export const FaChunks = FaIndustry;
 export const FaContracts = FaFileContract;
@@ -159,6 +161,7 @@ export const FaMissing = FaQuestionCircle;
 
 export const BiStatus = BiCog;
 export const BiMonitors = BiHome;
+export const BiProjects = BiUser;
 export const BiExports = BiHistory;
 export const BiChunks = BiBuildings;
 export const BiContracts = BiFile;
@@ -171,6 +174,7 @@ export const BiMissing = BiQuestionMark;
 // EXISTING_CODE
 
 // Add to the above exports
+// Projects
 // Exports
 // Monitors
 // Abis

@@ -67,15 +67,19 @@ export const ProjectSelectionModal = ({
     setError(null);
 
     try {
+      const trimmedValues = {
+        ...values,
+        addresses: values.addresses?.trim() || '',
+      };
       await newProject(values.name, '');
-      await AddAddressesToProject(values.addresses);
+      await AddAddressesToProject(trimmedValues.addresses);
 
       // Immediately save the project after creation/updates
       await SaveProject();
 
       await restoreProjectFilterStates();
 
-      const targetView = lastView || '/';
+      const targetView = lastView || '/projects'; // DEFAULT_ROUTE
       navigate(targetView);
 
       onProjectSelected();
@@ -96,7 +100,7 @@ export const ProjectSelectionModal = ({
       await openProjectFile(projectPath);
       await restoreProjectFilterStates();
 
-      const targetView = lastView || '/';
+      const targetView = lastView || '/projects'; // DEFAULT_ROUTE
       navigate(targetView);
 
       onProjectSelected();
@@ -118,7 +122,7 @@ export const ProjectSelectionModal = ({
       await openProjectFile('');
       await restoreProjectFilterStates();
 
-      const targetView = lastView || '/';
+      const targetView = lastView || '/projects'; // DEFAULT_ROUTE
       navigate(targetView);
 
       onProjectSelected();

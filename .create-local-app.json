@@ -33,7 +33,7 @@
         "receipts": true,
         "statements": true,
         "traces": true,
-        "transactions": false,
+        "transactions": true,
         "transfers": true,
         "withdrawals": true
       }

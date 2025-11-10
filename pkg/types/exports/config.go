@@ -8,9 +8,7 @@
 
 package exports
 
-import (
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
-)
+import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 // GetConfig returns the ViewConfig for the Exports view
 func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
@@ -137,10 +135,25 @@ func (c *ExportsCollection) GetConfig() (*types.ViewConfig, error) {
 		},
 	}
 
+	facetOrder := []string{}
+	facetOrder = append(facetOrder, "statements")
+	facetOrder = append(facetOrder, "balances")
+	facetOrder = append(facetOrder, "transfers")
+	facetOrder = append(facetOrder, "transactions")
+	facetOrder = append(facetOrder, "openapprovals")
+	facetOrder = append(facetOrder, "approvallogs")
+	facetOrder = append(facetOrder, "approvaltxs")
+	facetOrder = append(facetOrder, "withdrawals")
+	facetOrder = append(facetOrder, "assets")
+	facetOrder = append(facetOrder, "assetcharts")
+	facetOrder = append(facetOrder, "logs")
+	facetOrder = append(facetOrder, "traces")
+	facetOrder = append(facetOrder, "receipts")
+
 	cfg := &types.ViewConfig{
 		ViewName:   "exports",
 		Facets:     facets,
-		FacetOrder: []string{"statements", "balances", "transfers", "transactions", "openapprovals", "approvallogs", "approvaltxs", "withdrawals", "assets", "assetcharts", "logs", "traces", "receipts"},
+		FacetOrder: facetOrder,
 		Actions: map[string]types.ActionConfig{
 			"export": {Name: "export", Label: "Export", Icon: "Export"},
 		},
@@ -204,23 +217,23 @@ func getApprovaltxsFields() []types.FieldConfig {
 func getAssetsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "Asset", Key: "timestamp", Type: "datetime"},
-		{Section: "Asset", Key: "accountedFor", Type: "address", NoTable: true},
-		{Section: "Asset", Key: "symbol"},
 		{Section: "Asset", Key: "asset", Type: "address"},
+		{Section: "Asset", Key: "symbol"},
 		{Section: "Asset", Key: "decimals", NoTable: true},
 		{Section: "Asset", Key: "priceSource", NoTable: true},
-		{Section: "Reconciliation", Key: "calcs.begBalEth", Type: "ether", NoTable: true},
-		{Section: "Reconciliation", Key: "calcs.totalInEth", Type: "ether", NoTable: true},
-		{Section: "Reconciliation", Key: "calcs.totalOutEth", Type: "ether", NoTable: true},
+		{Section: "Reconciliation", Key: "calcs.begBalEth", Type: "ether"},
+		{Section: "Reconciliation", Key: "calcs.totalInEth", Type: "ether"},
+		{Section: "Reconciliation", Key: "calcs.totalOutEth", Type: "ether"},
 		{Section: "Reconciliation", Key: "calcs.amountNetEth", Type: "ether", NoTable: true},
 		{Section: "Reconciliation", Key: "calcs.endBalEth", Type: "ether"},
 		{Section: "Asset", Key: "spotPrice", Type: "number"},
-		{Section: "Asset", Key: "statementId", Label: "Count", Type: "number"},
+		{Section: "Asset", Key: "statementId", Type: "number"},
 		{Section: "Reconciliation", Key: "calcs.endBalCalcEth", Type: "ether", NoTable: true},
 		{Section: "Summary", Key: "date", NoTable: true},
 		{Section: "Summary", Key: "gasUsed", NoTable: true},
 		{Section: "Summary", Key: "calcs.reconciliationType", NoTable: true},
-		{Section: "Summary", Key: "calcs.reconciled", Type: "boolean", NoTable: true},
+		{Section: "Asset", Key: "accountedFor", Type: "address", NoTable: true},
+		{Section: "Summary", Key: "calcs.reconciled", Type: "boolean"},
 		{Section: "Inflow", Key: "amountIn", Type: "wei", NoTable: true},
 		{Section: "Inflow", Key: "internalIn", Type: "wei", NoTable: true},
 		{Section: "Inflow", Key: "selfDestructIn", Type: "wei", NoTable: true},
@@ -349,7 +362,7 @@ func getStatementsFields() []types.FieldConfig {
 		{Section: "Reconciliation", Key: "calcs.amountNetEth", Type: "ether", NoTable: true},
 		{Section: "Reconciliation", Key: "calcs.endBalEth", Type: "ether"},
 		{Section: "Asset", Key: "spotPrice", Type: "number", NoTable: true},
-		{Section: "Reconciliation", Key: "calcs.endBalCalcEth", Type: "ether"},
+		{Section: "Reconciliation", Key: "calcs.endBalCalcEth", Type: "ether", NoTable: true},
 		{Section: "Summary", Key: "date", NoTable: true},
 		{Section: "Summary", Key: "gasUsed", NoTable: true},
 		{Section: "Summary", Key: "calcs.reconciliationType", NoTable: true},

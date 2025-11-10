@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { GetAvailableSkins, Reload } from '@app';
+import { CloseActiveProject, GetAvailableSkins, Reload } from '@app';
 import {
   useActiveProject,
   useEnabledMenuItems,
@@ -22,7 +22,6 @@ type Hotkey = {
 export const useAppHotkeys = (): void => {
   const [currentLocation] = useLocation();
   const { getLastFacet } = useActiveProject();
-  const createPayload = usePayload();
   const {
     debugCollapsed,
     setDebugCollapsed,
@@ -43,6 +42,7 @@ export const useAppHotkeys = (): void => {
 
   // Helper function to get current facet for the current route
   const vR = currentLocation.replace(/^\/+/, '');
+  const createPayload = usePayload(vR);
   const currentFacet = getLastFacet(vR);
 
   const [, navigate] = useLocation();
@@ -238,6 +238,26 @@ export const useAppHotkeys = (): void => {
         ),
       options: { preventDefault: true, enableOnFormTags: true },
     },
+    {
+      key: 'mod+w',
+      handler: (e: KeyboardEvent) =>
+        handleHotkey(
+          {
+            type: 'toggle',
+            hotkey: 'mod+w',
+            label: 'Close project',
+            action: async () => {
+              try {
+                await CloseActiveProject();
+              } catch (error) {
+                LogError(`Failed to close project: ${error}`);
+              }
+            },
+          },
+          e,
+        ),
+      options: { preventDefault: true, enableOnFormTags: true },
+    },
   ];
 
   // Dynamically assign hotkeys based on visual menu order
@@ -254,11 +274,11 @@ export const useAppHotkeys = (): void => {
     enabledMenuItems.forEach((item) => {
       // Special hotkeys that don't use sequential numbering
       if (item.path === '/wizard') {
-        registry['mod+w'] = (e: KeyboardEvent) => {
+        registry['mod+shift+w'] = (e: KeyboardEvent) => {
           handleHotkey(
             {
               type: item.type || 'navigation',
-              hotkey: 'mod+w',
+              hotkey: 'mod+shift+w',
               path: item.path,
               label: `Navigate to ${item.label}`,
               action: item.action,

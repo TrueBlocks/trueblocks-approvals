@@ -4,6 +4,8 @@ scope: type
 */
 
 {{- $class := .Class -}}
+{{- $lower := toLower $class -}}
+{{- $singular := toSingular $lower -}}
 {{- $isNames := eq .Class "Names" -}}
 // Copyright 2016, 2026 The Authors. All rights reserved.
 // Use of this source code is governed by a license that can
@@ -77,9 +79,10 @@ func (c *{{$class}}Collection) get{{.Name}}Store(payload *types.Payload, facet t
 func (c *{{$class}}Collection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
 	switch facet {
-	{{range .Facets}}case {{$class}}{{.Name}}:
+	{{- range .Facets}}
+	case {{$class}}{{.Name}}:
 		name = "{{toLower $class}}-{{toLower .StoreName}}"
-	{{end -}}
+	{{- end}}
 	default:
 		return ""
 	}
@@ -92,7 +95,7 @@ var (
 	collectionsMu sync.Mutex
 )
 
-func Get{{.Class}}Collection(payload *types.Payload) *{{.Class}}Collection {
+func Get{{.Class}}Collection(payload *types.Payload{{if .HasDynamicFacets}}, {{$singular}}Manager *{{$singular}}.Manager{{end}}) *{{.Class}}Collection {
 	collectionsMu.Lock()
 	defer collectionsMu.Unlock()
 
@@ -106,7 +109,7 @@ func Get{{.Class}}Collection(payload *types.Payload) *{{.Class}}Collection {
 		return collection
 	}
 
-	collection := New{{.Class}}Collection(payload)
+	collection := New{{.Class}}Collection(payload{{if .HasDynamicFacets}}, {{$singular}}Manager{{end}})
 	collections[key] = collection
 	return collection
 }

@@ -23,6 +23,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/exports"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/monitors"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/projects"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/status"
 )
 
@@ -37,6 +38,8 @@ func (a *App) Reload(payload *types.Payload) (err error) {
 	}()
 
 	switch a.GetLastView() {
+	case "projects":
+		err = a.ReloadProjects(payload)
 	case "exports":
 		err = a.ReloadExports(payload)
 	case "monitors":
@@ -65,6 +68,7 @@ func (a *App) Reload(payload *types.Payload) (err error) {
 // GetRegisteredViews returns all registered view names
 func (a *App) GetRegisteredViews() []string {
 	return []string{
+		"projects",
 		"exports",
 		"monitors",
 		"abis",
@@ -77,8 +81,10 @@ func (a *App) GetRegisteredViews() []string {
 	}
 }
 
-func getCollection(payload *types.Payload, missingOk bool) types.Collection {
+func (a *App) getCollection(payload *types.Payload, missingOk bool) types.Collection {
 	switch payload.Collection {
+	case "projects":
+		return projects.GetProjectsCollection(payload, a.Projects)
 	case "exports":
 		return exports.GetExportsCollection(payload)
 	case "monitors":
@@ -110,7 +116,7 @@ func (a *App) IsDisabled(viewName string) bool {
 	payload := &types.Payload{
 		Collection: viewName,
 	}
-	collection := getCollection(payload, true)
+	collection := a.getCollection(payload, true)
 	if collection == nil {
 		return false // not disabled if not found
 	}

@@ -126,22 +126,15 @@ func (a *App) Startup(ctx context.Context) {
 	a.Preferences.User = user
 	a.Preferences.App = appPrefs
 
+	// Restore previously opened projects from last session
+	a.restoreLastProjects()
+
 	// Initialize file server directly on the dalle OutputDir
 	if out := storage.OutputDir(); out != "" {
 		if _, err := os.Stat(out); err == nil {
 			a.fileServer = fileserver.NewFileServer(out)
 			if err := a.fileServer.Start(); err != nil {
 				msgs.EmitError("Failed to start image file server", err)
-			}
-		}
-	}
-
-	if len(a.Preferences.App.RecentProjects) > 0 {
-		mostRecentPath := a.Preferences.App.RecentProjects[0]
-		if file.FileExists(mostRecentPath) {
-			_, err := a.Projects.Open(mostRecentPath)
-			if err != nil {
-				msgs.EmitError("Failed to open recent project", err)
 			}
 		}
 	}
@@ -287,4 +280,31 @@ func (a *App) ConfigOk() {
 	if err != nil {
 		msgs.EmitError("Configuration error", err)
 	}
+}
+
+// ChangeVisibility delegates facet visibility change to the correct collection
+func (a *App) ChangeVisibility(payload *types.Payload) error {
+	collection := a.getCollection(payload, false)
+	return collection.ChangeVisibility(payload)
+}
+
+// CloseActiveProject closes the currently active project facet using backend state
+func (a *App) CloseActiveProject() error {
+	currentView := a.GetLastView()
+	if currentView == "" {
+		currentView = "projects"
+	}
+
+	currentFacet := a.GetLastFacet(currentView)
+	if currentFacet == "" {
+		return fmt.Errorf("no current facet available for view: %s", currentView)
+	}
+
+	payload := &types.Payload{
+		Collection:   currentView,
+		DataFacet:    types.DataFacet(currentFacet),
+		TargetSwitch: true, // true = hide/close
+	}
+
+	return a.ChangeVisibility(payload)
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/exports"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/monitors"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/projects"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/status"
 	//
 	"github.com/wailsapp/wails/v2"
@@ -56,6 +57,7 @@ func main() {
 		Bind: []interface{}{
 			a,
 			&project.Project{},
+			&projects.ProjectsCollection{},
 			&exports.ExportsCollection{},
 			&monitors.MonitorsCollection{},
 			&abis.AbisCollection{},

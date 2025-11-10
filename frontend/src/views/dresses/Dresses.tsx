@@ -38,7 +38,7 @@ import { renderers } from './renderers';
 export const Dresses = () => {
   // === SECTION 2: Hook Initialization ===
   const renderCnt = useRef(0);
-  const createPayload = usePayload();
+  const createPayload = usePayload(ROUTE);
   // === SECTION 2.5: Initial ViewConfig Load ===
   const { config: viewConfig } = useViewConfig({ viewName: ROUTE });
   assertRouteConsistency(ROUTE, viewConfig);
@@ -266,6 +266,8 @@ export const Dresses = () => {
         value: facetConfig.id,
         content: perTabContent,
         dividerBefore: facetConfig.dividerBefore,
+        hideable: facetConfig.hideable,
+        hidden: facetConfig.hidden,
       })),
     [availableFacets, perTabContent],
   );

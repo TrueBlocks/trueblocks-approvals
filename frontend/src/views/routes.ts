@@ -3,15 +3,16 @@ import { LogError } from '@utils';
 
 // TODO: BOGUS - THIS SHOULD BE AUTO-GENERATE OR REMOVED - I THINK IT'S USED FOR TESTING
 export const VIEW_ROUTES = [
+  'projects',
   'abis',
   'chunks',
   'comparitoor',
   'contracts',
+  'dresses',
   'exports',
   'monitors',
   'names',
   'status',
-  'dresses',
 ] as const;
 
 export type ViewRoute = (typeof VIEW_ROUTES)[number];
