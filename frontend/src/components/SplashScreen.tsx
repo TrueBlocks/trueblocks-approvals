@@ -23,7 +23,7 @@ export const SplashScreen = ({
     >
       <Stack align="center" gap="md">
         {showSpinner && <Loader size="lg" color="primary.6" />}
-        <Text size="lg" c="primary.6">
+        <Text variant="secondary" size="md">
           {message}
         </Text>
       </Stack>

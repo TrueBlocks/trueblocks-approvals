@@ -3,7 +3,11 @@ import { isValidElement } from 'react';
 import { LogError } from '@utils';
 
 export function formatWeiToEther(weiValue: string | number): string {
-  if (!weiValue || weiValue === '0') {
+  if (weiValue === null || weiValue === undefined || weiValue === '') {
+    return '[null]';
+  }
+
+  if (weiValue === '0' || weiValue === 0) {
     return '-';
   }
 
@@ -116,7 +120,9 @@ export function formatTimestamp(timestamp: number | string): string {
   if (isNaN(numTimestamp) || numTimestamp <= 0) {
     return 'No timestamp';
   }
-  return new Date(numTimestamp * 1000).toLocaleString();
+  return new Date(numTimestamp * 1000).toLocaleString(undefined, {
+    hour12: false,
+  });
 }
 
 export function extractTimestamp(obj: Record<string, unknown>): number | null {

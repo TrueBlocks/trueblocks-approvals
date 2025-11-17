@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/filewriter"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/file"
@@ -59,6 +60,8 @@ type AppPreferences struct {
 	ChunksMetrics   map[string]string `json:"chunksMetrics,omitempty"`
 	ExportsMetrics  map[string]string `json:"exportsMetrics,omitempty"`
 	Bounds          Bounds            `json:"bounds,omitempty"`
+	FontScale       float64           `json:"fontScale"`
+	ShowFieldTypes  bool              `json:"showFieldTypes"`
 }
 
 func (p *AppPreferences) String() string {
@@ -85,6 +88,8 @@ func NewAppPreferences() *AppPreferences {
 		ChunksMetrics:   make(map[string]string),
 		ExportsMetrics:  make(map[string]string),
 		Bounds:          NewBounds(),
+		FontScale:       1.0,
+		ShowFieldTypes:  false,
 	}
 }
 
@@ -166,6 +171,10 @@ func GetAppPreferences() (AppPreferences, error) {
 }
 
 func SetAppPreferences(appPrefs *AppPreferences) error {
+	return SetAppPreferencesWithPriority(appPrefs, filewriter.Batched)
+}
+
+func SetAppPreferencesWithPriority(appPrefs *AppPreferences, priority filewriter.Priority) error {
 	if err := validateAppPreferences(appPrefs); err != nil {
 		return fmt.Errorf("refusing to save invalid preferences: %w", err)
 	}
@@ -177,12 +186,8 @@ func SetAppPreferences(appPrefs *AppPreferences) error {
 		return err
 	}
 
-	err = os.MkdirAll(filepath.Dir(path), 0755)
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(path, data, 0644)
+	writer := filewriter.GetGlobalWriter()
+	return writer.WriteFile(path, data, priority)
 }
 
 func validateAppPreferences(appPrefs *AppPreferences) error {

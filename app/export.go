@@ -10,16 +10,16 @@ package app
 import (
 	"fmt"
 
-	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/utils"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/utils"
 )
 
 // ExportData handles export requests with full context logging and CSV creation
 func (a *App) ExportData(payload *types.Payload) error {
-	activeProject := a.Projects.GetActiveProject()
-	if activeProject == nil {
+	activeProject, exists := a.Projects.GetActiveItem()
+	if !exists {
 		err := fmt.Errorf("no active project")
 		msgs.EmitError("export failed: no active project", err)
 		return err

@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/fileserver"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/filewriter"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/manager"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/msgs"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/preferences"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/project"
@@ -21,6 +23,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/base"
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/config"
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/file"
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/logger"
 	coreTypes "github.com/TrueBlocks/trueblocks-chifra/v6/pkg/types"
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/utils"
 	dalle "github.com/TrueBlocks/trueblocks-dalle/v6"
@@ -34,7 +37,7 @@ import (
 type App struct {
 	Assets      embed.FS
 	Preferences *preferences.Preferences
-	Projects    *project.Manager
+	Projects    *manager.Manager[*project.Project]
 	chainList   *utils.ChainList
 	// ADD_ROUTE
 	// QUESTION: DO WE ACTUALLY NEED THIS?
@@ -53,7 +56,7 @@ type App struct {
 
 func NewApp(assets embed.FS) (*App, *menu.Menu) {
 	app := &App{
-		Projects: project.NewManager(),
+		Projects: manager.NewManager[*project.Project]("project"),
 		Preferences: &preferences.Preferences{
 			Org:  preferences.OrgPreferences{},
 			User: preferences.UserPreferences{},
@@ -126,6 +129,9 @@ func (a *App) Startup(ctx context.Context) {
 	a.Preferences.User = user
 	a.Preferences.App = appPrefs
 
+	// Initialize global file writer to eliminate race conditions (auto-starts)
+	_ = filewriter.GetGlobalWriter()
+
 	// Restore previously opened projects from last session
 	a.restoreLastProjects()
 
@@ -168,6 +174,10 @@ func (a *App) BeforeClose(ctx context.Context) bool {
 			log.Printf("Error shutting down file server: %v", err)
 		}
 	}
+
+	// Shutdown global file writer and flush any pending writes
+	writer := filewriter.GetGlobalWriter()
+	_ = writer.Shutdown()
 
 	return false // allow window to close
 }
@@ -238,6 +248,35 @@ func (a *App) SaveBounds(x, y, w, h int) {
 // GetAppId returns the application identifier
 func (a *App) GetAppId() preferences.Id {
 	return preferences.GetAppId()
+}
+
+// OpenURL opens the given URL in the default browser
+func (a *App) OpenURL(url string) {
+	logger.InfoBY("OpenURL:", url)
+	if a.ctx != nil {
+		logger.InfoBY("Opening...")
+		runtime.BrowserOpenURL(a.ctx, url)
+	}
+}
+
+// OpenLink opens a blockchain approvals link for the given key and value
+func (a *App) OpenLink(key string, value string) {
+	var url string
+	if key == "blockHash" {
+		url = "https://etherscan.io/block/" + value
+	} else if key == "transactionHash" || key == "hash" {
+		url = "https://etherscan.io/tx/" + value
+	} else if base.IsValidAddress(value) {
+		url = "https://etherscan.io/address/" + value
+	} else {
+		logger.InfoBY("OpenLink: unknown key type:", key)
+		return
+	}
+
+	logger.InfoBY("OpenLink:", key, value, "->", url)
+	if a.ctx != nil {
+		runtime.BrowserOpenURL(a.ctx, url)
+	}
 }
 
 // RegisterCollection adds a collection to the application's collection registry

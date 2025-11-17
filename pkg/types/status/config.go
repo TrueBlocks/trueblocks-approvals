@@ -12,49 +12,14 @@ import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 // GetConfig returns the ViewConfig for the Status view
 func (c *StatusCollection) GetConfig() (*types.ViewConfig, error) {
-	facets := map[string]types.FacetConfig{
-		"status": {
-			Name:          "Status",
-			Store:         "status",
-			ViewType:      "canvas",
-			DividerBefore: false,
-			Fields:        getStatusFields(),
-			Actions:       []string{},
-			HeaderActions: []string{},
-			RendererTypes: "",
-		},
-		"caches": {
-			Name:          "Caches",
-			Store:         "caches",
-			DividerBefore: false,
-			Fields:        getCachesFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-		"chains": {
-			Name:          "Chains",
-			Store:         "chains",
-			DividerBefore: false,
-			Fields:        getChainsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-	}
-
-	facetOrder := []string{}
-	facetOrder = append(facetOrder, "status")
-	facetOrder = append(facetOrder, "caches")
-	facetOrder = append(facetOrder, "chains")
+	facets := c.buildStaticFacets()
+	facetOrder := c.buildFacetOrder()
 
 	cfg := &types.ViewConfig{
 		ViewName:   "status",
 		Facets:     facets,
 		FacetOrder: facetOrder,
-		Actions: map[string]types.ActionConfig{
-			"export": {Name: "export", Label: "Export", Icon: "Export"},
-		},
+		Actions:    c.buildActions(),
 	}
 
 	types.DeriveFacets(cfg)
@@ -63,14 +28,60 @@ func (c *StatusCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
+func (c *StatusCollection) buildStaticFacets() map[string]types.FacetConfig {
+	return map[string]types.FacetConfig{
+		"status": {
+			Name:          "Status",
+			Store:         "status",
+			ViewType:      "form",
+			DividerBefore: false,
+			Fields:        getStatusFields(),
+			Actions:       []string{},
+			HeaderActions: []string{},
+		},
+		"caches": {
+			Name:          "Caches",
+			Store:         "caches",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getCachesFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+		},
+		"chains": {
+			Name:          "Chains",
+			Store:         "chains",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getChainsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+		},
+	}
+}
+
+func (c *StatusCollection) buildFacetOrder() []string {
+	return []string{
+		"status",
+		"caches",
+		"chains",
+	}
+}
+
+func (c *StatusCollection) buildActions() map[string]types.ActionConfig {
+	return map[string]types.ActionConfig{
+		"export": {Name: "export", Label: "Export", Icon: "Export"},
+	}
+}
+
 func getCachesFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "General", Key: "type"},
+		{Section: "General", Key: "type", Type: "string"},
 		{Section: "General", Key: "path", Type: "path"},
-		{Section: "Statistics", Key: "nFiles"},
-		{Section: "Statistics", Key: "nFolders"},
-		{Section: "Statistics", Key: "sizeInBytes"},
-		{Section: "Timestamps", Key: "lastCached"},
+		{Section: "Statistics", Key: "nFiles", Type: "uint64"},
+		{Section: "Statistics", Key: "nFolders", Type: "uint64"},
+		{Section: "Statistics", Key: "sizeInBytes", Type: "uint64"},
+		{Section: "Timestamps", Key: "lastCached", Type: "string"},
 		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
 	types.NormalizeFields(&ret)
@@ -79,13 +90,13 @@ func getCachesFields() []types.FieldConfig {
 
 func getChainsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "General", Key: "chain"},
-		{Section: "General", Key: "chainId", Type: "number"},
-		{Section: "General", Key: "symbol"},
-		{Section: "Providers", Key: "rpcProvider"},
-		{Section: "Providers", Key: "ipfsGateway"},
-		{Section: "Explorers", Key: "localExplorer"},
-		{Section: "Explorers", Key: "remoteExplorer"},
+		{Section: "General", Key: "chain", Type: "string"},
+		{Section: "General", Key: "chainId", Type: "uint64"},
+		{Section: "General", Key: "symbol", Type: "string"},
+		{Section: "Providers", Key: "rpcProvider", Type: "url"},
+		{Section: "Providers", Key: "ipfsGateway", Type: "url"},
+		{Section: "Explorers", Key: "localExplorer", Type: "url"},
+		{Section: "Explorers", Key: "remoteExplorer", Type: "url"},
 		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
 	types.NormalizeFields(&ret)
@@ -96,22 +107,22 @@ func getStatusFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "Paths", Key: "cachePath", Type: "path"},
 		{Section: "Paths", Key: "indexPath", Type: "path"},
-		{Section: "Chain", Key: "chain"},
-		{Section: "Chain", Key: "chainId"},
-		{Section: "Chain", Key: "networkId"},
-		{Section: "Chain", Key: "chainConfig"},
-		{Section: "Config", Key: "rootConfig"},
-		{Section: "Config", Key: "clientVersion"},
-		{Section: "Config", Key: "version"},
-		{Section: "Progress", Key: "progress"},
-		{Section: "Providers", Key: "rpcProvider"},
-		{Section: "Flags", Key: "hasEsKey"},
-		{Section: "Flags", Key: "hasPinKey"},
-		{Section: "Flags", Key: "isApi"},
-		{Section: "Flags", Key: "isArchive"},
-		{Section: "Flags", Key: "isScraping"},
-		{Section: "Flags", Key: "isTesting"},
-		{Section: "Flags", Key: "isTracing"},
+		{Section: "Chain", Key: "chain", Type: "string"},
+		{Section: "Chain", Key: "chainId", Type: "uint64"},
+		{Section: "Chain", Key: "networkId", Type: "string"},
+		{Section: "Chain", Key: "chainConfig", Type: "path"},
+		{Section: "Config", Key: "rootConfig", Type: "path"},
+		{Section: "Config", Key: "clientVersion", Type: "string"},
+		{Section: "Config", Key: "version", Type: "string"},
+		{Section: "Progress", Key: "progress", Type: "string"},
+		{Section: "Providers", Key: "rpcProvider", Type: "url"},
+		{Section: "Flags", Key: "hasEsKey", Type: "boolean"},
+		{Section: "Flags", Key: "hasPinKey", Type: "boolean"},
+		{Section: "Flags", Key: "isApi", Type: "boolean"},
+		{Section: "Flags", Key: "isArchive", Type: "boolean"},
+		{Section: "Flags", Key: "isScraping", Type: "boolean"},
+		{Section: "Flags", Key: "isTesting", Type: "boolean"},
+		{Section: "Flags", Key: "isTracing", Type: "boolean"},
 	}
 	types.NormalizeFields(&ret)
 	return ret

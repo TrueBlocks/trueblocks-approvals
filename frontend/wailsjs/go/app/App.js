@@ -450,8 +450,16 @@ export function NewProject(arg1, arg2) {
   return window['go']['app']['App']['NewProject'](arg1, arg2);
 }
 
+export function OpenLink(arg1, arg2) {
+  return window['go']['app']['App']['OpenLink'](arg1, arg2);
+}
+
 export function OpenProjectFile(arg1) {
   return window['go']['app']['App']['OpenProjectFile'](arg1);
+}
+
+export function OpenURL(arg1) {
+  return window['go']['app']['App']['OpenURL'](arg1);
 }
 
 export function ReadToMe(arg1, arg2) {
@@ -572,6 +580,10 @@ export function SetExportsMetric(arg1, arg2) {
 
 export function SetFilterState(arg1, arg2) {
   return window['go']['app']['App']['SetFilterState'](arg1, arg2);
+}
+
+export function SetFontScale(arg1) {
+  return window['go']['app']['App']['SetFontScale'](arg1);
 }
 
 export function SetFormat(arg1) {

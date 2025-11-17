@@ -1,12 +1,13 @@
 import React from 'react';
 import { useRef, useState } from 'react';
 
-import { StyledText } from '@components';
+import { RendererParams } from '@components';
 import {
   Box,
   Group,
   Paper,
   Stack,
+  Text,
   TextInput,
   Title,
   useMantineTheme,
@@ -24,19 +25,10 @@ export type AppearanceItem = {
   unique?: boolean;
 };
 
-export type ComparitoorRendererProps = {
-  _pageData: comparitoor.ComparitoorPage | null;
-  address?: string;
-};
-// TODO: Replace with real icons/components
-const MaterialIcon = () => (
-  <span style={{ fontWeight: 'bold', marginLeft: 4 }}>★</span>
-);
-
-export const ComparitoorFacet = ({
-  _pageData,
-  address,
-}: ComparitoorRendererProps) => {
+export const ComparitoorFacet = ({ params }: { params: RendererParams }) => {
+  const { data } = params;
+  const pageData = data;
+  const address = '0x503017d7baf7fbc0fff7492b751025c6a78179b'; // Default address for now
   const containerRef = useRef<HTMLDivElement>(null);
   const theme = useMantineTheme();
   // statusColors and getRowStyle removed (no longer used)
@@ -86,7 +78,21 @@ export const ComparitoorFacet = ({
     setActive({ sourceIdx, itemIdx });
   }
 
-  const sources = useComparitoorData(_pageData);
+  // Transform raw pageData
+  const transformed = pageData
+    ? ({
+        transaction: pageData,
+        chifra: pageData,
+        etherscan: pageData,
+        covalent: pageData,
+        alchemy: pageData,
+        unionCount: pageData.length,
+        overlapCount: 0,
+        intersectionCount: 0,
+      } as unknown as comparitoor.ComparitoorPage)
+    : null;
+
+  const sources = useComparitoorData(transformed);
 
   // Data-driven row style: assign by item properties only
   // getRowStyle removed (no longer used)
@@ -138,7 +144,7 @@ export const ComparitoorFacet = ({
               }}
             >
               <Stack gap={2} style={{ flexGrow: 1, minHeight: 0 }}>
-                <Title order={5} mb={2} ta="center" style={{ flexShrink: 0 }}>
+                <Title order={5} mb="xs" ta="center" style={{ flexShrink: 0 }}>
                   {src.label}
                 </Title>
                 <Stack gap={2} style={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -156,6 +162,7 @@ export const ComparitoorFacet = ({
                     } else if (isMatching) {
                       borderStyle = `2px solid ${theme.colors.blue[2]}`;
                     }
+                    var variant = isMissing ? 'error' : 'warning';
                     return (
                       <Group
                         key={item.value + itemIdx}
@@ -173,12 +180,9 @@ export const ComparitoorFacet = ({
                           })
                         }
                       >
-                        <StyledText
-                          variant={isMissing ? 'error' : 'warning'}
-                          size="sm"
-                        >
+                        <Text variant={variant} size="sm">
                           {isMissing ? '[missing]' : item.value}
-                        </StyledText>
+                        </Text>
                         {item.value === '100.100' && src.key === 'chifra' ? (
                           <MaterialIcon />
                         ) : null}
@@ -186,11 +190,11 @@ export const ComparitoorFacet = ({
                     );
                   })}
                 </Stack>
-                <StyledText variant="primary" size="xs">
+                <Text variant="primary" size="sm">
                   {src.stats.appearances.toLocaleString()} appearances
                   <br />
                   {src.stats.unique} unique
-                </StyledText>
+                </Text>
               </Stack>
             </Paper>
           );
@@ -222,11 +226,11 @@ export const ComparitoorFacet = ({
           sourceKeys={sources.map((src) => src.key)}
           sources={sources}
           unionStats={
-            _pageData
+            transformed
               ? {
-                  unionCount: _pageData.unionCount,
-                  overlapCount: _pageData.overlapCount,
-                  intersectionCount: _pageData.intersectionCount,
+                  unionCount: transformed.unionCount,
+                  overlapCount: transformed.overlapCount,
+                  intersectionCount: transformed.intersectionCount,
                 }
               : undefined
           }
@@ -236,3 +240,8 @@ export const ComparitoorFacet = ({
     </Stack>
   );
 };
+
+// TODO: Replace with real icons/components
+const MaterialIcon = () => (
+  <span style={{ fontWeight: 'bold', marginLeft: 4 }}>★</span>
+);

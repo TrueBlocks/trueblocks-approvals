@@ -18,26 +18,36 @@ export const StatsBox = ({ statsData, formatValue }: StatsBoxProps) => (
       alignItems: 'center',
     }}
   >
-    <Text size="sm" fw={600}>
+    <Text variant="primary" size="sm" fw={600}>
       Total:
     </Text>
-    <Text size="sm">{formatValue(statsData.total)}</Text>
-    <Text size="sm" fw={600}>
+    <Text variant="primary" size="sm">
+      {formatValue(statsData.total)}
+    </Text>
+    <Text variant="primary" size="sm" fw={600}>
       Avg:
     </Text>
-    <Text size="sm">{formatValue(statsData.average)}</Text>
-    <Text size="sm" fw={600}>
+    <Text variant="primary" size="sm">
+      {formatValue(statsData.average)}
+    </Text>
+    <Text variant="primary" size="sm" fw={600}>
       Buckets:
     </Text>
-    <Text size="sm">{statsData.count}</Text>
-    <Text size="sm" fw={600}>
+    <Text variant="primary" size="sm">
+      {statsData.count}
+    </Text>
+    <Text variant="primary" size="sm" fw={600}>
       Min:
     </Text>
-    <Text size="sm">{formatValue(statsData.min)}</Text>
-    <Text size="sm" fw={600}>
+    <Text variant="primary" size="sm">
+      {formatValue(statsData.min)}
+    </Text>
+    <Text variant="primary" size="sm" fw={600}>
       Max:
     </Text>
-    <Text size="sm">{formatValue(statsData.max)}</Text>
+    <Text variant="primary" size="sm">
+      {formatValue(statsData.max)}
+    </Text>
     <Box></Box>
     <Box></Box>
   </Box>

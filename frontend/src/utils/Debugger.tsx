@@ -1,6 +1,7 @@
-import { ActionDefinition, useActiveProject } from '@hooks';
+import { FieldTypeToggle } from '@components';
+import { ActionDefinition, useActiveProject, useIconSets } from '@hooks';
 import { usePreferences } from '@hooks';
-import { Badge, Group } from '@mantine/core';
+import { ActionIcon, Badge, Group } from '@mantine/core';
 import { types } from '@models';
 
 import { StateDisplay } from './';
@@ -10,7 +11,6 @@ const debuggerStyle = {
   color: '#2e2e2e',
   padding: '10px',
   margin: '5px 0',
-  fontSize: '12px',
   fontFamily: 'monospace',
   border: '1px solid var(--skin-border-secondary)',
   borderRadius: '4px',
@@ -36,10 +36,22 @@ export const Debugger: React.FC<DebuggerProps> = ({
   totalItems,
 }) => {
   const { activeChain, activeAddress, activeContract } = useActiveProject();
-  const { debugCollapsed, lastSkin, isDarkMode } = usePreferences();
+  const { debugCollapsed, lastSkin, isDarkMode, fontScale, setFontScale } =
+    usePreferences();
+  const icons = useIconSets();
   if (debugCollapsed) {
     return <></>;
   }
+
+  const handleFontScaleIncrease = () => {
+    const newScale = Math.min(1.4, Math.round((fontScale + 0.1) * 10) / 10);
+    setFontScale(newScale);
+  };
+
+  const handleFontScaleDecrease = () => {
+    const newScale = Math.max(0.6, Math.round((fontScale - 0.1) * 10) / 10);
+    setFontScale(newScale);
+  };
 
   return (
     <>
@@ -58,6 +70,25 @@ export const Debugger: React.FC<DebuggerProps> = ({
             totalItems={totalItems}
           />
         </div>
+        <Group style={{ flexShrink: 0 }}>
+          <FieldTypeToggle />
+          <ActionIcon
+            size="sm"
+            variant="subtle"
+            onClick={handleFontScaleDecrease}
+            title={`Decrease font scale (current: ${fontScale}x)`}
+          >
+            <icons.Minus />
+          </ActionIcon>
+          <ActionIcon
+            size="sm"
+            variant="subtle"
+            onClick={handleFontScaleIncrease}
+            title={`Increase font scale (current: ${fontScale}x)`}
+          >
+            <icons.Plus />
+          </ActionIcon>
+        </Group>
       </Group>
       <div style={debuggerStyle}>
         {`Renders: ${count} [${activeChain || 'N/A'}] [${activeAddress || 'N/A'}] [${activeContract || 'N/A'}] [${lastSkin || 'N/A'}] [${isDarkMode ? 'dark' : 'light'}]`}

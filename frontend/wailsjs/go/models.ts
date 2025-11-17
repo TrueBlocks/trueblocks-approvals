@@ -563,6 +563,7 @@ export namespace model {
 	
 	export class DalleDress {
 	    original: string;
+	    originalName: string;
 	    fileName: string;
 	    fileSize: number;
 	    modifiedAt: number;
@@ -592,6 +593,7 @@ export namespace model {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.original = source["original"];
+	        this.originalName = source["originalName"];
 	        this.fileName = source["fileName"];
 	        this.fileSize = source["fileSize"];
 	        this.modifiedAt = source["modifiedAt"];
@@ -811,6 +813,8 @@ export namespace preferences {
 	    chunksMetrics?: Record<string, string>;
 	    exportsMetrics?: Record<string, string>;
 	    bounds?: Bounds;
+	    fontScale: number;
+	    showFieldTypes: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new AppPreferences(source);
@@ -835,6 +839,8 @@ export namespace preferences {
 	        this.chunksMetrics = source["chunksMetrics"];
 	        this.exportsMetrics = source["exportsMetrics"];
 	        this.bounds = this.convertValues(source["bounds"], Bounds);
+	        this.fontScale = source["fontScale"];
+	        this.showFieldTypes = source["showFieldTypes"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -1057,6 +1063,7 @@ export namespace projects {
 	
 	export class AddressList {
 	    address: string;
+	    addressName: string;
 	    name: string;
 	    appearances: number;
 	    lastUpdated: string;
@@ -1068,6 +1075,7 @@ export namespace projects {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = source["address"];
+	        this.addressName = source["addressName"];
 	        this.name = source["name"];
 	        this.appearances = source["appearances"];
 	        this.lastUpdated = source["lastUpdated"];
@@ -1186,8 +1194,11 @@ export namespace skin {
 	    shadows: Record<string, string>;
 	    defaultGradient: Record<string, any>;
 	    autoContrast: boolean;
-	    smallSize: string;
-	    normalSize: string;
+	    tinySize?: string;
+	    smallSize?: string;
+	    mediumSize?: string;
+	    largeSize?: string;
+	    hugeSize?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Skin(source);
@@ -1212,8 +1223,11 @@ export namespace skin {
 	        this.shadows = source["shadows"];
 	        this.defaultGradient = source["defaultGradient"];
 	        this.autoContrast = source["autoContrast"];
+	        this.tinySize = source["tinySize"];
 	        this.smallSize = source["smallSize"];
-	        this.normalSize = source["normalSize"];
+	        this.mediumSize = source["mediumSize"];
+	        this.largeSize = source["largeSize"];
+	        this.hugeSize = source["hugeSize"];
 	    }
 	}
 	export class SkinMetadata {
@@ -1290,28 +1304,11 @@ export namespace status {
 
 export namespace types {
 	
-	export enum Period {
-	    BLOCKLY = "blockly",
-	    HOURLY = "hourly",
-	    DAILY = "daily",
-	    WEEKLY = "weekly",
-	    MONTHLY = "monthly",
-	    QUARTERLY = "quarterly",
-	    ANNUAL = "annual",
-	}
 	export enum DataFacet {
 	    STATS = "stats",
 	    INDEX = "index",
 	    BLOOMS = "blooms",
 	    MANIFEST = "manifest",
-	    COMPARITOOR = "comparitoor",
-	    CHIFRA = "chifra",
-	    ETHERSCAN = "etherscan",
-	    COVALENT = "covalent",
-	    ALCHEMY = "alchemy",
-	    DASHBOARD = "dashboard",
-	    EXECUTE = "execute",
-	    EVENTS = "events",
 	    ALL = "all",
 	    CUSTOM = "custom",
 	    PREFUND = "prefund",
@@ -1320,6 +1317,14 @@ export namespace types {
 	    DOWNLOADED = "downloaded",
 	    KNOWN = "known",
 	    FUNCTIONS = "functions",
+	    EVENTS = "events",
+	    COMPARITOOR = "comparitoor",
+	    CHIFRA = "chifra",
+	    ETHERSCAN = "etherscan",
+	    COVALENT = "covalent",
+	    ALCHEMY = "alchemy",
+	    DASHBOARD = "dashboard",
+	    EXECUTE = "execute",
 	    STATEMENTS = "statements",
 	    BALANCES = "balances",
 	    TRANSFERS = "transfers",
@@ -1347,6 +1352,15 @@ export namespace types {
 	    STALE = "stale",
 	    FETCHING = "fetching",
 	    LOADED = "loaded",
+	}
+	export enum Period {
+	    BLOCKLY = "blockly",
+	    HOURLY = "hourly",
+	    DAILY = "daily",
+	    WEEKLY = "weekly",
+	    MONTHLY = "monthly",
+	    QUARTERLY = "quarterly",
+	    ANNUAL = "annual",
 	}
 	export class AbiCalcs {
 	    name?: string;
@@ -1484,6 +1498,7 @@ export namespace types {
 	}
 	export class Abi {
 	    address: base.Address;
+	    addressName?: string;
 	    fileSize: number;
 	    functions: Function[];
 	    hasConstructor: boolean;
@@ -1504,6 +1519,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.fileSize = source["fileSize"];
 	        this.functions = this.convertValues(source["functions"], Function);
 	        this.hasConstructor = source["hasConstructor"];
@@ -1578,9 +1594,12 @@ export namespace types {
 	    lastAppTs: number;
 	    lastAppTxID: number;
 	    owner: base.Address;
+	    ownerName?: string;
 	    spender: base.Address;
+	    spenderName?: string;
 	    timestamp: number;
 	    token: base.Address;
+	    tokenName?: string;
 	    calcs?: ApprovalCalcs;
 	
 	    static createFrom(source: any = {}) {
@@ -1596,9 +1615,12 @@ export namespace types {
 	        this.lastAppTs = source["lastAppTs"];
 	        this.lastAppTxID = source["lastAppTxID"];
 	        this.owner = this.convertValues(source["owner"], base.Address);
+	        this.ownerName = source["ownerName"];
 	        this.spender = this.convertValues(source["spender"], base.Address);
+	        this.spenderName = source["spenderName"];
 	        this.timestamp = source["timestamp"];
 	        this.token = this.convertValues(source["token"], base.Address);
+	        this.tokenName = source["tokenName"];
 	        this.calcs = this.convertValues(source["calcs"], ApprovalCalcs);
 	    }
 	
@@ -1675,6 +1697,7 @@ export namespace types {
 	}
 	export class Name {
 	    address: base.Address;
+	    addressName?: string;
 	    decimals: number;
 	    deleted?: boolean;
 	    isContract?: boolean;
@@ -1699,6 +1722,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.decimals = source["decimals"];
 	        this.deleted = source["deleted"];
 	        this.isContract = source["isContract"];
@@ -2249,6 +2273,7 @@ export namespace types {
 	export class Contract {
 	    abi?: Abi;
 	    address: base.Address;
+	    addressName?: string;
 	    errorCount: number;
 	    lastError: string;
 	    lastUpdated: number;
@@ -2264,6 +2289,7 @@ export namespace types {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.abi = this.convertValues(source["abi"], Abi);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.errorCount = source["errorCount"];
 	        this.lastError = source["lastError"];
 	        this.lastUpdated = source["lastUpdated"];
@@ -2534,14 +2560,13 @@ export namespace types {
 	    viewType?: string;
 	    dividerBefore: boolean;
 	    disabled: boolean;
-	    hideable: boolean;
-	    hidden: boolean;
+	    canClose: boolean;
 	    fields: FieldConfig[];
 	    columns: ColumnConfig[];
 	    detailPanels: DetailPanelConfig[];
 	    actions: string[];
 	    headerActions: string[];
-	    rendererTypes: string;
+	    panel: string;
 	    panelChartConfig?: PanelChartConfig;
 	    facetChartConfig?: FacetChartConfig;
 	    rowAction?: RowActionConfig;
@@ -2557,14 +2582,13 @@ export namespace types {
 	        this.viewType = source["viewType"];
 	        this.dividerBefore = source["dividerBefore"];
 	        this.disabled = source["disabled"];
-	        this.hideable = source["hideable"];
-	        this.hidden = source["hidden"];
+	        this.canClose = source["canClose"];
 	        this.fields = this.convertValues(source["fields"], FieldConfig);
 	        this.columns = this.convertValues(source["columns"], ColumnConfig);
 	        this.detailPanels = this.convertValues(source["detailPanels"], DetailPanelConfig);
 	        this.actions = source["actions"];
 	        this.headerActions = source["headerActions"];
-	        this.rendererTypes = source["rendererTypes"];
+	        this.panel = source["panel"];
 	        this.panelChartConfig = this.convertValues(source["panelChartConfig"], PanelChartConfig);
 	        this.facetChartConfig = this.convertValues(source["facetChartConfig"], FacetChartConfig);
 	        this.rowAction = this.convertValues(source["rowAction"], RowActionConfig);
@@ -2624,6 +2648,7 @@ export namespace types {
 	}
 	export class Log {
 	    address: base.Address;
+	    addressName?: string;
 	    articulatedLog?: Function;
 	    blockHash: base.Hash;
 	    blockNumber: number;
@@ -2642,6 +2667,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.articulatedLog = this.convertValues(source["articulatedLog"], Function);
 	        this.blockHash = this.convertValues(source["blockHash"], base.Hash);
 	        this.blockNumber = source["blockNumber"];
@@ -2806,6 +2832,7 @@ export namespace types {
 	}
 	export class Monitor {
 	    address: base.Address;
+	    addressName?: string;
 	    deleted: boolean;
 	    fileSize: number;
 	    isEmpty: boolean;
@@ -2822,6 +2849,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.deleted = source["deleted"];
 	        this.fileSize = source["fileSize"];
 	        this.isEmpty = source["isEmpty"];
@@ -2945,14 +2973,17 @@ export namespace types {
 	    blockHash?: base.Hash;
 	    blockNumber: number;
 	    contractAddress?: base.Address;
+	    contractAddressName?: string;
 	    cumulativeGasUsed?: number;
 	    effectiveGasPrice?: number;
 	    from?: base.Address;
+	    fromName?: string;
 	    gasUsed: number;
 	    isError?: boolean;
 	    logs: Log[];
 	    status: number;
 	    to?: base.Address;
+	    toName?: string;
 	    transactionHash: base.Hash;
 	    transactionIndex: number;
 	    calcs?: ReceiptCalcs;
@@ -2966,14 +2997,17 @@ export namespace types {
 	        this.blockHash = this.convertValues(source["blockHash"], base.Hash);
 	        this.blockNumber = source["blockNumber"];
 	        this.contractAddress = this.convertValues(source["contractAddress"], base.Address);
+	        this.contractAddressName = source["contractAddressName"];
 	        this.cumulativeGasUsed = source["cumulativeGasUsed"];
 	        this.effectiveGasPrice = source["effectiveGasPrice"];
 	        this.from = this.convertValues(source["from"], base.Address);
+	        this.fromName = source["fromName"];
 	        this.gasUsed = source["gasUsed"];
 	        this.isError = source["isError"];
 	        this.logs = this.convertValues(source["logs"], Log);
 	        this.status = source["status"];
 	        this.to = this.convertValues(source["to"], base.Address);
+	        this.toName = source["toName"];
 	        this.transactionHash = this.convertValues(source["transactionHash"], base.Hash);
 	        this.transactionIndex = source["transactionIndex"];
 	        this.calcs = this.convertValues(source["calcs"], ReceiptCalcs);
@@ -3198,11 +3232,13 @@ export namespace types {
 	}
 	export class Statement {
 	    accountedFor: base.Address;
+	    accountedForName?: string;
 	    // Go type: base
 	    amountIn?: any;
 	    // Go type: base
 	    amountOut?: any;
 	    asset: base.Address;
+	    assetName?: string;
 	    // Go type: base
 	    begBal: any;
 	    blockNumber: number;
@@ -3243,11 +3279,13 @@ export namespace types {
 	    prevBal?: any;
 	    priceSource: string;
 	    recipient: base.Address;
+	    recipientName?: string;
 	    // Go type: base
 	    selfDestructIn?: any;
 	    // Go type: base
 	    selfDestructOut?: any;
 	    sender: base.Address;
+	    senderName?: string;
 	    // Go type: base
 	    spotPrice: any;
 	    symbol: string;
@@ -3266,9 +3304,11 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.accountedFor = this.convertValues(source["accountedFor"], base.Address);
+	        this.accountedForName = source["accountedForName"];
 	        this.amountIn = this.convertValues(source["amountIn"], null);
 	        this.amountOut = this.convertValues(source["amountOut"], null);
 	        this.asset = this.convertValues(source["asset"], base.Address);
+	        this.assetName = source["assetName"];
 	        this.begBal = this.convertValues(source["begBal"], null);
 	        this.blockNumber = source["blockNumber"];
 	        this.correctAmountIn = this.convertValues(source["correctAmountIn"], null);
@@ -3292,9 +3332,11 @@ export namespace types {
 	        this.prevBal = this.convertValues(source["prevBal"], null);
 	        this.priceSource = source["priceSource"];
 	        this.recipient = this.convertValues(source["recipient"], base.Address);
+	        this.recipientName = source["recipientName"];
 	        this.selfDestructIn = this.convertValues(source["selfDestructIn"], null);
 	        this.selfDestructOut = this.convertValues(source["selfDestructOut"], null);
 	        this.sender = this.convertValues(source["sender"], base.Address);
+	        this.senderName = source["senderName"];
 	        this.spotPrice = this.convertValues(source["spotPrice"], null);
 	        this.symbol = source["symbol"];
 	        this.timestamp = source["timestamp"];
@@ -3470,11 +3512,13 @@ export namespace types {
 	}
 	export class Token {
 	    address: base.Address;
+	    addressName?: string;
 	    // Go type: base
 	    balance: any;
 	    blockNumber: number;
 	    decimals: number;
 	    holder: base.Address;
+	    holderName?: string;
 	    name: string;
 	    // Go type: base
 	    priorBalance?: any;
@@ -3493,10 +3537,12 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.balance = this.convertValues(source["balance"], null);
 	        this.blockNumber = source["blockNumber"];
 	        this.decimals = source["decimals"];
 	        this.holder = this.convertValues(source["holder"], base.Address);
+	        this.holderName = source["holderName"];
 	        this.name = source["name"];
 	        this.priorBalance = this.convertValues(source["priorBalance"], null);
 	        this.symbol = source["symbol"];
@@ -3570,6 +3616,7 @@ export namespace types {
 	}
 	export class TraceResult {
 	    address?: base.Address;
+	    addressName?: string;
 	    code?: string;
 	    gasUsed?: number;
 	    output?: string;
@@ -3582,6 +3629,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.code = source["code"];
 	        this.gasUsed = source["gasUsed"];
 	        this.output = source["output"];
@@ -3622,18 +3670,24 @@ export namespace types {
 	}
 	export class TraceAction {
 	    address?: base.Address;
+	    addressName?: string;
 	    author?: base.Address;
+	    authorName?: string;
 	    // Go type: base
 	    balance?: any;
 	    callType: string;
 	    from: base.Address;
+	    fromName?: string;
 	    gas: number;
 	    init?: string;
 	    input?: string;
 	    refundAddress?: base.Address;
+	    refundAddressName?: string;
 	    rewardType?: string;
 	    selfDestructed?: base.Address;
+	    selfDestructedName?: string;
 	    to: base.Address;
+	    toName?: string;
 	    // Go type: base
 	    value: any;
 	    calcs?: TraceActionCalcs;
@@ -3645,17 +3699,23 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.author = this.convertValues(source["author"], base.Address);
+	        this.authorName = source["authorName"];
 	        this.balance = this.convertValues(source["balance"], null);
 	        this.callType = source["callType"];
 	        this.from = this.convertValues(source["from"], base.Address);
+	        this.fromName = source["fromName"];
 	        this.gas = source["gas"];
 	        this.init = source["init"];
 	        this.input = source["input"];
 	        this.refundAddress = this.convertValues(source["refundAddress"], base.Address);
+	        this.refundAddressName = source["refundAddressName"];
 	        this.rewardType = source["rewardType"];
 	        this.selfDestructed = this.convertValues(source["selfDestructed"], base.Address);
+	        this.selfDestructedName = source["selfDestructedName"];
 	        this.to = this.convertValues(source["to"], base.Address);
+	        this.toName = source["toName"];
 	        this.value = this.convertValues(source["value"], null);
 	        this.calcs = this.convertValues(source["calcs"], TraceActionCalcs);
 	    }
@@ -3797,6 +3857,7 @@ export namespace types {
 	    blockHash: base.Hash;
 	    blockNumber: number;
 	    from: base.Address;
+	    fromName?: string;
 	    gas: number;
 	    gasPrice: number;
 	    gasUsed: number;
@@ -3810,6 +3871,7 @@ export namespace types {
 	    receipt?: Receipt;
 	    timestamp: number;
 	    to: base.Address;
+	    toName?: string;
 	    traces: Trace[];
 	    transactionIndex: number;
 	    type: string;
@@ -3828,6 +3890,7 @@ export namespace types {
 	        this.blockHash = this.convertValues(source["blockHash"], base.Hash);
 	        this.blockNumber = source["blockNumber"];
 	        this.from = this.convertValues(source["from"], base.Address);
+	        this.fromName = source["fromName"];
 	        this.gas = source["gas"];
 	        this.gasPrice = source["gasPrice"];
 	        this.gasUsed = source["gasUsed"];
@@ -3841,6 +3904,7 @@ export namespace types {
 	        this.receipt = this.convertValues(source["receipt"], Receipt);
 	        this.timestamp = source["timestamp"];
 	        this.to = this.convertValues(source["to"], base.Address);
+	        this.toName = source["toName"];
 	        this.traces = this.convertValues(source["traces"], Trace);
 	        this.transactionIndex = source["transactionIndex"];
 	        this.type = source["type"];
@@ -3907,11 +3971,13 @@ export namespace types {
 	    // Go type: base
 	    amountOut?: any;
 	    asset: base.Address;
+	    assetName?: string;
 	    blockNumber: number;
 	    decimals: number;
 	    // Go type: base
 	    gasOut?: any;
 	    holder: base.Address;
+	    holderName?: string;
 	    // Go type: base
 	    internalIn?: any;
 	    // Go type: base
@@ -3928,11 +3994,13 @@ export namespace types {
 	    // Go type: base
 	    prefundIn?: any;
 	    recipient: base.Address;
+	    recipientName?: string;
 	    // Go type: base
 	    selfDestructIn?: any;
 	    // Go type: base
 	    selfDestructOut?: any;
 	    sender: base.Address;
+	    senderName?: string;
 	    transactionIndex: number;
 	    calcs?: TransferCalcs;
 	    log?: Log;
@@ -3947,10 +4015,12 @@ export namespace types {
 	        this.amountIn = this.convertValues(source["amountIn"], null);
 	        this.amountOut = this.convertValues(source["amountOut"], null);
 	        this.asset = this.convertValues(source["asset"], base.Address);
+	        this.assetName = source["assetName"];
 	        this.blockNumber = source["blockNumber"];
 	        this.decimals = source["decimals"];
 	        this.gasOut = this.convertValues(source["gasOut"], null);
 	        this.holder = this.convertValues(source["holder"], base.Address);
+	        this.holderName = source["holderName"];
 	        this.internalIn = this.convertValues(source["internalIn"], null);
 	        this.internalOut = this.convertValues(source["internalOut"], null);
 	        this.logIndex = source["logIndex"];
@@ -3960,9 +4030,11 @@ export namespace types {
 	        this.minerUncleRewardIn = this.convertValues(source["minerUncleRewardIn"], null);
 	        this.prefundIn = this.convertValues(source["prefundIn"], null);
 	        this.recipient = this.convertValues(source["recipient"], base.Address);
+	        this.recipientName = source["recipientName"];
 	        this.selfDestructIn = this.convertValues(source["selfDestructIn"], null);
 	        this.selfDestructOut = this.convertValues(source["selfDestructOut"], null);
 	        this.sender = this.convertValues(source["sender"], base.Address);
+	        this.senderName = source["senderName"];
 	        this.transactionIndex = source["transactionIndex"];
 	        this.calcs = this.convertValues(source["calcs"], TransferCalcs);
 	        this.log = this.convertValues(source["log"], Log);
@@ -4044,6 +4116,7 @@ export namespace types {
 	}
 	export class Withdrawal {
 	    address: base.Address;
+	    addressName?: string;
 	    // Go type: base
 	    amount: any;
 	    blockNumber: number;
@@ -4059,6 +4132,7 @@ export namespace types {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.address = this.convertValues(source["address"], base.Address);
+	        this.addressName = source["addressName"];
 	        this.amount = this.convertValues(source["amount"], null);
 	        this.blockNumber = source["blockNumber"];
 	        this.index = source["index"];

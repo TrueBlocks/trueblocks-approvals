@@ -1,14 +1,11 @@
-import { StyledText } from '@components';
 import { DetailPanelContainer, DetailSection } from '@components';
-import { Grid, Group, Stack } from '@mantine/core';
+import { Grid, Group, Stack, Text } from '@mantine/core';
 import { types } from '@models';
 import { addressToHex } from '@utils';
 
 import '../../../../../components/detail/DetailTable.css';
 
-export const renderStatementDetailPanel = (
-  rowData: Record<string, unknown> | null,
-) => {
+export const StatementsPanel = (rowData: Record<string, unknown> | null) => {
   if (!rowData) return null;
   const statement = rowData as unknown as types.Statement;
   const decimals = statement.decimals || 18;
@@ -89,52 +86,36 @@ export const renderStatementDetailPanel = (
   };
 
   // Create complex title component
-  const titleComponent = (
-    <>
-      <Group justify="space-between" align="flex-start">
-        <StyledText
-          variant="primary"
-          size="lg"
-          fw={600}
-          style={{ color: 'var(--mantine-color-text)' }}
-        >
-          Tx {hashToHex(statement.transactionHash)}
-        </StyledText>
-        <StyledText
-          variant={isReconciled ? 'success' : 'error'}
-          size="xl"
-          fw={600}
-        >
-          {isReconciled ? '✓' : '✗'}
-        </StyledText>
-      </Group>
-      <Group justify="space-between" gap={4} wrap="nowrap">
-        <StyledText
-          variant="primary"
-          size="md"
-          fw={600}
-          style={{ color: 'var(--mantine-color-text)' }}
-        >
-          {new Date(statement.timestamp * 1000).toLocaleString()}
-        </StyledText>
-        <StyledText
-          variant="primary"
-          size="md"
-          fw={600}
-          style={{ color: 'var(--mantine-color-text)' }}
-        >
-          {statement.blockNumber}.{statement.transactionIndex}
-          {statement.logIndex !== undefined && statement.logIndex !== null
-            ? `.${statement.logIndex}`
-            : ''}
-        </StyledText>
-      </Group>
-    </>
-  );
+  const titleComponent = () => {
+    var variant = isReconciled ? 'success' : 'error';
+    return (
+      <>
+        <Group justify="space-between" align="flex-start">
+          <Text variant="primary" size="md" fw={600}>
+            Tx {hashToHex(statement.transactionHash)}
+          </Text>
+          <Text variant={variant} size="md" fw={600}>
+            {isReconciled ? '✓' : '✗'}
+          </Text>
+        </Group>
+        <Group justify="space-between" gap={4} wrap="nowrap">
+          <Text variant="primary" size="md" fw={600}>
+            {new Date(statement.timestamp * 1000).toLocaleString()}
+          </Text>
+          <Text variant="primary" size="md" fw={600}>
+            {statement.blockNumber}.{statement.transactionIndex}
+            {statement.logIndex !== undefined && statement.logIndex !== null
+              ? `.${statement.logIndex}`
+              : ''}
+          </Text>
+        </Group>
+      </>
+    );
+  };
 
   return (
     <Stack gap={8} className="fixed-prompt-width">
-      <DetailPanelContainer title={titleComponent}>
+      <DetailPanelContainer title={titleComponent()}>
         <DetailSection title="Participants">
           <Grid gutter={4}>
             <Grid.Col span={6}>
@@ -183,17 +164,15 @@ export const renderStatementDetailPanel = (
               </Grid.Col>
               <Grid.Col span={12}>
                 <div className="detail-row-value">
-                  <div
+                  <Text
+                    variant="primary"
+                    size="sm"
                     style={{
-                      border: 'none',
-                      padding: '0 8px 0 0',
-                      fontFamily: 'monospace',
                       textAlign: 'right',
-                      fontSize: '0.85em',
                     }}
                   >
                     {formatRaw(beginBalRaw)}
-                  </div>
+                  </Text>
                 </div>
               </Grid.Col>
             </Grid.Col>
@@ -206,7 +185,6 @@ export const renderStatementDetailPanel = (
                   <div
                     style={{
                       textAlign: 'right',
-                      fontFamily: 'monospace',
                       paddingRight: 16,
                       color:
                         totalInRaw === 0n
@@ -228,7 +206,6 @@ export const renderStatementDetailPanel = (
                   <div
                     style={{
                       textAlign: 'right',
-                      fontFamily: 'monospace',
                       paddingRight: 16,
                       color:
                         totalOutRaw === 0n
@@ -247,17 +224,15 @@ export const renderStatementDetailPanel = (
               </Grid.Col>
               <Grid.Col span={12}>
                 <div className="detail-row-value">
-                  <div
+                  <Text
+                    variant="primary"
+                    size="sm"
                     style={{
-                      border: 'none',
-                      padding: '0 8px 0 0',
-                      fontFamily: 'monospace',
                       textAlign: 'right',
-                      fontSize: '0.85em',
                     }}
                   >
                     {formatRaw(endBalRaw)}
-                  </div>
+                  </Text>
                 </div>
               </Grid.Col>
             </Grid.Col>
@@ -278,18 +253,19 @@ export const renderStatementDetailPanel = (
                   return (
                     <div key={label} style={{ display: 'contents' }}>
                       <Grid.Col span={5}>
-                        <div
-                          className="detail-row-prompt"
-                          style={{
-                            padding: '1px 4px',
-                            fontSize: '0.85em',
-                            textOverflow: 'clip',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          {label}
-                        </div>
+                        <Text variant="dimmed" size="md">
+                          <div
+                            className="detail-row-prompt"
+                            style={{
+                              padding: '1px 4px',
+                              textOverflow: 'clip',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {label}
+                          </div>
+                        </Text>
                       </Grid.Col>
                       <Grid.Col span={7}>
                         <div
@@ -298,17 +274,15 @@ export const renderStatementDetailPanel = (
                             padding: '1px 4px',
                           }}
                         >
-                          <div
+                          <Text
+                            variant="primary"
+                            size="sm"
                             style={{
-                              border: 'none',
-                              padding: '0 8px 0 0',
-                              fontFamily: 'monospace',
                               textAlign: 'right',
-                              fontSize: '0.85em',
                             }}
                           >
                             {formatRaw(raw)}
-                          </div>
+                          </Text>
                         </div>
                       </Grid.Col>
                     </div>
@@ -330,18 +304,19 @@ export const renderStatementDetailPanel = (
                   return (
                     <div key={label} style={{ display: 'contents' }}>
                       <Grid.Col span={5}>
-                        <div
-                          className="detail-row-prompt"
-                          style={{
-                            padding: '1px 4px',
-                            fontSize: '0.85em',
-                            textOverflow: 'clip',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          {label}
-                        </div>
+                        <Text variant="dimmed" size="md">
+                          <div
+                            className="detail-row-prompt"
+                            style={{
+                              padding: '1px 4px',
+                              textOverflow: 'clip',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {label}
+                          </div>
+                        </Text>
                       </Grid.Col>
                       <Grid.Col span={7}>
                         <div
@@ -350,17 +325,15 @@ export const renderStatementDetailPanel = (
                             padding: '1px 4px',
                           }}
                         >
-                          <div
+                          <Text
+                            variant="primary"
+                            size="sm"
                             style={{
-                              border: 'none',
-                              padding: '0 8px 0 0',
-                              fontFamily: 'monospace',
                               textAlign: 'right',
-                              fontSize: '0.85em',
                             }}
                           >
                             {formatRaw(raw)}
-                          </div>
+                          </Text>
                         </div>
                       </Grid.Col>
                     </div>
@@ -376,7 +349,6 @@ export const renderStatementDetailPanel = (
             gridTemplateColumns: '5fr 7fr 5fr 7fr',
             alignItems: 'center',
             gap: 0,
-            fontSize: '0.85em',
           }}
         >
           <div
@@ -387,18 +359,13 @@ export const renderStatementDetailPanel = (
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               background: 'transparent',
-              color: 'var(--mantine-color-dimmed)',
             }}
           >
             Spot Price
           </div>
           <div
             style={{
-              border: 'none',
-              padding: '0 8px 0 0',
-              fontFamily: 'monospace',
               textAlign: 'right',
-              fontSize: 'inherit',
               color: hasPrice
                 ? 'var(--mantine-color-dimmed)'
                 : 'var(--mantine-color-text)',
@@ -422,7 +389,6 @@ export const renderStatementDetailPanel = (
           <div
             style={{
               padding: '1px 4px',
-              fontSize: 'inherit',
               textOverflow: 'clip',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -433,14 +399,14 @@ export const renderStatementDetailPanel = (
           </div>
         </div>
         {!isReconciled && statement.correctingReasons && (
-          <StyledText variant="error" size="md">
-            {statement.correctingReasons}
-          </StyledText>
+          <Text variant="error" size="sm">
+            Error: {statement.correctingReasons}
+          </Text>
         )}
         {statement.correctionId ? (
-          <StyledText variant="dimmed" size="md">
+          <Text variant="dimmed" size="md">
             Correction Id: {statement.correctionId}
-          </StyledText>
+          </Text>
         ) : null}
       </DetailPanelContainer>
     </Stack>

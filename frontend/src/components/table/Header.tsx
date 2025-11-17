@@ -63,6 +63,7 @@ export const Header = <T extends Record<string, unknown>>({
           const classNames = [
             col.sortable ? 'sortable' : '',
             isSorted ? 'sorted' : '',
+            col.className || '', // Add CSS class for type-based widths
           ]
             .filter(Boolean)
             .join(' ');
@@ -71,7 +72,6 @@ export const Header = <T extends Record<string, unknown>>({
             <th
               key={col.key}
               style={{
-                ...(col.width ? { width: col.width } : undefined),
                 textAlign: 'center',
               }}
               className={classNames}
@@ -91,7 +91,11 @@ export const Header = <T extends Record<string, unknown>>({
               }
             >
               <span className="header-cell">
-                <span className="header-label">{col.header}</span>
+                <span className="header-label">
+                  {typeof col.header === 'string' && col.header.match(/^[nN] /)
+                    ? col.header.replace(/^[nN] /, 'n')
+                    : col.header}
+                </span>
                 {col.sortable && (
                   <span className="sort-indicator">{sortIndicator}</span>
                 )}

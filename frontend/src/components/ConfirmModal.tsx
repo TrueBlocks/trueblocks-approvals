@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { GetAppPreferences, SetAppPreferences } from '@app';
-import { StyledButton, StyledModal, StyledText } from '@components';
-import { Checkbox, Group, Stack } from '@mantine/core';
+import { StyledButton, StyledModal } from '@components';
+import { Checkbox, Group, Stack, Text } from '@mantine/core';
 import { LogError, updateAppPreferencesSafely } from '@utils';
 
 interface ConfirmModalProps {
@@ -69,16 +69,15 @@ export const ConfirmModal = ({
       onClose={handleCancel}
       title={title}
       centered
-      size="md"
       overlayProps={{
         backgroundOpacity: 0.55,
         blur: 3,
       }}
     >
       <Stack gap="md">
-        <StyledText variant="primary" size="sm">
+        <Text variant="primary" size="sm">
           {message}
-        </StyledText>
+        </Text>
 
         <Checkbox
           label="Don't ask again"

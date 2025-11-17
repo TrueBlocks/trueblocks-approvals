@@ -3,6 +3,7 @@
 import {base} from '../models';
 import {project} from '../models';
 import {types} from '../models';
+import {filewriter} from '../models';
 
 export function AddAddress(arg1:base.Address):Promise<void>;
 
@@ -46,6 +47,10 @@ export function Save():Promise<void>;
 
 export function SaveAs(arg1:string):Promise<void>;
 
+export function SaveAsWithPriority(arg1:string,arg2:filewriter.Priority):Promise<void>;
+
+export function SaveWithPriority(arg1:filewriter.Priority):Promise<void>;
+
 export function SetActiveAddress(arg1:base.Address):Promise<void>;
 
 export function SetActiveChain(arg1:string):Promise<void>;
@@ -65,3 +70,5 @@ export function SetName(arg1:string):Promise<void>;
 export function SetViewAndFacet(arg1:string,arg2:string):Promise<void>;
 
 export function SetViewStates(arg1:string,arg2:Record<string, project.FilterState>):Promise<void>;
+
+export function String():Promise<string>;

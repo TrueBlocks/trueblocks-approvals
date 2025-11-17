@@ -55,10 +55,11 @@ export const TableBody = <T extends Record<string, unknown>>({
             >
               {columns.map((col) => {
                 return (
-                  <td key={col.key} style={col.style}>
+                  <td key={col.key} style={col.style} className={col.className}>
                     <FieldRenderer
                       field={
                         {
+                          key: col.key as string,
                           type: col.type || 'text',
                           value: (col.key !== undefined
                             ? isNestedProperty(col.key)

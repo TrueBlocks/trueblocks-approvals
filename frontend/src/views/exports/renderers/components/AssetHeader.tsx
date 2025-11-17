@@ -117,22 +117,18 @@ export const AssetHeader = ({
       <Stack gap="xs">
         {/* Main row with address and controls */}
         <Group justify="space-between" align="center" wrap="nowrap">
-          {/* Address */}
-          <Text size="xl" fw={500}>
-            Current Address:{' '}
-            <Text component="span" fw="bold">
-              {formatAddress(activeAddress)}
-            </Text>
+          <Text variant="primary" size="md" fw={600}>
+            Current Address: {formatAddress(activeAddress)}
           </Text>
 
           {/* Metrics and Sort Controls */}
           <Group gap="sm" align="center" wrap="nowrap">
-            <Text size="sm" c="dimmed">
+            <Text variant="dimmed" size="sm">
               Metrics:
             </Text>
             {selectedMetric && onMetricChange && (
               <Select
-                size="xs"
+                size="sm"
                 value={selectedMetric}
                 onChange={(value) => onMetricChange(value as MetricOption)}
                 data={[
@@ -145,10 +141,10 @@ export const AssetHeader = ({
             )}
             {sortDirection && onSortToggle && (
               <Button
-                size="xs"
+                size="sm"
                 variant="light"
                 onClick={onSortToggle}
-                style={{ fontSize: '11px', height: '24px', padding: '0 8px' }}
+                style={{ height: '24px', padding: '0 8px' }}
               >
                 {sortDirection === 'asc' ? '↑ Asc' : '↓ Desc'}
               </Button>
@@ -158,13 +154,11 @@ export const AssetHeader = ({
 
         {/* Statistics badges row */}
         <Group gap="md" align="center">
-          <Badge variant="light" size="md">
-            Date Range: {stats.dateRange}
-          </Badge>
-          <Badge variant="light" size="md" color="blue">
+          <Badge variant="light">Date Range: {stats.dateRange}</Badge>
+          <Badge variant="light" color="blue">
             Addresses: {stats.totalAddresses.toLocaleString()}
           </Badge>
-          <Badge variant="light" size="md" color="green">
+          <Badge variant="light" color="green">
             Statements: {stats.totalStatements.toLocaleString()}
           </Badge>
         </Group>

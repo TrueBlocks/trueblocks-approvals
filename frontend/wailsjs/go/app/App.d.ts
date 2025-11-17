@@ -246,7 +246,11 @@ export function NamesCrud(arg1:types.Payload,arg2:crud.Operation,arg3:any):Promi
 
 export function NewProject(arg1:string,arg2:string):Promise<void>;
 
+export function OpenLink(arg1:string,arg2:string):Promise<void>;
+
 export function OpenProjectFile(arg1:string):Promise<void>;
+
+export function OpenURL(arg1:string):Promise<void>;
 
 export function ReadToMe(arg1:types.Payload,arg2:string):Promise<string>;
 
@@ -307,6 +311,8 @@ export function SetDebugCollapsed(arg1:boolean):Promise<void>;
 export function SetExportsMetric(arg1:string,arg2:string):Promise<void>;
 
 export function SetFilterState(arg1:project.ViewStateKey,arg2:project.FilterState):Promise<void>;
+
+export function SetFontScale(arg1:number):Promise<void>;
 
 export function SetFormat(arg1:string):Promise<void>;
 

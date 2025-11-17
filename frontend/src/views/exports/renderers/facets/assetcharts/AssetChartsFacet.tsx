@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { GetExportsBuckets, GetExportsMetric, SetExportsMetric } from '@app';
+import { RendererParams } from '@components';
 import { useEvent, usePayload } from '@hooks';
 import { SimpleGrid, Stack, Text } from '@mantine/core';
-import { exports, msgs, types } from '@models';
+import { msgs, types } from '@models';
 import { LogError, useErrorHandler } from '@utils';
 
 import { AssetChart, AssetHeader, type MetricOption } from '../../components';
 
-export const AssetChartsFacet = ({
-  pageData: _pageData,
-}: {
-  pageData: exports.ExportsPage;
-}) => {
+export const AssetChartsFacet = ({ params }: { params: RendererParams }) => {
+  const { columns } = params;
+  if (columns.length == 100) {
+    LogError('columns length equals 100. weird.'); // delinting only
+  }
   const [bucketsData, setBucketsData] = useState<types.Buckets | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(() => {
     const saved = localStorage.getItem('assetCharts-sortDirection');
@@ -193,8 +194,8 @@ export const AssetChartsFacet = ({
   if (error) {
     return (
       <Stack gap="md" p="xl" align="center" justify="center" h={400}>
-        <Text size="lg" c="red">
-          Error loading data: {error.message}
+        <Text variant="error" size="sm">
+          Error: {error.message}
         </Text>
       </Stack>
     );
@@ -205,7 +206,7 @@ export const AssetChartsFacet = ({
   if (assetCount === 0 && bucketsData) {
     return (
       <Stack gap="md" p="xl" align="center" justify="center" h={400}>
-        <Text size="lg" c="dimmed">
+        <Text variant="warning" size="md">
           No asset chart data available
         </Text>
       </Stack>

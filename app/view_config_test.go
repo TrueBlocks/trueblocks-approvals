@@ -3,6 +3,7 @@ package app
 import (
 	"testing"
 
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/manager"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/preferences"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/project"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
@@ -23,7 +24,7 @@ func TestViewConfigIntegrity(t *testing.T) {
 	// Each subtest will create its own App instance to mirror original isolation.
 	buildApp := func() *App {
 		return &App{
-			Projects:    project.NewManager(),
+			Projects:    manager.NewManager[*project.Project]("project"),
 			Preferences: &preferences.Preferences{},
 			apiKeys:     map[string]string{},
 		}
@@ -107,14 +108,14 @@ func TestViewConfigIntegrity(t *testing.T) {
 					if facet.HeaderActions == nil {
 						t.Errorf("%s: facet %q has nil HeaderActions (must be empty slice when none)", tc.name, facetKey)
 					}
-					reqExport := facet.ViewType != "canvas"
+					reqExport := facet.ViewType == "table"
 					if ex, ok := exceptions[cfg.ViewName]; ok {
 						if ex[facetKey] {
 							reqExport = false
 						}
 					}
 					if reqExport && !containsString(facet.HeaderActions, "export") {
-						t.Errorf("%s: non-canvas facet %q missing required 'export' in HeaderActions", tc.name, facetKey)
+						t.Errorf("%s: table facet %q missing required 'export' in HeaderActions", tc.name, facetKey)
 					}
 				}
 			})

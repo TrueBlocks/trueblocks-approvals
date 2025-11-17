@@ -1,4 +1,10 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import {
+  Fragment,
+  startTransition,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { StyledDivider } from '@components';
 import { useActiveProject, useEvent } from '@hooks';
@@ -12,8 +18,7 @@ interface Tab {
   value: string;
   content: React.ReactNode;
   dividerBefore?: boolean;
-  hideable?: boolean;
-  hidden?: boolean;
+  canClose?: boolean;
 }
 
 interface TabViewProps {
@@ -68,7 +73,9 @@ export const TabView = ({
       if (vER === vR) {
         const newTab = event.key.startsWith('alt+') ? prevTab() : nextTab();
         setActiveTab(newTab);
-        setLastFacet(vR, newTab as types.DataFacet);
+        startTransition(() => {
+          setLastFacet(vR, newTab as types.DataFacet);
+        });
         if (onTabChange) {
           onTabChange(newTab);
         }
@@ -80,7 +87,9 @@ export const TabView = ({
     if (newTab === null) return;
     setActiveTab(newTab);
     const vR = route.replace(/^\/+/, '');
-    setLastFacet(vR, newTab as types.DataFacet);
+    startTransition(() => {
+      setLastFacet(vR, newTab as types.DataFacet);
+    });
     if (onTabChange) {
       onTabChange(newTab);
     }
@@ -95,43 +104,37 @@ export const TabView = ({
         }}
       >
         <Tabs.List>
-          {tabs
-            .filter((tab) => !tab.hidden)
-            .map((tab, index) => (
-              <Fragment key={`tab-${index}`}>
-                {tab.dividerBefore && (
-                  <StyledDivider key={`divider-${index}`} />
-                )}
-                <Tabs.Tab
-                  key={tab.value}
-                  value={tab.value}
-                  rightSection={
-                    tab.hideable ? (
-                      <ActionIcon
-                        variant="subtle"
-                        size="xs"
-                        onClick={(e) => onHideFacet?.(tab.value, e)}
-                        tabIndex={0}
-                        c="error"
-                      >
-                        &#10005;
-                      </ActionIcon>
-                    ) : null
-                  }
-                >
-                  {tab.label}
-                </Tabs.Tab>
-              </Fragment>
-            ))}
+          {tabs.map((tab, index) => (
+            <Fragment key={`tab-${index}`}>
+              {tab.dividerBefore && <StyledDivider key={`divider-${index}`} />}
+              <Tabs.Tab
+                key={tab.value}
+                value={tab.value}
+                rightSection={
+                  tab.canClose ? (
+                    <ActionIcon
+                      variant="subtle"
+                      size="xs"
+                      onClick={(e) => onHideFacet?.(tab.value, e)}
+                      tabIndex={0}
+                      c="error"
+                    >
+                      &#10005;
+                    </ActionIcon>
+                  ) : null
+                }
+              >
+                {tab.label}
+              </Tabs.Tab>
+            </Fragment>
+          ))}
         </Tabs.List>
 
-        {tabs
-          .filter((tab) => !tab.hidden)
-          .map((tab) => (
-            <Tabs.Panel key={tab.value} value={tab.value}>
-              {tab.content}
-            </Tabs.Panel>
-          ))}
+        {tabs.map((tab) => (
+          <Tabs.Panel key={tab.value} value={tab.value}>
+            {tab.content}
+          </Tabs.Panel>
+        ))}
       </Tabs>
     </div>
   );

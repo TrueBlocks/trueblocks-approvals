@@ -15,6 +15,7 @@ import (
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
@@ -72,6 +73,8 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 
 		processFunc := func(item interface{}) *Transaction {
 			if it, ok := item.(*Transaction); ok {
+				it.FromName = names.NameAddress(it.From)
+				it.ToName = names.NameAddress(it.To)
 				// EXISTING_CODE
 				// EXISTING_CODE
 				return it
@@ -97,6 +100,10 @@ func (c *ComparitoorCollection) getTransactionStore(payload *types.Payload, face
 
 func (c *ComparitoorCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
+
+	// EXISTING_CODE
+	// EXISTING_CODE
+
 	switch facet {
 	case ComparitoorComparitoor:
 		name = "comparitoor-transaction"

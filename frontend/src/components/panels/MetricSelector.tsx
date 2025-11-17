@@ -22,7 +22,7 @@ export const MetricSelector = ({
   onMetricChange,
 }: MetricSelectorProps) => (
   <Stack gap="sm">
-    <Text size="lg" fw={600}>
+    <Text variant="primary" size="md" fw={600}>
       {metricConfig.label}
     </Text>
     <Group gap="xs">

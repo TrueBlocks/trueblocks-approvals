@@ -12,33 +12,14 @@ import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 // GetConfig returns the ViewConfig for the Monitors view
 func (c *MonitorsCollection) GetConfig() (*types.ViewConfig, error) {
-	facets := map[string]types.FacetConfig{
-		"monitors": {
-			Name:          "Monitors",
-			Store:         "monitors",
-			DividerBefore: false,
-			Fields:        getMonitorsFields(),
-			Actions:       []string{"autoname", "delete", "remove"},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-			RowAction:     types.NewRowActionNavigation("exports", "<latest>", "address", "address"),
-		},
-	}
-
-	facetOrder := []string{}
-	facetOrder = append(facetOrder, "monitors")
+	facets := c.buildStaticFacets()
+	facetOrder := c.buildFacetOrder()
 
 	cfg := &types.ViewConfig{
 		ViewName:   "monitors",
 		Facets:     facets,
 		FacetOrder: facetOrder,
-		Actions: map[string]types.ActionConfig{
-			"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
-			"delete":   {Name: "delete", Label: "Delete", Icon: "Delete"},
-			"export":   {Name: "export", Label: "Export", Icon: "Export"},
-			"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
-			"undelete": {Name: "undelete", Label: "Undelete", Icon: "Undelete"},
-		},
+		Actions:    c.buildActions(),
 	}
 
 	types.DeriveFacets(cfg)
@@ -47,16 +28,47 @@ func (c *MonitorsCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
+func (c *MonitorsCollection) buildStaticFacets() map[string]types.FacetConfig {
+	return map[string]types.FacetConfig{
+		"monitors": {
+			Name:          "Monitors",
+			Store:         "monitors",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getMonitorsFields(),
+			Actions:       []string{"autoname", "delete", "remove"},
+			HeaderActions: []string{"export"},
+			RowAction:     types.NewRowActionNavigation("exports", "<latest>", "address", "address"),
+		},
+	}
+}
+
+func (c *MonitorsCollection) buildFacetOrder() []string {
+	return []string{
+		"monitors",
+	}
+}
+
+func (c *MonitorsCollection) buildActions() map[string]types.ActionConfig {
+	return map[string]types.ActionConfig{
+		"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
+		"delete":   {Name: "delete", Label: "Delete", Icon: "Delete"},
+		"export":   {Name: "export", Label: "Export", Icon: "Export"},
+		"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
+		"undelete": {Name: "undelete", Label: "Undelete", Icon: "Undelete"},
+	}
+}
+
 func getMonitorsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "Overview", Key: "address", Type: "address"},
-		{Section: "Overview", Key: "name"},
+		{Section: "Overview", Key: "addressName", Type: "string"},
 		{Section: "Overview", Key: "deleted", Type: "boolean", NoTable: true},
-		{Section: "Overview", Key: "isStaged", NoTable: true},
-		{Section: "Statistics", Key: "nRecords"},
-		{Section: "Statistics", Key: "fileSize"},
-		{Section: "Statistics", Key: "isEmpty", NoTable: true},
-		{Section: "Statistics", Key: "lastScanned", Type: "number"},
+		{Section: "Overview", Key: "isStaged", Type: "boolean", NoTable: true},
+		{Section: "Statistics", Key: "nRecords", Type: "uint64"},
+		{Section: "Statistics", Key: "fileSize", Type: "fileSize"},
+		{Section: "Statistics", Key: "isEmpty", Type: "boolean", NoTable: true},
+		{Section: "Statistics", Key: "lastScanned", Type: "blknum"},
 		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
 	types.NormalizeFields(&ret)

@@ -168,7 +168,11 @@ export const BarchartPanel = ({
 
   // Only show loading if we've never loaded any data before
   if (!hasEverLoaded) {
-    return <Text>Loading chart data...</Text>;
+    return (
+      <Text variant="primary" size="md">
+        Loading chart data...
+      </Text>
+    );
   }
 
   if (!statsData || !bucketsData?.length) {
@@ -179,7 +183,7 @@ export const BarchartPanel = ({
 
     return (
       <Box p="md" ta="center">
-        <Text c="dimmed" mb="md">
+        <Text variant="dimmed" size="md">
           Loading...
         </Text>
       </Box>
@@ -220,7 +224,7 @@ export const BarchartPanel = ({
         />
       )}
 
-      <Text size="sm" fw={500} mb="sm">
+      <Text variant="primary" size="sm" fw={600}>
         {config.timeGroupBy
           ? `${currentMetric.label} - ${config.timeGroupBy.charAt(0).toUpperCase() + config.timeGroupBy.slice(1)} View`
           : 'Bar Chart'}
@@ -251,14 +255,14 @@ export const BarchartPanel = ({
                 p="xs"
                 style={{ border: '1px solid #ddd', borderRadius: 4 }}
               >
-                <Text size="sm" fw={600}>
+                <Text variant="primary" size="sm" fw={600}>
                   {config.timeGroupBy ? 'Time Period' : 'Block Range'}:{' '}
                   {data.name}
                 </Text>
-                <Text size="sm">
+                <Text variant="primary" size="sm">
                   {currentMetric.label}: {currentMetric.formatValue(data.value)}
                 </Text>
-                <Text size="xs" c="dimmed">
+                <Text variant="dimmed" size="sm">
                   Bucket: {data.bucket}
                 </Text>
               </Box>
@@ -267,11 +271,14 @@ export const BarchartPanel = ({
         }}
       />
 
-      <Text size="sm" c="dimmed" ta="center">
-        Showing {currentMetric.label.toLowerCase()} distribution across{' '}
-        {statsData?.count || 0} buckets
-        {statsData && ` (avg: ${currentMetric.formatValue(statsData.average)})`}
-      </Text>
+      <div style={{ textAlign: 'center' }}>
+        <Text variant="dimmed" size="sm">
+          Showing {currentMetric.label.toLowerCase()} distribution across{' '}
+          {statsData?.count || 0} buckets
+          {statsData &&
+            ` (avg: ${currentMetric.formatValue(statsData.average)})`}
+        </Text>
+      </div>
     </Stack>
   );
 };

@@ -1,15 +1,13 @@
-import { StyledText } from '@components';
-import { Alert, Container, Stack, Title } from '@mantine/core';
+import { RendererParams } from '@components';
+import { Alert, Container, Stack, Text, Title } from '@mantine/core';
 import { types } from '@models';
 
 import { ContractExecute } from '../../components/execute/ContractExecute';
 
-interface ExecuteFacetProps {
-  data: Record<string, unknown>;
-}
-
-export const ExecuteFacet = ({ data }: ExecuteFacetProps) => {
-  const contractState = data as unknown as types.Contract | undefined;
+export const ExecuteFacet = ({ params }: { params: RendererParams }) => {
+  const { data } = params;
+  const pageData = data[0] || {};
+  const contractState = pageData as unknown as types.Contract | undefined;
 
   if (!contractState) {
     return (
@@ -26,9 +24,9 @@ export const ExecuteFacet = ({ data }: ExecuteFacetProps) => {
       <Stack gap="md">
         <Title order={3}>Contract Interactions</Title>
         {contractState.name && (
-          <StyledText variant="dimmed" size="sm">
+          <Text variant="dimmed" size="sm">
             {contractState.name} ({contractState.address?.toString()})
-          </StyledText>
+          </Text>
         )}
         <ContractExecute contractState={contractState} functionName="all" />
       </Stack>

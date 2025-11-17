@@ -1,30 +1,18 @@
-import { exports, types } from '@models';
+import { RendererParams } from '@components';
+import { types } from '@models';
 
-import { AssetChartsFacet } from './facets';
-import {
-  renderApprovalDetailPanel,
-  renderAssetDetailPanel,
-  renderStatementDetailPanel,
-} from './panels';
-
-export * from './panels';
-export * from './facets';
+import * as facets from './facets';
+import * as panels from './panels';
 
 export const renderers = {
   panels: {
-    [types.DataFacet.OPENAPPROVALS]: renderApprovalDetailPanel,
-    [types.DataFacet.STATEMENTS]: renderStatementDetailPanel,
-    [types.DataFacet.ASSETS]: renderAssetDetailPanel,
+    [types.DataFacet.STATEMENTS]: panels.StatementsPanel,
+    [types.DataFacet.OPENAPPROVALS]: panels.OpenApprovalsPanel,
+    [types.DataFacet.ASSETS]: panels.AssetsPanel,
   },
   facets: {
-    [types.DataFacet.ASSETCHARTS]: ({}: {
-      data: Record<string, unknown>[];
-      columns: unknown[];
-      facet: types.DataFacet;
-    }) => {
-      // AssetCharts ignores the data parameter and fetches its own
-      const pageData = {} as unknown as exports.ExportsPage;
-      return <AssetChartsFacet pageData={pageData} />;
+    [types.DataFacet.ASSETCHARTS]: (params: RendererParams) => {
+      return <facets.AssetChartsFacet params={params} />;
     },
   },
 };

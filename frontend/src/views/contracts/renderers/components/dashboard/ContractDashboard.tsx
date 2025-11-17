@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { StyledBadge, StyledButton, StyledText } from '@components';
+import { StyledBadge, StyledButton } from '@components';
 import {
   Alert,
   Card,
@@ -8,6 +8,7 @@ import {
   Group,
   Loader,
   Stack,
+  Text,
   Tooltip,
 } from '@mantine/core';
 import { types } from '@models';
@@ -250,9 +251,9 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
     return (
       <Stack gap="md" align="center" style={{ padding: '2rem' }}>
         <Loader size="lg" />
-        <StyledText variant="dimmed" size="md">
+        <Text variant="dimmed" size="md">
           Loading contract functions...
-        </StyledText>
+        </Text>
       </Stack>
     );
   }
@@ -277,9 +278,9 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
           style={{ minWidth: '280px', maxWidth: '320px', flex: '0 0 auto' }}
         >
           <Stack gap="xs">
-            <StyledText variant="dimmed" size="sm">
+            <Text variant="dimmed" size="sm">
               Read Functions (No Input)
-            </StyledText>
+            </Text>
             {Object.entries(functionResults)
               .filter(
                 ([, result]) =>
@@ -299,10 +300,10 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                   >
                     <Group justify="space-between" align="center" gap="xs">
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <StyledText variant="primary" size="xs" fw={600}>
+                        <Text variant="primary" size="sm" fw={600}>
                           {functionName}
-                        </StyledText>
-                        <StyledBadge variant="light" size="xs">
+                        </Text>
+                        <StyledBadge variant="light" size="sm">
                           {func.outputs && func.outputs.length > 0
                             ? func.outputs.length === 1
                               ? func.outputs[0]?.type || 'unknown'
@@ -312,7 +313,7 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                       </div>
                       <Tooltip label="Refresh this function">
                         <StyledButton
-                          size="xs"
+                          size="sm"
                           variant="subtle"
                           onClick={() => {
                             // TODO: Implement actual function calling when API is ready
@@ -332,21 +333,21 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                     <div style={{ marginTop: '4px' }}>
                       {result?.loading ? (
                         <Group gap="xs">
-                          <Loader size="xs" />
-                          <StyledText variant="dimmed" size="xs">
+                          <Loader size="sm" />
+                          <Text variant="dimmed" size="sm">
                             Loading...
-                          </StyledText>
+                          </Text>
                         </Group>
                       ) : result && getFunctionError(result) ? (
-                        <StyledText variant="error" size="xs">
+                        <Text variant="error" size="sm">
                           Error: {getFunctionError(result)}
-                        </StyledText>
+                        </Text>
                       ) : (
-                        <StyledText variant="primary" size="xs">
+                        <Text variant="primary" size="sm">
                           {result
                             ? formatResult(getFunctionResult(result))
                             : 'No result'}
-                        </StyledText>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -374,13 +375,13 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                       <Stack gap="xs">
                         <Group justify="space-between" align="flex-start">
                           <div style={{ flex: 1 }}>
-                            <StyledText variant="primary" size="sm" fw={600}>
+                            <Text variant="primary" size="sm" fw={600}>
                               {functionName}
-                              <StyledText variant="dimmed" size="xs">
+                              <Text variant="dimmed" size="sm">
                                 (input)
-                              </StyledText>
-                            </StyledText>
-                            <StyledBadge variant="light" size="xs">
+                              </Text>
+                            </Text>
+                            <StyledBadge variant="light" size="sm">
                               {func.outputs && func.outputs.length > 0
                                 ? func.outputs.length === 1
                                   ? func.outputs[0]?.type || 'unknown'
@@ -390,7 +391,7 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                           </div>
                           <Tooltip label="Refresh this function">
                             <StyledButton
-                              size="xs"
+                              size="sm"
                               variant="subtle"
                               onClick={() => {
                                 // TODO: Implement actual function calling when API is ready
@@ -405,34 +406,34 @@ export const ContractDashboard: React.FC<ContractDashboardProps> = ({
                         <div>
                           {result?.loading ? (
                             <Group gap="xs">
-                              <Loader size="xs" />
-                              <StyledText variant="dimmed" size="xs">
+                              <Loader size="sm" />
+                              <Text variant="dimmed" size="sm">
                                 Loading...
-                              </StyledText>
+                              </Text>
                             </Group>
                           ) : result && getFunctionError(result) ? (
                             <Alert
                               variant="light"
                               bd="1px solid var(--mantine-color-error-6)"
                             >
-                              <StyledText variant="primary" size="xs">
+                              <Text variant="primary" size="sm">
                                 {getFunctionError(result)}
-                              </StyledText>
+                              </Text>
                             </Alert>
                           ) : (
                             <div>
-                              <StyledText variant="primary" size="sm">
+                              <Text variant="primary" size="sm">
                                 {result
                                   ? formatResult(getFunctionResult(result))
                                   : 'No result'}
-                              </StyledText>
+                              </Text>
                               {result?.lastUpdated && (
-                                <StyledText variant="dimmed" size="xs">
+                                <Text variant="dimmed" size="sm">
                                   Updated:{' '}
                                   {new Date(
                                     result.lastUpdated,
                                   ).toLocaleTimeString()}
-                                </StyledText>
+                                </Text>
                               )}
                             </div>
                           )}

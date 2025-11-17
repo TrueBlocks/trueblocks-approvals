@@ -1,15 +1,13 @@
-import { StyledText } from '@components';
-import { Alert, Container, Stack, Title } from '@mantine/core';
+import { RendererParams } from '@components';
+import { Alert, Container, Stack, Text, Title } from '@mantine/core';
 import { types } from '@models';
 
 import { ContractDashboard } from '../../components/dashboard/ContractDashboard';
 
-interface DashboardFacetProps {
-  data: Record<string, unknown>;
-}
-
-export const DashboardFacet = ({ data }: DashboardFacetProps) => {
-  const contractState = data as unknown as types.Contract | undefined;
+export const DashboardFacet = ({ params }: { params: RendererParams }) => {
+  const { data } = params;
+  const pageData = data[0] || {};
+  const contractState = pageData as unknown as types.Contract | undefined;
 
   if (!contractState) {
     return (
@@ -26,9 +24,9 @@ export const DashboardFacet = ({ data }: DashboardFacetProps) => {
       <Stack gap="md">
         <Title order={3}>Contract Dashboard</Title>
         {contractState.name && (
-          <StyledText variant="dimmed" size="sm">
+          <Text variant="dimmed" size="sm">
             {contractState.name} ({contractState.address?.toString()})
-          </StyledText>
+          </Text>
         )}
         <ContractDashboard contractState={contractState} />
       </Stack>

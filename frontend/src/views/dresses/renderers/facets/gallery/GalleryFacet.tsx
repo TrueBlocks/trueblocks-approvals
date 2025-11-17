@@ -1,19 +1,31 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { ExecuteRowAction } from '@app';
-import { Center, Container, Title } from '@mantine/core';
+import { RendererParams } from '@components';
+import { Center, Container, Text, Title } from '@mantine/core';
 import { dresses, model, project, types } from '@models';
 
 import { GalleryControls, GalleryGrouping } from '../../components';
 import { useScrollSelectedIntoView } from '../../hooks/useScrollSelectedIntoView';
 import { getItemKey, useGalleryStore } from '../../store';
 
-export type GalleryFacetProps = {
-  pageData: dresses.DressesPage | null;
-  viewStateKey: project.ViewStateKey;
-};
+export const GalleryFacet = ({ params }: { params: RendererParams }) => {
+  const { data } = params;
+  const pageData = useMemo(
+    () =>
+      ({
+        dalledress: data || [],
+      }) as unknown as dresses.DressesPage,
+    [data],
+  );
+  const viewStateKey: project.ViewStateKey = useMemo(
+    () => ({
+      viewName: 'dresses',
+      facetName: types.DataFacet.GALLERY,
+    }),
+    [],
+  );
 
-export const GalleryFacet = ({ pageData, viewStateKey }: GalleryFacetProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const keyScopeRef = useRef<HTMLDivElement | null>(null);
   const hasScrolledOnMount = useRef(false);
@@ -181,7 +193,7 @@ export const GalleryFacet = ({ pageData, viewStateKey }: GalleryFacetProps) => {
       onMouseDown={() => keyScopeRef.current && keyScopeRef.current.focus()}
       style={{ outline: 'none', width: '100%' }}
     >
-      <Title order={4} mb="sm">
+      <Title order={4} mb="xs">
         Preview Gallery
       </Title>
       <GalleryControls />
@@ -189,11 +201,11 @@ export const GalleryFacet = ({ pageData, viewStateKey }: GalleryFacetProps) => {
         <Center
           style={{
             opacity: 0.6,
-            fontSize: 12,
-            fontFamily: 'monospace',
           }}
         >
-          No images found
+          <Text variant="primary" size="sm">
+            No images found
+          </Text>
         </Center>
       )}
       <div

@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { ExecuteRowAction } from '@app';
-import { StyledButton, StyledSelect, StyledText } from '@components';
+import { RendererParams, StyledButton, StyledSelect } from '@components';
 import { useIconSets, usePreferences } from '@hooks';
-import { Center, Grid, Image, ScrollArea, Stack, Title } from '@mantine/core';
+import {
+  Center,
+  Grid,
+  Image,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { dresses, model, project, types } from '@models';
 import { Log } from '@utils';
 
@@ -12,15 +20,23 @@ import { useScrollSelectedIntoView } from '../../hooks/useScrollSelectedIntoView
 import { useSpeakPrompt } from '../../hooks/useSpeakPrompt';
 import { getItemKey, useGalleryStore } from '../../store';
 
-export type GeneratorFacetProps = {
-  pageData: dresses.DressesPage | null;
-  viewStateKey: project.ViewStateKey; // Make required since persistence depends on it
-};
+export const GeneratorFacet = ({ params }: { params: RendererParams }) => {
+  const { data } = params;
+  const pageData = useMemo(
+    () =>
+      ({
+        dalledress: data || [],
+      }) as unknown as dresses.DressesPage,
+    [data],
+  );
+  const viewStateKey: project.ViewStateKey = useMemo(
+    () => ({
+      viewName: 'dresses',
+      facetName: types.DataFacet.GENERATOR,
+    }),
+    [],
+  );
 
-export const GeneratorFacet = ({
-  pageData,
-  viewStateKey,
-}: GeneratorFacetProps) => {
   const thumbRowRef = useRef<HTMLDivElement | null>(null);
   const hasScrolledOnMount = useRef(false);
   const icons = useIconSets();
@@ -322,9 +338,9 @@ export const GeneratorFacet = ({
                   />
                 ) : (
                   <Center h={160}>
-                    <StyledText variant="dimmed" size="xs">
+                    <Text variant="dimmed" size="sm">
                       No image
-                    </StyledText>
+                    </Text>
                   </Center>
                 )}
               </div>
@@ -343,7 +359,7 @@ export const GeneratorFacet = ({
                   data={addressOptions.map((a) => ({ value: a, label: a }))}
                   onChange={handleAddressChange}
                   style={{ flex: 1 }}
-                  size="xs"
+                  size="sm"
                 />
                 <StyledSelect
                   label="Series"
@@ -355,7 +371,7 @@ export const GeneratorFacet = ({
                   }))}
                   onChange={handleSeriesChange}
                   style={{ flex: 1 }}
-                  size="xs"
+                  size="sm"
                   disabled={!seriesOptions.length}
                 />
                 <div>
@@ -372,20 +388,19 @@ export const GeneratorFacet = ({
                       padding: 6,
                     }}
                   >
-                    <Stack
-                      gap={2}
-                      style={{ fontFamily: 'monospace', fontSize: 11 }}
-                    >
+                    <Stack gap={2}>
                       {attributes.length === 0 && (
-                        <StyledText variant="dimmed" size="xs">
+                        <Text variant="dimmed" size="sm">
                           No attributes
-                        </StyledText>
+                        </Text>
                       )}
                       {attributes.map((a, i) => (
-                        <StyledText variant="secondary" size="sm" key={i}>
-                          {a.name}:{' '}
-                          {a.value || a.selector || a.number || a.count || ''}
-                        </StyledText>
+                        <div key={i}>
+                          <Text variant="secondary" size="sm">
+                            {a.name}:{' '}
+                            {a.value || a.selector || a.number || a.count || ''}
+                          </Text>
+                        </div>
                       ))}
                     </Stack>
                   </ScrollArea>
@@ -405,9 +420,9 @@ export const GeneratorFacet = ({
                       padding: 6,
                     }}
                   >
-                    <StyledText variant="secondary" size="xs">
+                    <Text variant="secondary" size="sm">
                       {selectedItem?.prompt || ''}
-                    </StyledText>
+                    </Text>
                   </ScrollArea>
                 </div>
 
@@ -421,7 +436,7 @@ export const GeneratorFacet = ({
                       </Title>
                       <StyledButton
                         variant="primary"
-                        size="xs"
+                        size="sm"
                         loading={speaking}
                         onClick={() => {
                           Log('generator:button:speak');
@@ -454,9 +469,9 @@ export const GeneratorFacet = ({
                         padding: 6,
                       }}
                     >
-                      <StyledText variant="secondary" size="xs">
+                      <Text variant="secondary" size="sm">
                         {selectedItem?.enhancedPrompt || ''}
-                      </StyledText>
+                      </Text>
                     </ScrollArea>
                   </div>
                 )}
@@ -478,7 +493,7 @@ export const GeneratorFacet = ({
               <Stack gap="xs">
                 <Title order={6}>Actions</Title>
                 <StyledButton
-                  size="xs"
+                  size="sm"
                   variant="primary"
                   fullWidth
                   onClick={() => handleButtonClick('generate')}
@@ -490,7 +505,7 @@ export const GeneratorFacet = ({
                   (label) => (
                     <StyledButton
                       key={label}
-                      size="xs"
+                      size="sm"
                       variant="primary"
                       fullWidth
                       onClick={() => handleButtonClick(label)}

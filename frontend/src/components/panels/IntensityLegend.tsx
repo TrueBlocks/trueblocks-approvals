@@ -17,7 +17,7 @@ export const IntensityLegend = ({
 
   return (
     <Box mt="md">
-      <Text size="sm" fw={500} mb="xs">
+      <Text variant="primary" size="sm" fw={600}>
         Intensity Legend
       </Text>
       <Box
@@ -34,12 +34,15 @@ export const IntensityLegend = ({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          fontSize: '10px',
           color: theme.colors.gray[6],
         }}
       >
-        <Text size="xs">{metricConfig.formatValue(minValue)}</Text>
-        <Text size="xs">{metricConfig.formatValue(maxValue)}</Text>
+        <Text variant="primary" size="sm">
+          {metricConfig.formatValue(minValue)}
+        </Text>
+        <Text variant="primary" size="sm">
+          {metricConfig.formatValue(maxValue)}
+        </Text>
       </Box>
     </Box>
   );

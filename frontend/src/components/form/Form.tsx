@@ -4,11 +4,11 @@ import {
   FieldRenderer,
   FormField,
   StyledButton,
-  StyledText,
+  convertFormValue,
   usePreprocessedFields,
 } from '@components';
 import { useFormHotkeys } from '@components';
-import { Group, Stack, Title } from '@mantine/core';
+import { Group, Stack, Text, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 // Helper function to recursively extract initial values
@@ -99,60 +99,13 @@ export const Form = <
   const convertFormValues = (values: Record<string, unknown>): T => {
     const convertedValues = { ...values };
 
-    const safeStringToNumber = (value: unknown): number => {
-      if (typeof value === 'number') return value;
-      if (typeof value === 'string') {
-        const trimmed = value.trim();
-        if (trimmed === '') return 0;
-        const parsed = Number(trimmed);
-        return isNaN(parsed) ? 0 : parsed;
-      }
-      return 0;
-    };
-
-    const safeToBoolean = (value: unknown): boolean => {
-      if (typeof value === 'boolean') return value;
-      if (typeof value === 'string') {
-        const lower = value.toLowerCase().trim();
-        return (
-          lower === 'true' || lower === '1' || lower === 'yes' || lower === 'on'
-        );
-      }
-      if (typeof value === 'number') return value !== 0;
-      return false;
-    };
-
     const processFields = (fieldsToProcess: FormField<T>[]) => {
       fieldsToProcess.forEach((field) => {
         if (field.name && field.name in convertedValues) {
           const value = convertedValues[field.name];
-
-          // Convert based on field type
-          switch (field.type) {
-            case 'number':
-            // case 'ether':
-            case 'gas':
-            case 'timestamp':
-              convertedValues[field.name] = safeStringToNumber(value);
-              break;
-
-            case 'checkbox':
-              convertedValues[field.name] = safeToBoolean(value);
-              break;
-
-            case 'text':
-            case 'password':
-            case 'textarea':
-            case 'address':
-            case 'select':
-            case 'radio':
-            case 'button':
-            default:
-              if (value !== null && value !== undefined) {
-                convertedValues[field.name] = String(value);
-              }
-              break;
-          }
+          // Use centralized conversion based on field data type or input type
+          const typeToUse = field.type || field.inputType;
+          convertedValues[field.name] = convertFormValue(value, typeToUse);
         }
 
         if (field.fields && field.fields.length > 0) {
@@ -275,7 +228,11 @@ export const Form = <
           {title}
         </Title>
       )}
-      {description && <StyledText variant="primary">{description}</StyledText>}
+      {description && (
+        <Text variant="primary" size="md">
+          {description}
+        </Text>
+      )}
       <form role="form" onSubmit={handleFormSubmit}>
         <Stack gap={compact ? 'xs' : 'md'}>
           {processedFields.map((field, index) => renderField(field, index))}

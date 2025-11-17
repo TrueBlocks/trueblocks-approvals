@@ -52,14 +52,14 @@ export const StateDisplay = ({
         ...style,
       }}
     >
-      <Text size="sm" c="dimmed">
+      <Text variant="dimmed" size="sm">
         Facet: <strong>{facetName}</strong>
       </Text>
       <Badge color={getStateColor(state)} variant="light" size="sm">
         {getStateLabel(state)}
       </Badge>
       {totalItems !== undefined && (
-        <Text size="sm" c="dimmed">
+        <Text variant="dimmed" size="sm">
           Items: <strong>{totalItems}</strong>
         </Text>
       )}

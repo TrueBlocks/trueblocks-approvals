@@ -12,49 +12,15 @@ import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 // GetConfig returns the ViewConfig for the Projects view
 func (c *ProjectsCollection) GetConfig() (*types.ViewConfig, error) {
-	facets := map[string]types.FacetConfig{
-		"manage": {
-			Name:          "Manage",
-			Store:         "projects",
-			ViewType:      "canvas",
-			DividerBefore: false,
-			Fields:        getProjectsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{},
-			RendererTypes: "facet",
-		},
-	}
-
-	facetOrder := []string{}
-	facetOrder = append(facetOrder, "manage")
-
-	// Add dynamic facets based on the manager
-	if c.projectManager != nil {
-		openIDs := c.projectManager.GetOpenIDs()
-		for _, id := range openIDs {
-			project := c.projectManager.GetProjectByID(id)
-			if project != nil {
-				facets[id] = types.FacetConfig{
-					Name:          project.GetName(),
-					Store:         "addresslist",
-					DividerBefore: false,
-					Fields:        getAddresslistFields(),
-					Actions:       []string{},
-					HeaderActions: []string{},
-					RendererTypes: "",
-					Hideable:      true,
-					RowAction:     types.NewRowActionNavigation("exports", "<latest>", "address", "address"),
-				}
-				facetOrder = append(facetOrder, id)
-			}
-		}
-	}
+	facets := c.buildStaticFacets()
+	facetOrder := c.buildFacetOrder()
+	c.addDynamicFacets(facets, &facetOrder)
 
 	cfg := &types.ViewConfig{
 		ViewName:   "projects",
 		Facets:     facets,
 		FacetOrder: facetOrder,
-		Actions:    map[string]types.ActionConfig{},
+		Actions:    c.buildActions(),
 	}
 
 	types.DeriveFacets(cfg)
@@ -63,12 +29,59 @@ func (c *ProjectsCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
+func (c *ProjectsCollection) buildStaticFacets() map[string]types.FacetConfig {
+	return map[string]types.FacetConfig{
+		"manage": {
+			Name:          "Manage",
+			Store:         "projects",
+			ViewType:      "custom",
+			DividerBefore: false,
+			Fields:        getProjectsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{},
+		},
+	}
+}
+
+func (c *ProjectsCollection) buildFacetOrder() []string {
+	return []string{
+		"manage",
+	}
+}
+
+func (c *ProjectsCollection) buildActions() map[string]types.ActionConfig {
+	return map[string]types.ActionConfig{}
+}
+
+func (c *ProjectsCollection) addDynamicFacets(facets map[string]types.FacetConfig, facetOrder *[]string) {
+	if c.projectsManager == nil {
+		return
+	}
+
+	for _, id := range c.projectsManager.GetOpenIDs() {
+		if item, exists := c.projectsManager.GetItemByID(id); exists {
+			facets[id] = types.FacetConfig{
+				Name:          item.GetName(),
+				Store:         "addresslist",
+				ViewType:      "table",
+				DividerBefore: false,
+				Fields:        getAddresslistFields(),
+				Actions:       []string{},
+				HeaderActions: []string{},
+				CanClose:      true,
+				RowAction:     types.NewRowActionNavigation("exports", "<latest>", "address", "address"),
+			}
+			*facetOrder = append(*facetOrder, id)
+		}
+	}
+}
+
 func getAddresslistFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Identity", Key: "address"},
-		{Section: "Identity", Key: "name"},
-		{Section: "Identity", Key: "appearances"},
-		{Section: "State", Key: "lastUpdated"},
+		{Section: "Identity", Key: "address", Type: "address"},
+		{Section: "Identity", Key: "addressName", Type: "string"},
+		{Section: "Identity", Key: "nAppearances", Type: "uint64"},
+		{Section: "State", Key: "lastUpdated", Type: "datetime"},
 	}
 	types.NormalizeFields(&ret)
 	return ret
@@ -76,10 +89,10 @@ func getAddresslistFields() []types.FieldConfig {
 
 func getProjectsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Identity", Key: "id"},
-		{Section: "Identity", Key: "name"},
+		{Section: "Identity", Key: "id", Type: "string"},
+		{Section: "Identity", Key: "name", Type: "string"},
 		{Section: "Identity", Key: "path", Type: "path"},
-		{Section: "State", Key: "isActive"},
+		{Section: "State", Key: "isActive", Type: "boolean"},
 	}
 	types.NormalizeFields(&ret)
 	return ret

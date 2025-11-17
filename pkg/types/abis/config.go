@@ -12,60 +12,14 @@ import "github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 
 // GetConfig returns the ViewConfig for the Abis view
 func (c *AbisCollection) GetConfig() (*types.ViewConfig, error) {
-	facets := map[string]types.FacetConfig{
-		"downloaded": {
-			Name:          "Downloaded",
-			Store:         "abis",
-			DividerBefore: false,
-			Fields:        getAbisFields(),
-			Actions:       []string{"autoname", "remove"},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-		"known": {
-			Name:          "Known",
-			Store:         "abis",
-			DividerBefore: false,
-			Fields:        getAbisFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-		"functions": {
-			Name:          "Functions",
-			Store:         "functions",
-			DividerBefore: false,
-			Fields:        getFunctionsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-		"events": {
-			Name:          "Events",
-			Store:         "functions",
-			DividerBefore: false,
-			Fields:        getFunctionsFields(),
-			Actions:       []string{},
-			HeaderActions: []string{"export"},
-			RendererTypes: "",
-		},
-	}
-
-	facetOrder := []string{}
-	facetOrder = append(facetOrder, "downloaded")
-	facetOrder = append(facetOrder, "known")
-	facetOrder = append(facetOrder, "functions")
-	facetOrder = append(facetOrder, "events")
+	facets := c.buildStaticFacets()
+	facetOrder := c.buildFacetOrder()
 
 	cfg := &types.ViewConfig{
 		ViewName:   "abis",
 		Facets:     facets,
 		FacetOrder: facetOrder,
-		Actions: map[string]types.ActionConfig{
-			"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
-			"export":   {Name: "export", Label: "Export", Icon: "Export"},
-			"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
-		},
+		Actions:    c.buildActions(),
 	}
 
 	types.DeriveFacets(cfg)
@@ -74,18 +28,76 @@ func (c *AbisCollection) GetConfig() (*types.ViewConfig, error) {
 	return cfg, nil
 }
 
+func (c *AbisCollection) buildStaticFacets() map[string]types.FacetConfig {
+	return map[string]types.FacetConfig{
+		"downloaded": {
+			Name:          "Downloaded",
+			Store:         "abis",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getAbisFields(),
+			Actions:       []string{"autoname", "remove"},
+			HeaderActions: []string{"export"},
+		},
+		"known": {
+			Name:          "Known",
+			Store:         "abis",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getAbisFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+		},
+		"functions": {
+			Name:          "Functions",
+			Store:         "functions",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getFunctionsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+		},
+		"events": {
+			Name:          "Events",
+			Store:         "functions",
+			ViewType:      "table",
+			DividerBefore: false,
+			Fields:        getFunctionsFields(),
+			Actions:       []string{},
+			HeaderActions: []string{"export"},
+		},
+	}
+}
+
+func (c *AbisCollection) buildFacetOrder() []string {
+	return []string{
+		"downloaded",
+		"known",
+		"functions",
+		"events",
+	}
+}
+
+func (c *AbisCollection) buildActions() map[string]types.ActionConfig {
+	return map[string]types.ActionConfig{
+		"autoname": {Name: "autoname", Label: "Autoname", Icon: "Autoname"},
+		"export":   {Name: "export", Label: "Export", Icon: "Export"},
+		"remove":   {Name: "remove", Label: "Remove", Icon: "Remove"},
+	}
+}
+
 func getAbisFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
 		{Section: "Identity", Key: "address", Type: "address"},
-		{Section: "Identity", Key: "name"},
+		{Section: "Identity", Key: "addressName", Type: "string"},
 		{Section: "Identity", Key: "path", Type: "path", NoTable: true},
-		{Section: "Statistics", Key: "nFunctions"},
-		{Section: "Statistics", Key: "nEvents"},
-		{Section: "Statistics", Key: "fileSize"},
-		{Section: "Properties", Key: "isEmpty", NoTable: true},
-		{Section: "Properties", Key: "isKnown", NoTable: true},
-		{Section: "Properties", Key: "hasConstructor", NoTable: true},
-		{Section: "Properties", Key: "hasFallback", NoTable: true},
+		{Section: "Statistics", Key: "nFunctions", Type: "uint64"},
+		{Section: "Statistics", Key: "nEvents", Type: "uint64"},
+		{Section: "Statistics", Key: "fileSize", Type: "fileSize"},
+		{Section: "Properties", Key: "isEmpty", Type: "boolean", NoTable: true},
+		{Section: "Properties", Key: "isKnown", Type: "boolean", NoTable: true},
+		{Section: "Properties", Key: "hasConstructor", Type: "boolean", NoTable: true},
+		{Section: "Properties", Key: "hasFallback", Type: "boolean", NoTable: true},
 		{Section: "Metadata", Key: "lastModDate", Type: "datetime"},
 		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
@@ -95,16 +107,16 @@ func getAbisFields() []types.FieldConfig {
 
 func getFunctionsFields() []types.FieldConfig {
 	ret := []types.FieldConfig{
-		{Section: "Overview", Key: "name"},
-		{Section: "Overview", Key: "type", NoTable: true},
-		{Section: "Overview", Key: "encoding"},
-		{Section: "Overview", Key: "signature"},
-		{Section: "Properties", Key: "stateMutability"},
+		{Section: "Overview", Key: "name", Type: "string"},
+		{Section: "Overview", Key: "type", Type: "string", NoTable: true},
+		{Section: "Overview", Key: "encoding", Type: "string"},
+		{Section: "Overview", Key: "signature", Type: "string"},
+		{Section: "Properties", Key: "stateMutability", Type: "string"},
 		{Section: "Properties", Key: "constant", Type: "boolean"},
 		{Section: "Properties", Key: "anonymous", Type: "boolean", NoTable: true},
 		{Section: "Parameters", Key: "inputs", NoTable: true},
 		{Section: "Parameters", Key: "outputs", NoTable: true},
-		{Section: "Parameters", Key: "message", NoTable: true},
+		{Section: "Parameters", Key: "message", Type: "string", NoTable: true},
 		{Section: "", Key: "actions", Type: "actions", NoDetail: true},
 	}
 	types.NormalizeFields(&ret)

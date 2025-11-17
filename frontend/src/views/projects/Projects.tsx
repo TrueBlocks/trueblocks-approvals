@@ -43,9 +43,7 @@ export const Projects = () => {
   // === SECTION 2.5: Initial ViewConfig Load ===
   const { config: viewConfig } = useViewConfig({ viewName: ROUTE });
   assertRouteConsistency(ROUTE, viewConfig);
-
   const [_configRefreshCount, setConfigRefreshCount] = useState(0);
-
   const facetsFromConfig: DataFacetConfig[] = useMemo(
     () => buildFacetConfigs(viewConfig),
     [viewConfig],
@@ -183,6 +181,7 @@ export const Projects = () => {
     createPayload,
     getCurrentDataFacet,
   });
+  const { handleRowAction } = handlers;
   const headerActions = useMemo(() => {
     if (!config.headerActions.length) return null;
     return (
@@ -253,10 +252,10 @@ export const Projects = () => {
       renderers.facets,
       facet,
     )
-      ? (renderers.facets as Record<string, typeof renderers.facets.default>)[
+      ? (renderers.facets as Record<string, typeof renderers.facets.dynamic>)[
           facet
         ]
-      : renderers.facets.default;
+      : renderers.facets.dynamic;
     if (renderer) {
       return renderer({
         data: currentData as unknown as Record<string, unknown>[],
@@ -276,6 +275,7 @@ export const Projects = () => {
         viewStateKey={viewStateKey}
         headerActions={headerActions}
         detailPanel={detailPanel}
+        onSubmit={handleRowAction}
       />
     );
   }, [
@@ -288,6 +288,7 @@ export const Projects = () => {
     formNode,
     headerActions,
     detailPanel,
+    handleRowAction,
     getCurrentDataFacet,
   ]);
 
@@ -299,8 +300,7 @@ export const Projects = () => {
         value: facetConfig.id,
         content: perTabContent,
         dividerBefore: facetConfig.dividerBefore,
-        hideable: facetConfig.hideable,
-        hidden: facetConfig.hidden,
+        canClose: facetConfig.canClose,
       })),
     [availableFacets, perTabContent],
   );

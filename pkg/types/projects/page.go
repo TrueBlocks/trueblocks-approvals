@@ -61,7 +61,7 @@ func (c *ProjectsCollection) GetPage(
 	_ = preprocessPage(c, page, payload, first, pageSize, sortSpec)
 
 	if c.shouldSummarize(payload) {
-		return c.getSummaryPage(dataFacet, payload.ActivePeriod, first, pageSize, sortSpec, filter)
+		return c.getSummaryPage(payload, first, pageSize, sortSpec, filter)
 	}
 
 	switch dataFacet {
@@ -85,38 +85,30 @@ func (c *ProjectsCollection) GetPage(
 			page.State = result.State
 		}
 		page.ExpectedTotal = facet.ExpectedCount()
-
 	default:
-		// Check if this is a dynamic project facet
-		projectID := string(dataFacet)
-		if c.registeredFacets[projectID] {
-			// Ensure the project facet exists
-			c.ensureProjectFacet(projectID)
-			if projectFacet, exists := c.projectFacets[projectID]; exists {
-				var filterFunc func(*AddressList) bool
-				if filter != "" {
-					filterFunc = func(item *AddressList) bool {
-						return c.matchesProjectFilter(item, filter)
-					}
+		id := string(payload.DataFacet)
+		c.ensureProjectFacet(payload)
+		if projectFacet, exists := c.projectsFacets[id]; exists {
+			var filterFunc func(*AddressList) bool
+			if filter != "" {
+				filterFunc = func(item *AddressList) bool {
+					return c.matchesProjectFilter(item, filter)
 				}
-				sortFunc := func(items []AddressList, sort sdk.SortSpec) error {
-					return nil // project.SortAddressList(items, sort)
-				}
-				if result, err := projectFacet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
-					return nil, types.NewStoreError("projects", dataFacet, "GetPage", err)
-				} else {
-					page.AddressList = result.Items
-					page.TotalItems = result.TotalItems
-					page.State = result.State
-				}
-				page.ExpectedTotal = projectFacet.ExpectedCount()
-			} else {
-				return nil, types.NewValidationError("projects", dataFacet, "GetPage",
-					fmt.Errorf("[GetPage] project facet not found: %v", dataFacet))
 			}
+			sortFunc := func(items []AddressList, sort sdk.SortSpec) error {
+				return nil // project.SortAddressList(items, sort)
+			}
+			if result, err := projectFacet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
+				return nil, types.NewStoreError("projects", payload.DataFacet, "GetPage", err)
+			} else {
+				page.AddressList = result.Items
+				page.TotalItems = result.TotalItems
+				page.State = result.State
+			}
+			page.ExpectedTotal = projectFacet.ExpectedCount()
 		} else {
-			return nil, types.NewValidationError("projects", dataFacet, "GetPage",
-				fmt.Errorf("[GetPage] unsupported dataFacet: %v", dataFacet))
+			return nil, types.NewValidationError("projects", payload.DataFacet, "GetPage",
+				fmt.Errorf("[GetPage] facet not found: %v", payload.DataFacet))
 		}
 	}
 
@@ -135,20 +127,21 @@ func (c *ProjectsCollection) shouldSummarize(payload *types.Payload) bool {
 
 // getSummaryPage returns paginated summary data for a given period
 func (c *ProjectsCollection) getSummaryPage(
-	dataFacet types.DataFacet,
-	period types.Period,
+	payload *types.Payload,
 	first, pageSize int,
 	sortSpec sdk.SortSpec,
 	filter string,
 ) (types.Page, error) {
 	// TODO: Use these
+	dataFacet := payload.DataFacet
+	period := payload.ActivePeriod
 	_ = first
 	_ = pageSize
 	_ = sortSpec
 	_ = filter
 	// CRITICAL: Ensure underlying raw data is loaded before generating summaries
 	// For summary periods, we need the blockly (raw) data to be loaded first
-	c.FetchByFacet(dataFacet)
+	c.FetchByFacet(payload)
 	if err := c.generateSummariesForPeriod(dataFacet, period); err != nil {
 		return nil, types.NewStoreError("exports", dataFacet, "getSummaryPage", err)
 	}

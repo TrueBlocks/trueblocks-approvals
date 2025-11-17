@@ -203,7 +203,11 @@ export const HeatmapPanel = ({
 
   // Only show loading if we've never loaded any data before
   if (!hasEverLoaded) {
-    return <Text>Loading heat map...</Text>;
+    return (
+      <Text variant="primary" size="md">
+        Loading heat map...
+      </Text>
+    );
   }
 
   if (!bucketsData?.length || !statsData || !buckets) {
@@ -214,7 +218,7 @@ export const HeatmapPanel = ({
 
     return (
       <Box p="md" ta="center">
-        <Text c="dimmed" mb="md">
+        <Text variant="dimmed" size="md">
           Loading...
         </Text>
       </Box>
@@ -250,7 +254,7 @@ export const HeatmapPanel = ({
       )}
 
       <Box>
-        <Text size="sm" fw={500} mb="sm">
+        <Text variant="primary" size="sm" fw={600}>
           Heat Map
         </Text>
 
@@ -287,16 +291,16 @@ export const HeatmapPanel = ({
                 label={
                   <Box>
                     {config.timeGroupBy ? (
-                      <Text size="xs">
+                      <Text variant="primary" size="sm">
                         Period: {formatGroupKey(dataPoint.bucketIndex)}
                       </Text>
                     ) : (
-                      <Text size="xs">
+                      <Text variant="primary" size="sm">
                         Blocks: {formatNumericValue(dataPoint.startBlock)} -{' '}
                         {formatNumericValue(dataPoint.endBlock)}
                       </Text>
                     )}
-                    <Text size="xs">
+                    <Text variant="primary" size="sm">
                       {getMetricConfig(selectedMetric)?.label}:{' '}
                       {getMetricConfig(selectedMetric)?.formatValue(
                         dataPoint.total,
@@ -319,7 +323,7 @@ export const HeatmapPanel = ({
         </Box>
 
         <Box mt="md">
-          <Text size="xs" c="dimmed">
+          <Text variant="dimmed" size="sm">
             {formatNumericValue(statsData.count)} buckets,{' '}
             {getMetricConfig(selectedMetric)?.formatValue(statsData.total)}{' '}
             total,{' '}

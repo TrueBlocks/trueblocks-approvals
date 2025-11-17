@@ -16,6 +16,7 @@ import (
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/logging"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
 
 	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
@@ -58,6 +59,7 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 
 		processFunc := func(item interface{}) *Monitor {
 			if it, ok := item.(*Monitor); ok {
+				it.AddressName = names.NameAddress(it.Address)
 				// EXISTING_CODE
 				// EXISTING_CODE
 				return it
@@ -83,6 +85,10 @@ func (c *MonitorsCollection) getMonitorsStore(payload *types.Payload, facet type
 
 func (c *MonitorsCollection) getStoreName(payload *types.Payload, facet types.DataFacet) string {
 	name := ""
+
+	// EXISTING_CODE
+	// EXISTING_CODE
+
 	switch facet {
 	case MonitorsMonitors:
 		name = "monitors-monitors"
