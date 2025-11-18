@@ -92,7 +92,6 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
 				RenderCtx: ctx,
 				Addrs:     []string{payload.ActiveAddress},
-				// Articulate: true,
 			}
 			if _, _, err := exportOpts.ExportApprovals(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsApprovalLogs, "fetch", err)
@@ -151,7 +150,6 @@ func (c *ExportsCollection) getApprovalTxsStore(payload *types.Payload, facet ty
 				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
 				RenderCtx: ctx,
 				Addrs:     []string{payload.ActiveAddress},
-				// Articulate: true,
 			}
 			if _, _, err := exportOpts.ExportApprovals(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsApprovalTxs, "fetch", err)
@@ -284,7 +282,7 @@ func (c *ExportsCollection) getBalancesStore(payload *types.Payload, facet types
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			exportOpts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain, Ether: true},
 				RenderCtx: ctx,
 				Addrs:     []string{payload.ActiveAddress},
 			}
@@ -303,6 +301,17 @@ func (c *ExportsCollection) getBalancesStore(payload *types.Payload, facet types
 				it.AddressName = names.NameAddress(it.Address)
 				// EXISTING_CODE
 				// EXISTING_CODE
+				props := &sdk.ModelProps{
+					Chain:   payload.ActiveChain,
+					Format:  "json",
+					Verbose: true,
+					ExtraOpts: map[string]any{
+						"ether": true,
+					},
+				}
+				if err := it.EnsureCalcs(props, nil); err != nil {
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields during ingestion: %v", err))
+				}
 				return it
 			}
 			return nil
@@ -456,10 +465,10 @@ func (c *ExportsCollection) getReceiptsStore(payload *types.Payload, facet types
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			exportOpts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
-				// Articulate: true,
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Articulate: true,
 			}
 			if _, _, err := exportOpts.ExportReceipts(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsReceipts, "fetch", err)
@@ -580,10 +589,10 @@ func (c *ExportsCollection) getTracesStore(payload *types.Payload, facet types.D
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			exportOpts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
-				// Articulate: true,
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Articulate: true,
 			}
 			if _, _, err := exportOpts.ExportTraces(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsTraces, "fetch", err)
@@ -632,9 +641,10 @@ func (c *ExportsCollection) getTransactionsStore(payload *types.Payload, facet t
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			exportOpts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Articulate: true,
 			}
 			if _, _, err := exportOpts.Export(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsTransactions, "fetch", err)
@@ -707,6 +717,17 @@ func (c *ExportsCollection) getTransfersStore(payload *types.Payload, facet type
 				it.HolderName = names.NameAddress(it.Holder)
 				// EXISTING_CODE
 				// EXISTING_CODE
+				props := &sdk.ModelProps{
+					Chain:   payload.ActiveChain,
+					Format:  "json",
+					Verbose: true,
+					ExtraOpts: map[string]any{
+						"ether": true,
+					},
+				}
+				if err := it.EnsureCalcs(props, nil); err != nil {
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields during ingestion: %v", err))
+				}
 				return it
 			}
 			return nil

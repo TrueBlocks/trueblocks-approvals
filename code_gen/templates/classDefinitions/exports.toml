@@ -21,25 +21,27 @@ name = "Balances"
 store = "Balances"
 actions = ["export"]
 viewType = "table"
+needsCalcs = true
 
 [[facets]]
 name = "Transfers"
 store = "Transfers"
 actions = ["export"]
 viewType = "table"
+needsCalcs = true
 
 [[facets]]
 name = "Transactions"
 store = "Transactions"
 actions = ["export"]
 viewType = "table"
+panel = "custom"
 
 [[facets]]
 name = "OpenApprovals"
 store = "OpenApprovals"
 actions = ["export"]
 viewType = "table"
-panel = "custom"
 
 [[facets]]
 name = "ApprovalLogs"
