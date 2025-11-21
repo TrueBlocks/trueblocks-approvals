@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"strings"
 
-	dalle "github.com/TrueBlocks/trueblocks-dalle/v6"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
+	dalle "github.com/TrueBlocks/trueblocks-dalle/v6"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
