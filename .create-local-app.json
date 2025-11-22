@@ -22,7 +22,7 @@
       "disabled": true
     },
     "dresses": {
-      "menuOrder": 15,
+      "menuOrder": 90,
       "disabled": true
     },
     "exports": {
@@ -44,6 +44,9 @@
     "names": {
       "menuOrder": 50,
       "disabled": true
+    },
+    "projects": {
+      "menuOrder": 10
     },
     "status": {
       "menuOrder": 80,
