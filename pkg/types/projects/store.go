@@ -14,13 +14,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
+	coreTypes "github.com/TrueBlocks/trueblocks-chifra/v6/pkg/types"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/manager"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/project"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types/names"
-	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/output"
-	coreTypes "github.com/TrueBlocks/trueblocks-chifra/v6/pkg/types"
 )
 
 type Project = project.Project

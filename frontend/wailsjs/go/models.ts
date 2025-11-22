@@ -1339,10 +1339,6 @@ export namespace types {
 	    ALCHEMY = "alchemy",
 	    DASHBOARD = "dashboard",
 	    EXECUTE = "execute",
-	    GENERATOR = "generator",
-	    SERIES = "series",
-	    DATABASES = "databases",
-	    GALLERY = "gallery",
 	    STATEMENTS = "statements",
 	    BALANCES = "balances",
 	    TRANSFERS = "transfers",
@@ -1361,6 +1357,10 @@ export namespace types {
 	    STATUS = "status",
 	    CACHES = "caches",
 	    CHAINS = "chains",
+	    GENERATOR = "generator",
+	    SERIES = "series",
+	    DATABASES = "databases",
+	    GALLERY = "gallery",
 	}
 	export class AbiCalcs {
 	    name?: string;

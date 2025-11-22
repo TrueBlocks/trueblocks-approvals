@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/base"
 	storePkg "github.com/TrueBlocks/trueblocks-approvals/pkg/store"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
-	"github.com/TrueBlocks/trueblocks-chifra/v6/pkg/base"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
