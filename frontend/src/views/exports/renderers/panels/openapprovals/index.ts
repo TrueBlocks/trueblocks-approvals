@@ -1,1 +1,1 @@
-export { OpenApprovalsPanel } from './Jiml';
+export { OpenApprovalsPanel } from './OpenApprovals';

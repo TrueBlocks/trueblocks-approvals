@@ -29,7 +29,12 @@ import { Group } from '@mantine/core';
 import { useHotkeys } from '@mantine/hooks';
 import { exports } from '@models';
 import { msgs, project, types } from '@models';
-import { Debugger, LogError, useErrorHandler } from '@utils';
+import {
+  Debugger,
+  LogError,
+  formatNumericValue,
+  useErrorHandler,
+} from '@utils';
 
 import { assertRouteConsistency } from '../routes';
 import { ROUTE } from './constants';
@@ -164,6 +169,48 @@ export const Exports = () => {
 
   useHotkeys([['mod+r', handleReload]]);
 
+  // Optimistic update function for approval allowances
+  const updateApprovalAllowanceOptimistically = useCallback(
+    (approvalToUpdate: Record<string, unknown>) => {
+      setPageData((prevPageData) => {
+        if (
+          !prevPageData ||
+          getCurrentDataFacet() !== types.DataFacet.OPENAPPROVALS
+        ) {
+          return prevPageData;
+        }
+
+        const updatedApprovals = (prevPageData.openapprovals || []).map(
+          (approval) => {
+            // Match by a combination of owner, spender, and token addresses
+            if (
+              approval.owner === approvalToUpdate.owner &&
+              approval.spender === approvalToUpdate.spender &&
+              approval.token === approvalToUpdate.token
+            ) {
+              return {
+                ...approval,
+                allowance: '0',
+                lastAppTs: Math.floor(Date.now() / 1000),
+              };
+            }
+            return approval;
+          },
+        );
+
+        // Update the existing ExportsPage instance to preserve its methods
+        const updatedPageData = Object.create(
+          Object.getPrototypeOf(prevPageData),
+        );
+        Object.assign(updatedPageData, prevPageData, {
+          openapprovals: updatedApprovals,
+        });
+        return updatedPageData;
+      });
+    },
+    [getCurrentDataFacet],
+  );
+
   // === SECTION 5: Actions ===
   const { handlers, config, exportFormatModal, confirmModal } = useActions({
     collection: ROUTE,
@@ -215,7 +262,7 @@ export const Exports = () => {
   }, [config.headerActions, config.isWalletConnected, handlers]);
 
   // === SECTION 6: UI Configuration ===
-  const currentColumns = useFacetColumns(
+  const baseColumns = useFacetColumns(
     viewConfig,
     getCurrentDataFacet,
     {
@@ -228,10 +275,54 @@ export const Exports = () => {
     { rowActions: [] },
   );
 
-  const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet, renderers.panels),
-    [viewConfig, getCurrentDataFacet],
-  );
+  // Add custom column overrides for specific facets
+  const currentColumns = useMemo(() => {
+    if (getCurrentDataFacet() === types.DataFacet.OPENAPPROVALS) {
+      // Override allowance column to show "Revoked" for zero values
+      return baseColumns.map((col) => {
+        if (col.key === 'allowance') {
+          return {
+            ...col,
+            render: (row: Record<string, unknown>) => {
+              const allowance = row.allowance as string | number;
+              const allowanceNum = Number(allowance || 0);
+
+              if (allowanceNum === 0) {
+                return (
+                  <span style={{ color: 'red', fontWeight: 'bold' }}>
+                    Revoked
+                  </span>
+                );
+              }
+
+              // Use the original formatter for non-zero values
+              return formatNumericValue(allowance);
+            },
+          };
+        }
+        return col;
+      });
+    }
+    return baseColumns;
+  }, [baseColumns, getCurrentDataFacet]);
+
+  const detailPanel = useMemo(() => {
+    // Create enhanced custom panels with optimistic update function
+    const enhancedPanels = {
+      ...renderers.panels,
+      [types.DataFacet.OPENAPPROVALS]: (
+        rowData: Record<string, unknown> | null,
+      ) => {
+        // Pass the optimistic update function to the OpenApprovals panel
+        return renderers.panels[types.DataFacet.OPENAPPROVALS](
+          rowData,
+          updateApprovalAllowanceOptimistically,
+        );
+      },
+    };
+
+    return createDetailPanel(viewConfig, getCurrentDataFacet, enhancedPanels);
+  }, [viewConfig, getCurrentDataFacet, updateApprovalAllowanceOptimistically]);
 
   const { isCanvas, node: formNode } = useFacetForm<Record<string, unknown>>({
     viewConfig,
