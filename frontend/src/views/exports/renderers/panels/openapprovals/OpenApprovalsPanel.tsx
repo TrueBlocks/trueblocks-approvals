@@ -14,7 +14,6 @@ import {
   approvalToAddressInfo,
   txToDetailsInfo,
 } from '@components';
-import { useViewContext } from '@contexts';
 import { useWalletGatedAction } from '@hooks';
 import { usePayload } from '@hooks';
 import { Group, Stack, Text } from '@mantine/core';
@@ -77,7 +76,6 @@ export const OpenApprovalsPanel = (
   }>({ opened: false, txHash: null });
 
   const { createWalletGatedAction } = useWalletGatedAction();
-  const viewContext = useViewContext();
   const createPayload = usePayload('exports'); // Handle section toggle
   const handleToggle = (sectionName: string) => {
     const isCollapsed = collapsed.has(sectionName);
