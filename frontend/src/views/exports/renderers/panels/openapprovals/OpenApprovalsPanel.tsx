@@ -11,7 +11,7 @@ import {
   PanelRow,
   PanelTable,
   StyledButton,
-  appToAddressInfo,
+  approvalToAddressInfo,
   txToDetailsInfo,
 } from '@components';
 import { useViewContext } from '@contexts';
@@ -174,7 +174,7 @@ export const OpenApprovalsPanel = (
 
   const addressInfo = useMemo(() => {
     if (!rowData) return null;
-    return appToAddressInfo(
+    return approvalToAddressInfo(
       approval.owner,
       approval.ownerName,
       approval.spender,

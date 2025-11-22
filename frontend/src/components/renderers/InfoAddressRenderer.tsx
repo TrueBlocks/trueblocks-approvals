@@ -72,7 +72,7 @@ export const txToAddressInfo = (
   };
 };
 
-export const appToAddressInfo = (
+export const approvalToAddressInfo = (
   from?: unknown,
   fromName?: string,
   to?: unknown,
