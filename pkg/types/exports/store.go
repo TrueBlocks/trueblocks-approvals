@@ -22,19 +22,21 @@ import (
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
-type OpenApproval = sdk.Approval
-type ApprovalLog = sdk.Log
-type ApprovalTx = sdk.Transaction
-type Asset = sdk.Statement
-type Assetchart = sdk.Statement
-type Balance = sdk.Balance
-type Log = sdk.Log
-type Receipt = sdk.Receipt
-type Statement = sdk.Statement
-type Trace = sdk.Trace
-type Transaction = sdk.Transaction
-type Transfer = sdk.Transfer
-type Withdrawal = sdk.Withdrawal
+type (
+	OpenApproval = sdk.Approval
+	ApprovalLog  = sdk.Log
+	ApprovalTx   = sdk.Transaction
+	Asset        = sdk.Statement
+	Assetchart   = sdk.Statement
+	Balance      = sdk.Balance
+	Log          = sdk.Log
+	Receipt      = sdk.Receipt
+	Statement    = sdk.Statement
+	Trace        = sdk.Trace
+	Transaction  = sdk.Transaction
+	Transfer     = sdk.Transfer
+	Withdrawal   = sdk.Withdrawal
+)
 
 // EXISTING_CODE
 
@@ -89,11 +91,12 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Articulate: true,
 			}
-			if _, _, err := opts.ExportApprovals(); err != nil {
+			if _, _, err := opts.ExportApprovalsLogs(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsApprovalLogs, "fetch", err)
 				return wrappedErr
 			}
@@ -105,14 +108,18 @@ func (c *ExportsCollection) getApprovalLogsStore(payload *types.Payload, facet t
 			if it, ok := item.(*ApprovalLog); ok {
 				it.AddressName = names.NameAddress(it.Address)
 				// EXISTING_CODE
-				if tx, ok := item.(*sdk.Transaction); ok {
-					for _, log := range tx.Receipt.Logs {
-						if len(log.Topics) > 0 {
-							return (*ApprovalLog)(&log)
-						}
-					}
-				}
 				// EXISTING_CODE
+				props := &sdk.ModelProps{
+					Chain:   payload.ActiveChain,
+					Format:  "json",
+					Verbose: true,
+					ExtraOpts: map[string]any{
+						"ether": true,
+					},
+				}
+				if err := it.EnsureCalcs(props, nil); err != nil {
+					logging.LogBEError(fmt.Sprintf("Failed to calculate fields during ingestion: %v", err))
+				}
 				return it
 			}
 			return nil
@@ -147,9 +154,11 @@ func (c *ExportsCollection) getApprovalTxsStore(payload *types.Payload, facet ty
 		queryFunc := func(ctx *output.RenderCtx) error {
 			// EXISTING_CODE
 			opts := sdk.ExportOptions{
-				Globals:   sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
-				RenderCtx: ctx,
-				Addrs:     []string{payload.ActiveAddress},
+				Globals:    sdk.Globals{Cache: true, Verbose: true, Chain: payload.ActiveChain},
+				RenderCtx:  ctx,
+				Addrs:      []string{payload.ActiveAddress},
+				Articulate: true,
+				Unripe:     true,
 			}
 			if _, _, err := opts.ExportApprovals(); err != nil {
 				wrappedErr := types.NewSDKError("exports", ExportsApprovalTxs, "fetch", err)
@@ -412,6 +421,7 @@ func (c *ExportsCollection) getOpenApprovalsStore(payload *types.Payload, facet 
 			listOpts := sdk.ListOptions{
 				Globals: sdk.Globals{Chain: payload.ActiveChain},
 				Addrs:   []string{payload.ActiveAddress},
+				Unripe:  true,
 			}
 			_, _, _ = listOpts.List()
 

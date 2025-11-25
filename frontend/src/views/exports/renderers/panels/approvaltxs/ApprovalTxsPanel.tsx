@@ -15,7 +15,7 @@ import { TransactionPanelBase } from '../shared/TransactionPanelBase';
 
 // EXISTING_CODE
 
-export const TransactionsPanel = (rowData: Record<string, unknown> | null) => {
+export const ApprovalTxsPanel = (rowData: Record<string, unknown> | null) => {
   // EXISTING_CODE
   const transaction =
     (rowData as unknown as types.Transaction) || ({} as types.Transaction);
@@ -23,7 +23,7 @@ export const TransactionsPanel = (rowData: Record<string, unknown> | null) => {
   const titleComponent = () => (
     <Group justify="space-between" align="flex-start">
       <Text variant="primary" size="md" fw={600}>
-        Transaction {displayHash(transaction.hash)}
+        Approval Tx {displayHash(transaction.hash)}
       </Text>
       <Text variant="primary" size="md" fw={600}>
         Block {transaction.blockNumber}
@@ -35,8 +35,8 @@ export const TransactionsPanel = (rowData: Record<string, unknown> | null) => {
     <TransactionPanelBase
       rowData={rowData}
       title={titleComponent()}
-      showGasSection={true}
-      showStatusSection={true}
+      showGasSection={false}
+      showStatusSection={false}
     />
   );
   // EXISTING_CODE

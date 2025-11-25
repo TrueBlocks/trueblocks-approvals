@@ -4,4 +4,4 @@
 /*
  * This file was auto generated. Do not edit.
  */
-export { TracesPanel } from './TracesPanel';
+export { ApprovalLogsPanel } from './ApprovalLogsPanel';

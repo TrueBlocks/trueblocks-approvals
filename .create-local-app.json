@@ -28,6 +28,7 @@
     "exports": {
       "menuOrder": 20,
       "disabledFacets": {
+        "approvallogs": true,
         "balances": true,
         "logs": true,
         "receipts": true,
