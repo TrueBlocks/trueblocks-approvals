@@ -1,6 +1,6 @@
-import { useWalletConnectContext } from '@contexts';
-import { useWallet } from '@hooks';
 import { Log, LogError } from '@utils';
+import { useWalletContext } from '@wallet';
+import { useWallet } from '@wallet';
 import { useRequest } from '@walletconnect/modal-sign-react';
 
 import { PreparedTransaction } from './transactionBuilder';
@@ -14,7 +14,7 @@ export const useWalletConnection = ({
   onTransactionSigned,
   onError,
 }: WalletConnectionProps = {}) => {
-  const { session } = useWalletConnectContext();
+  const { session } = useWalletContext();
   const { walletAddress, walletChainId, isWalletConnected } = useWallet();
 
   // Initialize the WalletConnect request hook
@@ -168,12 +168,4 @@ export const useWalletConnection = ({
     address: walletAddress,
     chainId: walletChainId,
   };
-};
-
-// Export the component for backwards compatibility
-export const WalletConnection: React.FC<WalletConnectionProps> = (props) => {
-  const _wallet = useWalletConnection(props);
-
-  // This component doesn't render anything - it's just for the hook
-  return null;
 };

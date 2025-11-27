@@ -1155,6 +1155,91 @@ export namespace prompt {
 
 }
 
+export namespace rpc {
+	
+	export class ApprovalTransactionData {
+	    tokenAddress: string;
+	    spenderAddress: string;
+	    ownerAddress: string;
+	    amount: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ApprovalTransactionData(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.tokenAddress = source["tokenAddress"];
+	        this.spenderAddress = source["spenderAddress"];
+	        this.ownerAddress = source["ownerAddress"];
+	        this.amount = source["amount"];
+	    }
+	}
+	export class ApprovalTransactionResult {
+	    success: boolean;
+	    transactionData: string;
+	    gasEstimate: string;
+	    gasPrice: string;
+	    gasUsed: string;
+	    newAllowance: string;
+	    error?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ApprovalTransactionResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.success = source["success"];
+	        this.transactionData = source["transactionData"];
+	        this.gasEstimate = source["gasEstimate"];
+	        this.gasPrice = source["gasPrice"];
+	        this.gasUsed = source["gasUsed"];
+	        this.newAllowance = source["newAllowance"];
+	        this.error = source["error"];
+	    }
+	}
+	export class GasEstimationResult {
+	    success: boolean;
+	    gasEstimate: string;
+	    gasPrice: string;
+	    error?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new GasEstimationResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.success = source["success"];
+	        this.gasEstimate = source["gasEstimate"];
+	        this.gasPrice = source["gasPrice"];
+	        this.error = source["error"];
+	    }
+	}
+	export class TransactionPayload {
+	    chain: string;
+	    from: string;
+	    to: string;
+	    data: string;
+	    value: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TransactionPayload(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.chain = source["chain"];
+	        this.from = source["from"];
+	        this.to = source["to"];
+	        this.data = source["data"];
+	        this.value = source["value"];
+	    }
+	}
+
+}
+
 export namespace sdk {
 	
 	export class SortSpec {
@@ -1304,6 +1389,15 @@ export namespace status {
 
 export namespace types {
 	
+	export enum Period {
+	    BLOCKLY = "blockly",
+	    HOURLY = "hourly",
+	    DAILY = "daily",
+	    WEEKLY = "weekly",
+	    MONTHLY = "monthly",
+	    QUARTERLY = "quarterly",
+	    ANNUAL = "annual",
+	}
 	export enum DataFacet {
 	    STATS = "stats",
 	    INDEX = "index",
@@ -1352,15 +1446,6 @@ export namespace types {
 	    STALE = "stale",
 	    FETCHING = "fetching",
 	    LOADED = "loaded",
-	}
-	export enum Period {
-	    BLOCKLY = "blockly",
-	    HOURLY = "hourly",
-	    DAILY = "daily",
-	    WEEKLY = "weekly",
-	    MONTHLY = "monthly",
-	    QUARTERLY = "quarterly",
-	    ANNUAL = "annual",
 	}
 	export class AbiCalcs {
 	    name?: string;
@@ -2890,6 +2975,7 @@ export namespace types {
 	    activeChain?: string;
 	    activeAddress?: string;
 	    activePeriod?: Period;
+	    connectedAddress?: string;
 	    targetAddress?: string;
 	    targetSwitch?: boolean;
 	    format?: string;
@@ -2906,6 +2992,7 @@ export namespace types {
 	        this.activeChain = source["activeChain"];
 	        this.activeAddress = source["activeAddress"];
 	        this.activePeriod = source["activePeriod"];
+	        this.connectedAddress = source["connectedAddress"];
 	        this.targetAddress = source["targetAddress"];
 	        this.targetSwitch = source["targetSwitch"];
 	        this.format = source["format"];
@@ -3079,6 +3166,7 @@ export namespace types {
 	    activeChain?: string;
 	    activeAddress?: string;
 	    activePeriod?: Period;
+	    connectedAddress?: string;
 	    targetAddress?: string;
 	    targetSwitch?: boolean;
 	    format?: string;
@@ -3098,6 +3186,7 @@ export namespace types {
 	        this.activeChain = source["activeChain"];
 	        this.activeAddress = source["activeAddress"];
 	        this.activePeriod = source["activePeriod"];
+	        this.connectedAddress = source["connectedAddress"];
 	        this.targetAddress = source["targetAddress"];
 	        this.targetSwitch = source["targetSwitch"];
 	        this.format = source["format"];

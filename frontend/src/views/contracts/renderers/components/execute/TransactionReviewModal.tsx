@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { StyledBadge, StyledButton, StyledModal } from '@components';
+import { useViewContext } from '@contexts';
+import { usePayload } from '@hooks';
 import {
   Alert,
   Card,
@@ -11,11 +13,12 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
+import { types } from '@models';
 import {
   PreparedTransaction,
   TransactionData,
   prepareTransaction,
-} from '@utils';
+} from '@wallet';
 
 interface TransactionReviewModalProps {
   opened: boolean;
@@ -30,6 +33,13 @@ export const TransactionReviewModal: React.FC<TransactionReviewModalProps> = ({
   transactionData,
   onConfirm,
 }) => {
+  const { currentView } = useViewContext();
+  const createPayload = usePayload(currentView);
+  const payload = useMemo(
+    () => createPayload('' as types.DataFacet),
+    [createPayload],
+  );
+
   const [preparedTx, setPreparedTx] = useState<PreparedTransaction | null>(
     null,
   );
@@ -44,7 +54,7 @@ export const TransactionReviewModal: React.FC<TransactionReviewModalProps> = ({
     setError(null);
 
     try {
-      const prepared = await prepareTransaction(transactionData);
+      const prepared = await prepareTransaction(payload, transactionData);
       setPreparedTx(prepared);
     } catch (err) {
       setError(
@@ -53,7 +63,7 @@ export const TransactionReviewModal: React.FC<TransactionReviewModalProps> = ({
     } finally {
       setPreparing(false);
     }
-  }, [transactionData]);
+  }, [payload, transactionData]);
 
   React.useEffect(() => {
     if (opened && transactionData) {

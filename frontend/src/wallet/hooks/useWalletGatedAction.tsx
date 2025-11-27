@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
-import { useWalletConnectContext } from '@contexts';
-import { useWallet } from '@hooks';
 import { Log } from '@utils';
+import { useWalletContext } from '@wallet';
+import { useWallet } from '@wallet';
 
 /**
  * Hook for creating wallet-gated actions that require a connected wallet
@@ -31,7 +31,7 @@ import { Log } from '@utils';
  */
 export const useWalletGatedAction = () => {
   const { isWalletConnected, walletAddress } = useWallet();
-  const { handleConnect, isConnecting } = useWalletConnectContext();
+  const { handleConnect, isConnecting } = useWalletContext();
 
   const createWalletGatedAction = useCallback(
     (

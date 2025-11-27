@@ -1,7 +1,37 @@
 import { Encode } from '@app';
+import { EstimateTransactionGas } from '@app';
 import { types } from '@models';
+import { LogError } from '@utils';
 
 // TODO: BOGUS - IT MIGHT BE BETTER TO CREATE A @contracts or @contract_utils folder than put these in @utils
+
+// Standard ERC20 approve function ABI
+export const ERC20_APPROVE_FUNCTION: types.Function = {
+  name: 'approve',
+  type: 'function',
+  inputs: [
+    types.Parameter.createFrom({
+      name: 'spender',
+      type: 'address',
+      internalType: 'address',
+    }),
+    types.Parameter.createFrom({
+      name: 'amount',
+      type: 'uint256',
+      internalType: 'uint256',
+    }),
+  ],
+  outputs: [
+    types.Parameter.createFrom({
+      name: '',
+      type: 'bool',
+      internalType: 'bool',
+    }),
+  ],
+  stateMutability: 'nonpayable',
+  encoding: '0x095ea7b3',
+  convertValues: () => {},
+};
 
 export interface TransactionData {
   to: string;
@@ -120,6 +150,7 @@ export const buildTransaction = (
  * Prepares a transaction for signing
  */
 export const prepareTransaction = async (
+  payload: types.Payload,
   transactionData: TransactionData,
 ): Promise<PreparedTransaction> => {
   try {
@@ -128,15 +159,40 @@ export const prepareTransaction = async (
       transactionData.inputs,
     );
 
-    // TODO: Estimate gas
-    const estimatedGas = await estimateGas(transactionData);
+    // Use backend API for complete gas estimation (includes both gas limit and price)
+    const gasPayload = {
+      chain: payload.activeChain || 'mainnet',
+      from:
+        payload.connectedAddress ||
+        '0x0000000000000000000000000000000000000000',
+      to: transactionData.to,
+      data: encodedData,
+      value: transactionData.value || '0x0',
+    };
+
+    const gasResult = await EstimateTransactionGas(payload, gasPayload);
+
+    let estimatedGas: string;
+    let gasPrice: string;
+
+    if (gasResult.success) {
+      estimatedGas = parseInt(gasResult.gasEstimate, 16).toString();
+      gasPrice = parseInt(gasResult.gasPrice, 16).toString();
+    } else {
+      LogError(
+        'Gas estimation failed, using fallbacks:',
+        gasResult.error || 'Unknown error',
+      );
+      estimatedGas = '100000';
+      gasPrice = (15 * 1e9).toString(); // 15 gwei fallback
+    }
 
     return {
       to: transactionData.to,
       data: encodedData,
       value: transactionData.value || '0',
       gas: estimatedGas,
-      gasPrice: await getGasPrice(),
+      gasPrice: gasPrice,
     };
   } catch (error) {
     throw new Error(
@@ -148,30 +204,79 @@ export const prepareTransaction = async (
 };
 
 /**
- * Estimates gas for a transaction
+ * Estimates gas for a transaction using backend RPC calls
+ * This replaces frontend heuristics with real network estimation
  */
 export const estimateGas = async (
+  payload: types.Payload,
   transactionData: TransactionData,
 ): Promise<string> => {
-  // TODO: Implement actual gas estimation
-  // This would typically call eth_estimateGas
+  try {
+    // Encode the transaction data
+    const encodedData = await encodeParameters(
+      transactionData.function,
+      transactionData.inputs,
+    );
 
-  // Placeholder values based on function complexity
-  const baseGas = 21000; // Base transaction cost
-  const functionGas = transactionData.inputs.length * 5000; // Rough estimate per parameter
+    // Create payload for backend
+    const gasPayload = {
+      chain: payload.activeChain || 'mainnet',
+      from:
+        payload.connectedAddress ||
+        '0x0000000000000000000000000000000000000000',
+      to: transactionData.to,
+      data: encodedData,
+      value: transactionData.value || '0x0',
+    };
 
-  return (baseGas + functionGas).toString();
+    const result = await EstimateTransactionGas(payload, gasPayload);
+
+    if (!result.success) {
+      throw new Error(result.error || 'Gas estimation failed');
+    }
+
+    // Convert hex result to decimal string
+    return parseInt(result.gasEstimate, 16).toString();
+  } catch (error) {
+    LogError('Gas estimation failed, using fallback:', String(error));
+    // Fallback to conservative estimate
+    return '100000';
+  }
 };
 
 /**
- * Gets current gas price
+ * Gets current gas price using backend RPC calls
+ * @deprecated Use estimateGas instead which provides both gas estimate and gas price
  */
-export const getGasPrice = async (): Promise<string> => {
-  // TODO: Implement actual gas price fetching
-  // This would typically call eth_gasPrice or use a gas oracle
+export const getGasPrice = async (payload: types.Payload): Promise<string> => {
+  try {
+    // Use a dummy transaction to get current gas price
+    const dummyPayload = {
+      chain: payload.activeChain || 'mainnet',
+      from:
+        payload.connectedAddress ||
+        '0x0000000000000000000000000000000000000000',
+      to: '0x0000000000000000000000000000000000000000',
+      data: '0x',
+      value: '0x0',
+    };
 
-  // Placeholder: 20 gwei
-  return (20 * 1e9).toString();
+    const result = await EstimateTransactionGas(payload, dummyPayload);
+
+    if (!result.success) {
+      throw new Error(result.error || 'Gas price estimation failed');
+    }
+
+    // Convert hex result to decimal string
+    return parseInt(result.gasPrice, 16).toString();
+  } catch (error) {
+    LogError(
+      'Failed to get gas price from backend, using fallback:',
+      String(error),
+    );
+    // Fallback: Conservative 15 gwei
+    return (15 * 1e9).toString();
+  }
 };
 
 /**

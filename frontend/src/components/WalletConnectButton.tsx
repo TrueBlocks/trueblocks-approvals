@@ -1,11 +1,11 @@
 import { StyledButton } from '@components';
-import { useWalletConnectContext } from '@contexts';
-import { useWallet } from '@hooks';
 import { Group, Text } from '@mantine/core';
+import { useWalletContext } from '@wallet';
+import { useWallet } from '@wallet';
 
 export const WalletConnectButton = () => {
   const { isConnecting, handleConnect, handleDisconnect, formatAddress } =
-    useWalletConnectContext();
+    useWalletContext();
   const { isWalletConnected, walletAddress } = useWallet();
 
   if (isWalletConnected) {
