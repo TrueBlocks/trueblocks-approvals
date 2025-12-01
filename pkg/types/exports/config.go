@@ -71,7 +71,7 @@ func (c *ExportsCollection) buildStaticFacets() map[string]types.FacetConfig {
 		"openapprovals": {
 			Name:          "Open Approvals",
 			Store:         "openapprovals",
-			ViewType:      "table",
+			ViewType:      "custom",
 			Panel:         "custom",
 			DividerBefore: false,
 			Fields:        getOpenapprovalsFields(),
@@ -360,7 +360,7 @@ func getReceiptsFields() []types.FieldConfig {
 		{Section: "Context", Key: "to", Type: "address"},
 		{Section: "Context", Key: "toName", Type: "string"},
 		{Section: "Details", Key: "gasOut", Type: "gas"},
-		{Section: "Details", Key: "status", Type: "error"},
+		{Section: "Details", Key: "status", Type: "value"},
 		{Section: "Details", Key: "isError", Type: "boolean", NoTable: true},
 		{Section: "Details", Key: "contractAddress", Type: "address", NoTable: true},
 		{Section: "Details", Key: "contractAddressName", Type: "string", NoTable: true},

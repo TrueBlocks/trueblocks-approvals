@@ -4,4 +4,4 @@
 /*
  * This file was auto generated. Do not edit.
  */
-export { ExecuteFacet } from './ExecuteFacet';
+export { OpenApprovalsFacet } from './OpenApprovalsFacet';
