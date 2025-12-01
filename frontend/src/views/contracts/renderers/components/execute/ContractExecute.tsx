@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { OpenLink } from '@app';
 import { StyledBadge, StyledButton } from '@components';
 import {
   Alert,
+  Anchor,
   Card,
   Divider,
   Grid,
@@ -19,7 +21,7 @@ import {
 } from '@mantine/core';
 import { types } from '@models';
 import { LogError, addressToHex } from '@utils';
-import { ADDRESS_HELP_TEXT } from '@wallet';
+import { TxReviewModal } from '@wallet';
 import {
   PreparedTransaction,
   TransactionData,
@@ -33,7 +35,9 @@ import {
 } from '@wallet';
 
 import { getWriteFunctions } from '../dashboard/facetCreation';
-import { TransactionReviewModal } from './TransactionReviewModal';
+
+const ADDRESS_HELP_TEXT =
+  'Must be a valid address starting with 0x and 42 characters, or an ENS name ending in .eth';
 
 interface ContractExecuteProps {
   contractState: types.Contract;
@@ -145,6 +149,7 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
   const [transactionResult, setTransactionResult] = useState<string | null>(
     null,
   );
+  const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [transactionData, setTransactionData] =
     useState<TransactionData | null>(null);
   const [reviewModalOpened, setReviewModalOpened] = useState(false);
@@ -154,12 +159,16 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
   // Wallet connection hook
   const { sendTransaction } = useWalletConnection({
     onTransactionSigned: (txHash) => {
-      setTransactionResult(`Transaction signed! Hash: ${txHash}`);
+      setTransactionHash(txHash);
+      setTransactionResult(
+        `Transaction signed! View on Etherscan: https://etherscan.io/tx/${txHash}`,
+      );
       setReviewModalOpened(false);
     },
     onError: (error) => {
       LogError(`Transaction failed: ${error}`);
       setTransactionResult(`Transaction failed: ${error}`);
+      setTransactionHash(null);
     },
   });
 
@@ -197,10 +206,13 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
 
   // Execute transaction logic (extracted for reuse)
   const executeTransaction = useCallback(async () => {
-    if (!currentFunction || !isFormValid()) return;
+    if (!currentFunction || !isFormValid()) {
+      return;
+    }
 
     setIsSubmitting(true);
     setTransactionResult(null);
+    setTransactionHash(null);
 
     try {
       // Prepare transaction data
@@ -310,8 +322,19 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
     return <Alert variant="light">Please select a function</Alert>;
   }
 
-  // Update form field value and validation
+  // Update form field value
   const updateFormField = (parameterName: string, value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      [parameterName]: {
+        value,
+        error: prev[parameterName]?.error,
+      },
+    }));
+  };
+
+  // Validate form field on blur
+  const validateFormField = (parameterName: string, value: string) => {
     const parameter = currentFunction.inputs.find(
       (input) => input.name === parameterName,
     );
@@ -348,6 +371,8 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
       await sendTransaction(preparedTx);
     } catch (error) {
       LogError(`Transaction failed: ${error}`);
+      // Re-throw so modal can handle the error
+      throw error;
     }
   };
 
@@ -392,6 +417,9 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
             onChange={(value) =>
               updateFormField(parameter.name, value?.toString() || '')
             }
+            onBlur={(event) =>
+              validateFormField(parameter.name, event.currentTarget.value)
+            }
             hideControls
           />
         );
@@ -403,6 +431,9 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
             placeholder={placeholder}
             onChange={(event) =>
               updateFormField(parameter.name, event.currentTarget.value)
+            }
+            onBlur={(event) =>
+              validateFormField(parameter.name, event.currentTarget.value)
             }
             minRows={3}
             autosize
@@ -427,6 +458,9 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
             placeholder={placeholder}
             onChange={(event) =>
               updateFormField(parameter.name, event.currentTarget.value)
+            }
+            onBlur={(event) =>
+              validateFormField(parameter.name, event.currentTarget.value)
             }
           />
         );
@@ -510,18 +544,38 @@ export const ContractExecute: React.FC<ContractExecuteProps> = ({
         <Alert
           variant="light"
           bd={
+            transactionResult.includes('failed') ||
             transactionResult.includes('Error')
               ? '1px solid var(--mantine-color-error-6)'
               : '1px solid var(--mantine-color-success-6)'
           }
-          bg={transactionResult.includes('Error') ? 'error.1' : 'success.1'}
+          bg={
+            transactionResult.includes('failed') ||
+            transactionResult.includes('Error')
+              ? 'error.1'
+              : 'success.1'
+          }
         >
-          {transactionResult}
+          {transactionHash ? (
+            <Stack gap="xs">
+              <Text>Transaction signed successfully!</Text>
+              <Anchor
+                component="button"
+                onClick={() => {
+                  OpenLink('transactionHash', transactionHash);
+                }}
+              >
+                View on Etherscan
+              </Anchor>
+            </Stack>
+          ) : (
+            transactionResult
+          )}
         </Alert>
       )}
 
       {/* Transaction Review Modal */}
-      <TransactionReviewModal
+      <TxReviewModal
         opened={reviewModalOpened}
         onClose={() => setReviewModalOpened(false)}
         transactionData={transactionData}

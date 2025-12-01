@@ -62,10 +62,6 @@ export function Encode(arg1, arg2) {
   return window['go']['app']['App']['Encode'](arg1, arg2);
 }
 
-export function EstimateTransactionGas(arg1, arg2) {
-  return window['go']['app']['App']['EstimateTransactionGas'](arg1, arg2);
-}
-
 export function ExecuteRowAction(arg1) {
   return window['go']['app']['App']['ExecuteRowAction'](arg1);
 }
@@ -188,6 +184,10 @@ export function GetComparitoorSummary(arg1) {
 
 export function GetContext() {
   return window['go']['app']['App']['GetContext']();
+}
+
+export function GetContracts() {
+  return window['go']['app']['App']['GetContracts']();
 }
 
 export function GetContractsBuckets(arg1) {
@@ -470,8 +470,8 @@ export function OpenURL(arg1) {
   return window['go']['app']['App']['OpenURL'](arg1);
 }
 
-export function PrepareApprovalTransaction(arg1, arg2) {
-  return window['go']['app']['App']['PrepareApprovalTransaction'](arg1, arg2);
+export function PrepareTransaction(arg1, arg2) {
+  return window['go']['app']['App']['PrepareTransaction'](arg1, arg2);
 }
 
 export function ReadToMe(arg1, arg2) {

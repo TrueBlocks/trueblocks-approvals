@@ -4,7 +4,6 @@ import {types} from '../models';
 import {crud} from '../models';
 import {project} from '../models';
 import {base} from '../models';
-import {rpc} from '../models';
 import {menu} from '../models';
 import {sdk} from '../models';
 import {abis} from '../models';
@@ -52,8 +51,6 @@ export function DeleteCustomSkin(arg1:string):Promise<void>;
 export function DressesCrud(arg1:types.Payload,arg2:crud.Operation,arg3:any):Promise<void>;
 
 export function Encode(arg1:types.Function,arg2:Array<any>):Promise<string>;
-
-export function EstimateTransactionGas(arg1:types.Payload,arg2:rpc.TransactionPayload):Promise<rpc.GasEstimationResult>;
 
 export function ExecuteRowAction(arg1:types.RowActionPayload):Promise<void>;
 
@@ -116,6 +113,8 @@ export function GetComparitoorPage(arg1:types.Payload,arg2:number,arg3:number,ar
 export function GetComparitoorSummary(arg1:types.Payload):Promise<types.Summary>;
 
 export function GetContext():Promise<context.Context>;
+
+export function GetContracts():Promise<Array<types.Contract>>;
 
 export function GetContractsBuckets(arg1:types.Payload):Promise<types.Buckets>;
 
@@ -257,7 +256,7 @@ export function OpenProjectFile(arg1:string):Promise<void>;
 
 export function OpenURL(arg1:string):Promise<void>;
 
-export function PrepareApprovalTransaction(arg1:types.Payload,arg2:rpc.ApprovalTransactionData):Promise<rpc.ApprovalTransactionResult>;
+export function PrepareTransaction(arg1:types.Payload,arg2:app.PrepareTransactionRequest):Promise<app.PrepareTransactionResult>;
 
 export function ReadToMe(arg1:types.Payload,arg2:string):Promise<string>;
 

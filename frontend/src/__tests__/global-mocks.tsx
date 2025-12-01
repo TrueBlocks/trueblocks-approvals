@@ -96,6 +96,21 @@ vi.mock('@wallet', async (importOriginal) => {
   };
 });
 
+vi.mock('@app', async (importOriginal) => {
+  const original = await importOriginal();
+  return {
+    ...(original as object),
+    PrepareTransaction: vi.fn().mockResolvedValue({
+      success: true,
+      transactionData:
+        '0x095ea7b3000000000000000000000000spenderaddress0000000000000000000000000000000000000000000000000000000000000000',
+      gasEstimate: '0xea60',
+      gasPrice: '0x4a817c800',
+      error: '',
+    }),
+  };
+});
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: (query: string) => ({

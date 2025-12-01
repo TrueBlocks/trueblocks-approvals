@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/preferences"
-	"github.com/TrueBlocks/trueblocks-approvals/pkg/rpc"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/validation"
+	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
 
 // UserInfoStatus represents the status of user information and RPC connectivity for the setup wizard
@@ -30,8 +30,20 @@ func (a *App) GetUserInfoStatus() UserInfoStatus {
 		}
 
 		if hasRpcs {
-			_, err := rpc.CheckRPCStatus()
-			rpcUnavailable = err != nil
+			foundWorkingRpc := false
+			for _, chain := range a.Preferences.User.Chains {
+				for _, rpcUrl := range chain.RpcProviders {
+					result, err := sdk.PingRpc(rpcUrl)
+					if err == nil && result.OK {
+						foundWorkingRpc = true
+						break
+					}
+				}
+				if foundWorkingRpc {
+					break
+				}
+			}
+			rpcUnavailable = !foundWorkingRpc
 		}
 	}
 
