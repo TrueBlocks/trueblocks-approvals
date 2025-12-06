@@ -4,6 +4,9 @@
   "Github": "github.com/TrueBlocks/trueblocks-core",
   "Domain": "trueblocks.io",
   "Template": "default",
+  "Elements": {
+    "hideContractSelector": true
+  },
   "ViewConfig": {
     "abis": {
       "disabled": true
@@ -21,6 +24,7 @@
       "disabled": true
     },
     "exports": {
+      "menuLabel": "Approvals",
       "facetOrder": ["openapprovals", "approvaltxs", "approvallogs", "assets", "assetcharts"],
       "disabledFacets": {
         "balances": true,
