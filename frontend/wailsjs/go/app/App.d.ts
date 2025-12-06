@@ -36,7 +36,7 @@ export function ChangeVisibility(arg1:types.Payload):Promise<void>;
 
 export function ClearActiveProject():Promise<void>;
 
-export function ClearFilterState(arg1:project.ViewStateKey):Promise<void>;
+export function ClearViewFacetState(arg1:project.ViewStateKey):Promise<void>;
 
 export function CloseActiveProject():Promise<void>;
 
@@ -84,6 +84,10 @@ export function GetActiveProjectData():Promise<types.ProjectPayload>;
 
 export function GetActiveProjectPath():Promise<string>;
 
+export function GetAddressName(arg1:string):Promise<string>;
+
+export function GetAllDetailSectionStates():Promise<Record<string, boolean>>;
+
 export function GetAllSkins():Promise<Record<string, skin.Skin>>;
 
 export function GetAppId():Promise<preferences.Id>;
@@ -130,6 +134,8 @@ export function GetDebugCollapsed():Promise<boolean>;
 
 export function GetDefaultAppPreferences():Promise<preferences.AppPreferences>;
 
+export function GetDetailSectionState(arg1:string):Promise<boolean>;
+
 export function GetDressesBuckets(arg1:types.Payload):Promise<types.Buckets>;
 
 export function GetDressesConfig(arg1:types.Payload):Promise<types.ViewConfig>;
@@ -137,6 +143,8 @@ export function GetDressesConfig(arg1:types.Payload):Promise<types.ViewConfig>;
 export function GetDressesPage(arg1:types.Payload,arg2:number,arg3:number,arg4:sdk.SortSpec,arg5:string):Promise<dresses.DressesPage>;
 
 export function GetDressesSummary(arg1:types.Payload):Promise<types.Summary>;
+
+export function GetElementsConfig():Promise<preferences.ElementsConfig>;
 
 export function GetExportsBuckets(arg1:types.Payload):Promise<types.Buckets>;
 
@@ -149,8 +157,6 @@ export function GetExportsPage(arg1:types.Payload,arg2:number,arg3:number,arg4:s
 export function GetExportsSummary(arg1:types.Payload):Promise<types.Summary>;
 
 export function GetFilename():Promise<project.Project>;
-
-export function GetFilterState(arg1:project.ViewStateKey):Promise<project.FilterState>;
 
 export function GetFormat():Promise<string>;
 
@@ -192,7 +198,7 @@ export function GetOrgPreferences():Promise<preferences.OrgPreferences>;
 
 export function GetProjectAddress():Promise<base.Address>;
 
-export function GetProjectViewState(arg1:string):Promise<Record<string, project.FilterState>>;
+export function GetProjectViewState(arg1:string):Promise<Record<string, project.ViewFacetState>>;
 
 export function GetProjectsBuckets(arg1:types.Payload):Promise<types.Buckets>;
 
@@ -221,6 +227,8 @@ export function GetTheme():Promise<string>;
 export function GetUserInfoStatus():Promise<app.UserInfoStatus>;
 
 export function GetUserPreferences():Promise<preferences.UserPreferences>;
+
+export function GetViewFacetState(arg1:project.ViewStateKey):Promise<project.ViewFacetState>;
 
 export function GetWizardReturn():Promise<string>;
 
@@ -314,9 +322,9 @@ export function SetChunksMetric(arg1:string,arg2:string):Promise<void>;
 
 export function SetDebugCollapsed(arg1:boolean):Promise<void>;
 
-export function SetExportsMetric(arg1:string,arg2:string):Promise<void>;
+export function SetDetailSectionState(arg1:string,arg2:boolean):Promise<void>;
 
-export function SetFilterState(arg1:project.ViewStateKey,arg2:project.FilterState):Promise<void>;
+export function SetExportsMetric(arg1:string,arg2:string):Promise<void>;
 
 export function SetFontScale(arg1:number):Promise<void>;
 
@@ -338,7 +346,7 @@ export function SetOrgPreferences(arg1:preferences.OrgPreferences):Promise<void>
 
 export function SetProjectAddress(arg1:base.Address):Promise<void>;
 
-export function SetProjectViewState(arg1:string,arg2:Record<string, project.FilterState>):Promise<void>;
+export function SetProjectViewState(arg1:string,arg2:Record<string, project.ViewFacetState>):Promise<void>;
 
 export function SetSkin(arg1:string):Promise<void>;
 
@@ -349,6 +357,8 @@ export function SetUserInfo(arg1:string,arg2:string):Promise<void>;
 export function SetUserPreferences(arg1:preferences.UserPreferences):Promise<void>;
 
 export function SetViewAndFacet(arg1:string,arg2:string):Promise<string>;
+
+export function SetViewFacetState(arg1:project.ViewStateKey,arg2:project.ViewFacetState):Promise<void>;
 
 export function SilenceDialog(arg1:string):Promise<void>;
 

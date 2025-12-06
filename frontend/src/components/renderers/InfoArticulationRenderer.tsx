@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { NameFromAddress } from '@app';
-import { DetailSection } from '@components';
+import { StyledLabel, StyledValue } from '@components';
 import { types } from '@models';
 
 import { PanelRow, PanelTable } from '.';
@@ -40,12 +40,13 @@ const ParameterValue = ({ param }: { param: types.Parameter }) => {
 
   if (param.type === 'address' && addressName) {
     return (
-      <div>
-        <div style={{ fontWeight: 500 }}>{addressName}</div>
-        <div style={{ fontSize: '10px', color: 'var(--mantine-color-dimmed)' }}>
+      <>
+        <StyledValue weight="normal">{addressName}</StyledValue>
+        <br />
+        <StyledValue variant="dimmed" size="xs">
           {displayValue}
-        </div>
-      </div>
+        </StyledValue>
+      </>
     );
   }
 
@@ -198,17 +199,17 @@ export const InfoArticulationRenderer = ({
       !showTitle && !(functionData.name === 'Unknown' && input === '0x');
 
     return (
-      <DetailSection>
+      <>
         {showTitle && (
           <div
             style={{
-              fontSize: '14px',
-              fontWeight: 500,
               marginBottom: '6px',
               marginTop: '12px',
             }}
           >
-            {title}
+            <StyledValue weight="normal" size="md">
+              {title}
+            </StyledValue>
           </div>
         )}
         <div
@@ -220,9 +221,9 @@ export const InfoArticulationRenderer = ({
           <PanelTable>
             {shouldShowHeader && (
               <PanelRow layout="full" colSpan={2}>
-                <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                <StyledValue weight="strong" size="md">
                   {functionData.name} ({functionData.encoding})
-                </span>
+                </StyledValue>
               </PanelRow>
             )}
             {parameters && parameters.length > 0 ? (
@@ -231,28 +232,26 @@ export const InfoArticulationRenderer = ({
                 .map((param, index) => (
                   <PanelRow
                     key={index}
-                    label={param.name || '-'}
+                    label={
+                      <StyledLabel variant="blue">
+                        {param.name || '-'}
+                      </StyledLabel>
+                    }
                     value={<ParameterValue param={param} />}
                   />
                 ))
             ) : (
               <PanelRow layout="full" colSpan={2}>
-                <div
-                  style={{
-                    textAlign: 'left',
-                    color: 'var(--mantine-color-dimmed)',
-                    fontStyle: 'italic',
-                  }}
-                >
+                <StyledValue variant="dimmed" italic align="left">
                   {functionData.name === 'Unknown'
                     ? 'Empty function call (no data)'
                     : 'Function takes no parameters'}
-                </div>
+                </StyledValue>
               </PanelRow>
             )}
           </PanelTable>
         </div>
-      </DetailSection>
+      </>
     );
   };
 
@@ -271,14 +270,10 @@ export const InfoArticulationRenderer = ({
 
     return (
       <div>
-        <div
-          style={{
-            fontSize: '16px',
-            fontWeight: 700,
-            marginBottom: '12px',
-          }}
-        >
-          Contract Deployment
+        <div style={{ marginBottom: '12px' }}>
+          <StyledValue weight="bold" size="md">
+            Contract Deployment
+          </StyledValue>
         </div>
         <div
           style={{
@@ -341,9 +336,9 @@ export const InfoArticulationRenderer = ({
                   }}
                   colSpan={2}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                  <StyledValue weight="strong" size="md">
                     Message
-                  </span>
+                  </StyledValue>
                 </td>
               </tr>
               <tr style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>

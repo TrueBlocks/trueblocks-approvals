@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
 
-import { GetFilename, GetOrgPreferences } from '@app';
-import { ChevronButton, Socials, getBarSize } from '@components';
-import { useEvent, usePreferences } from '@hooks';
+import { GetOrgPreferences } from '@app';
+import {
+  ChevronButton,
+  ProjectSelector,
+  Socials,
+  getBarSize,
+} from '@components';
+import { useElements, usePreferences } from '@hooks';
 import { AppShell, Flex, Text } from '@mantine/core';
-import { msgs, preferences, project } from '@models';
+import { preferences } from '@models';
 
 export const Footer = () => {
   var [org, setOrg] = useState<preferences.OrgPreferences>({});
   const { menuCollapsed, chromeCollapsed, setChromeCollapsed } =
     usePreferences();
+  const { hideProjectSelector } = useElements();
 
   useEffect(() => {
     const fetchOrgName = async () => {
@@ -29,14 +35,18 @@ export const Footer = () => {
         w="100%"
         gap={chromeCollapsed ? 4 : 'md'}
       >
-        <Flex align="center" gap={4} style={{ flex: 1 }}>
+        <Flex align="center" gap={4} style={{ flex: 1, minWidth: 0 }}>
           <ChevronButton
             collapsed={chromeCollapsed}
             onToggle={() => setChromeCollapsed(!chromeCollapsed)}
             direction="down"
             title="Restore layout"
           />
-          {!chromeCollapsed && <FilePanel />}
+          {!chromeCollapsed && !hideProjectSelector && (
+            <div style={{ minWidth: '500px' }}>
+              <ProjectSelector label="Active Project:" />
+            </div>
+          )}
         </Flex>
         <Flex align="center" justify="center" style={{ flex: 1 }}>
           {!chromeCollapsed && (
@@ -58,28 +68,5 @@ export const Footer = () => {
         </Flex>
       </Flex>
     </AppShell.Footer>
-  );
-};
-
-export const FilePanel = () => {
-  const [status, setStatus] = useState<project.Project | null>(null);
-
-  useEffect(() => {
-    const fetchFilename = async () => {
-      setStatus(await GetFilename());
-    };
-    fetchFilename();
-  }, []);
-
-  useEvent(msgs.EventType.MANAGER, async (_message?: string) => {
-    setStatus(await GetFilename());
-  });
-
-  return (
-    <>
-      <Text variant="primary" size="md">
-        {status ? status.name : 'No Open Project'}
-      </Text>
-    </>
   );
 };

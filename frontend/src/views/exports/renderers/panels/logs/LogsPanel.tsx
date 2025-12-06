@@ -23,8 +23,13 @@ import '../../../../../components/detail/DetailTable.css';
 
 // EXISTING_CODE
 
-export const LogsPanel = (rowData: Record<string, unknown> | null) => {
+export const LogsPanel = (
+  rowData: Record<string, unknown>,
+  _onFinal: (rowKey: string, newValue: string, txHash: string) => void,
+) => {
   // EXISTING_CODE
+  const facet = 'logs';
+
   const log = useMemo(
     () => (rowData as unknown as types.Log) || types.Log.createFrom({}),
     [rowData],
@@ -36,25 +41,21 @@ export const LogsPanel = (rowData: Record<string, unknown> | null) => {
   const detailsInfo = useMemo(() => logToDetailsInfo(log), [log]);
   const articulationInfo = useMemo(() => logToArticulationInfo(log), [log]);
 
-  if (!rowData) {
-    return <div className="no-selection">Loading...</div>;
-  }
-
   return (
     <DetailContainer>
       <DetailHeader>
         Log {log.logIndex} in Tx {displayHash(log.transactionHash)}
       </DetailHeader>
 
-      <DetailSection title={'Information'}>
+      <DetailSection facet={facet} title={'Information'}>
         <InfoAddressRenderer addressInfo={addressInfo} />
       </DetailSection>
 
-      <DetailSection title={'Decoded Event'}>
+      <DetailSection facet={facet} title={'Articulated Log'}>
         <InfoArticulationRenderer articulationInfo={articulationInfo} />
       </DetailSection>
 
-      <DetailSection title={'Transaction & Block Details'}>
+      <DetailSection facet={facet} title={'Transaction & Block Details'}>
         <InfoDetailsRenderer detailsInfo={detailsInfo} />
       </DetailSection>
     </DetailContainer>

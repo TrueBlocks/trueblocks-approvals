@@ -13,7 +13,10 @@ scope: facet
 // EXISTING_CODE
 // EXISTING_CODE
 
-export const --Facet--Panel = (rowData: Record<string, unknown> | null) => {
+export const --Facet--Panel = (
+  rowData: Record<string, unknown>,
+  onFinal: (rowKey: string, newValue: string, txHash: string) => void,
+) => {
     // EXISTING_CODE
     // EXISTING_CODE
 }

@@ -9,11 +9,13 @@ import {
 import { Form, FormField } from '@components';
 import { useFiltering, useViewContext } from '@contexts';
 import { usePlaceholderRows, usePreferences, useViewConfig } from '@hooks';
+import { Box, Stack } from '@mantine/core';
 import { project, types } from '@models';
 import { getDebugClass } from '@utils';
 
 import {
   DetailPanel,
+  DetailPanelErrorBoundary,
   Header,
   Pagination,
   PerPage,
@@ -41,7 +43,7 @@ export interface TableProps<T extends Record<string, unknown>> {
   >;
   onModalOpen?: (openModal: (data: T) => void) => void;
   headerActions?: React.ReactNode;
-  detailPanel: (rowData: T | null) => React.ReactNode;
+  detailPanel: (rowData: T) => React.ReactNode;
 }
 
 export const Table = <T extends Record<string, unknown>>({
@@ -351,85 +353,98 @@ export const Table = <T extends Record<string, unknown>>({
       <div
         className={`table-main-content ${!detailCollapsed ? 'with-detail-panel' : ''} ${getDebugClass(2)}`}
       >
-        <div className={`table-section ${getDebugClass(3)}`}>
-          <table
-            className={`data-table ${getDebugClass(4)}`}
-            ref={tableRef}
-            tabIndex={0}
-            aria-label="Table with keyboard navigation"
-            onClick={focusTable}
+        <Stack
+          className={`table-section ${getDebugClass(3)}`}
+          gap={0}
+          mt="2px"
+          mr="2px"
+        >
+          <Box
+            p={0}
+            m={0}
+            style={{
+              border: '1px solid var(--mantine-color-gray-3)',
+              borderRadius: 'var(--mantine-radius-sm)',
+            }}
           >
-            <Header columns={displayColumns} viewStateKey={viewStateKey} />
-            <tbody className={getDebugClass(5)}>
-              {data.length === 0 ? (
-                state === types.StoreState.FETCHING ? (
-                  <tr>
-                    <td
-                      colSpan={displayColumns.length}
-                      style={{
-                        textAlign: 'left',
-                        padding: '20px',
-                        color: 'var(--mantine-color-dimmed)',
-                      }}
-                    >
-                      Loading...
-                    </td>
-                  </tr>
-                ) : (placeholderCount ?? 0) > 0 ? (
-                  <>
-                    {Array.from(
-                      { length: placeholderCount ?? 0 },
-                      (_, index) => (
-                        <PlaceholderRow
-                          key={`skeleton-${index}`}
-                          index={index + 1}
-                          columns={displayColumns}
-                          isActive={index === cyclingRowIndex}
-                        />
-                      ),
-                    )}
-                  </>
+            <table
+              className={`data-table ${getDebugClass(4)}`}
+              ref={tableRef}
+              tabIndex={0}
+              aria-label="Table with keyboard navigation"
+              onClick={focusTable}
+            >
+              <Header columns={displayColumns} viewStateKey={viewStateKey} />
+              <tbody className={getDebugClass(5)}>
+                {data.length === 0 ? (
+                  state === types.StoreState.FETCHING ? (
+                    <tr>
+                      <td
+                        colSpan={displayColumns.length}
+                        style={{
+                          textAlign: 'left',
+                          padding: '20px',
+                          color: 'var(--mantine-color-dimmed)',
+                        }}
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : (placeholderCount ?? 0) > 0 ? (
+                    <>
+                      {Array.from(
+                        { length: placeholderCount ?? 0 },
+                        (_, index) => (
+                          <PlaceholderRow
+                            key={`skeleton-${index}`}
+                            index={index + 1}
+                            columns={displayColumns}
+                            isActive={index === cyclingRowIndex}
+                          />
+                        ),
+                      )}
+                    </>
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={displayColumns.length}
+                        style={{
+                          textAlign: 'left',
+                          padding: '20px',
+                          color: 'var(--mantine-color-dimmed)',
+                        }}
+                      >
+                        No data found.
+                      </td>
+                    </tr>
+                  )
                 ) : (
-                  <tr>
-                    <td
-                      colSpan={displayColumns.length}
-                      style={{
-                        textAlign: 'left',
-                        padding: '20px',
-                        color: 'var(--mantine-color-dimmed)',
-                      }}
-                    >
-                      No data found.
-                    </td>
-                  </tr>
-                )
-              ) : (
-                <TableBody
-                  columns={displayColumns}
-                  data={data}
-                  selectedRowIndex={selectedRowIndex}
-                  handleRowClick={handleRowClick}
-                  noDataMessage={
-                    state === types.StoreState.FETCHING
-                      ? 'Loading...'
-                      : 'No data found.'
-                  }
-                />
-              )}
-            </tbody>
-            <Stats
-              nRecords={data.length}
-              nCols={displayColumns.length}
-              viewStateKey={viewStateKey}
-            />
-          </table>
-        </div>
+                  <TableBody
+                    columns={displayColumns}
+                    data={data}
+                    selectedRowIndex={selectedRowIndex}
+                    handleRowClick={handleRowClick}
+                    noDataMessage={
+                      state === types.StoreState.FETCHING
+                        ? 'Loading...'
+                        : 'No data found.'
+                    }
+                  />
+                )}
+              </tbody>
+            </table>
+          </Box>
+          <Stats nRecords={data.length} viewStateKey={viewStateKey} />
+        </Stack>
 
-        {!detailCollapsed && (
-          <DetailPanel
-            selectedRowData={selectedRowData}
-            detailPanel={detailPanel}
-          />
+        {!detailCollapsed && selectedRowData && (
+          <DetailPanelErrorBoundary facetKey={facetKey}>
+            <DetailPanel
+              selectedRowData={selectedRowData}
+              detailPanel={detailPanel}
+              facetKey={facetKey}
+            />
+          </DetailPanelErrorBoundary>
         )}
       </div>
 

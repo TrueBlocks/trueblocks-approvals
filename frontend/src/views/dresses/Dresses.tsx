@@ -105,6 +105,8 @@ export const Dresses = () => {
         return pageData.series || [];
       case types.DataFacet.DATABASES:
         return pageData.databases || [];
+      case types.DataFacet.ITEMS:
+        return pageData.items || [];
       case types.DataFacet.EVENTS:
         return pageData.logs || [];
       case types.DataFacet.GALLERY:
@@ -217,7 +219,13 @@ export const Dresses = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet),
+    () =>
+      createDetailPanel(
+        viewConfig,
+        getCurrentDataFacet,
+        {},
+        (_rowKey: string, _newValue: string, _txHash: string) => {},
+      ),
     [viewConfig, getCurrentDataFacet],
   );
 
@@ -231,6 +239,7 @@ export const Dresses = () => {
       >[],
     renderers: renderers.facets,
     viewName: ROUTE,
+    onRowAction: handleRowAction,
   });
 
   const perTabContent = useMemo(() => {

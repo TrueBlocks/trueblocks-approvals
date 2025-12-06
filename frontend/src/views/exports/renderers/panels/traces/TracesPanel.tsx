@@ -14,6 +14,7 @@ import {
   InfoAddressRenderer,
   InfoArticulationRenderer,
   InfoDetailsRenderer,
+  StyledValue,
   txToAddressInfo,
 } from '@components';
 import { types } from '@models';
@@ -23,8 +24,13 @@ import '../../../../../components/detail/DetailTable.css';
 
 // EXISTING_CODE
 
-export const TracesPanel = (rowData: Record<string, unknown> | null) => {
+export const TracesPanel = (
+  rowData: Record<string, unknown>,
+  _onFinal: (rowKey: string, newValue: string, txHash: string) => void,
+) => {
   // EXISTING_CODE
+  const facet = 'traces';
+
   const trace = useMemo(
     () =>
       (rowData as unknown as types.Trace) ||
@@ -50,10 +56,6 @@ export const TracesPanel = (rowData: Record<string, unknown> | null) => {
 
   const detailsInfo = useMemo(() => traceToDetailsInfo(trace), [trace]);
 
-  if (!rowData) {
-    return <div className="no-selection">Loading...</div>;
-  }
-
   return (
     <DetailContainer>
       <DetailHeader>
@@ -61,15 +63,15 @@ export const TracesPanel = (rowData: Record<string, unknown> | null) => {
         {displayHash(trace.transactionHash)}
       </DetailHeader>
 
-      <DetailSection title={'Address Information'}>
+      <DetailSection facet={facet} title={'Address Information'}>
         <InfoAddressRenderer addressInfo={addressInfo} />
       </DetailSection>
 
-      <DetailSection title={'Decoded Trace Call'}>
+      <DetailSection facet={facet} title={'Decoded Trace Call'}>
         <InfoArticulationRenderer articulationInfo={articulationInfo} />
       </DetailSection>
 
-      <DetailSection title={'Trace Error'} cond={!!trace.error}>
+      <DetailSection facet={facet} title={'Trace Error'} cond={!!trace.error}>
         <div
           style={{
             border: '1px solid var(--mantine-color-red-3)',
@@ -77,15 +79,15 @@ export const TracesPanel = (rowData: Record<string, unknown> | null) => {
             marginTop: '8px',
             backgroundColor: 'var(--mantine-color-red-0)',
             padding: '8px',
-            color: 'var(--mantine-color-red-8)',
-            fontWeight: '500',
           }}
         >
-          {trace.error}
+          <StyledValue variant="error" weight="normal">
+            {trace.error}
+          </StyledValue>
         </div>
       </DetailSection>
 
-      <DetailSection title={'Transaction & Block Details'}>
+      <DetailSection facet={facet} title={'Transaction & Block Details'}>
         <InfoDetailsRenderer detailsInfo={detailsInfo} />
       </DetailSection>
     </DetailContainer>

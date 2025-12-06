@@ -53,30 +53,28 @@ export const TableBody = <T extends Record<string, unknown>>({
                 cursor: 'pointer',
               }}
             >
-              {columns.map((col) => {
-                return (
-                  <td key={col.key} style={col.style} className={col.className}>
-                    <FieldRenderer
-                      field={
-                        {
-                          key: col.key as string,
-                          type: col.type || 'text',
-                          value: (col.key !== undefined
-                            ? isNestedProperty(col.key)
-                              ? getNestedProperty(row, col.key)
-                              : row[col.key as keyof T]
-                            : '') as string,
-                          customRender: col.render
-                            ? col.render(row, rowIndex)
-                            : undefined,
-                        } as FormField<Record<string, unknown>>
-                      }
-                      row={row as Record<string, unknown>}
-                      mode="display"
-                    />
-                  </td>
-                );
-              })}
+              {columns.map((col) => (
+                <td key={col.key} style={col.style} className={col.className}>
+                  <FieldRenderer
+                    field={
+                      {
+                        key: col.key as string,
+                        type: col.type || 'text',
+                        value: (col.key !== undefined
+                          ? isNestedProperty(col.key)
+                            ? getNestedProperty(row, col.key)
+                            : row[col.key as keyof T]
+                          : '') as string,
+                        customRender: col.render
+                          ? col.render(row, rowIndex)
+                          : undefined,
+                      } as FormField<Record<string, unknown>>
+                    }
+                    row={row as Record<string, unknown>}
+                    mode="display"
+                  />
+                </td>
+              ))}
             </tr>
           </Fragment>
         );

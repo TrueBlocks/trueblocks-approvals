@@ -1,4 +1,4 @@
-import { DetailSection, EtherRenderer } from '@components';
+import { EtherRenderer, StyledLabel, StyledValue } from '@components';
 import { types } from '@models';
 import { createHashLink } from '@utils';
 
@@ -34,54 +34,52 @@ export const InfoDetailsRenderer = ({
   };
 
   return (
-    <DetailSection>
-      <PanelTable>
-        <PanelRow
-          layout="full"
-          colSpan={2}
-          value={
-            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-              {formatDateTime()}
-            </span>
-          }
-        />
-        <PanelRow
-          layout="wide"
-          label={
-            <>
-              <span style={{ fontWeight: 500 }}>Hash:</span>{' '}
-              {createHashLink(detailsInfo.hash as { hash?: number[] }, 'hash')}
-            </>
-          }
-          value={
-            <>
-              <span style={{ fontWeight: 500 }}>Value:</span>{' '}
-              <EtherRenderer value={detailsInfo.value} />
-            </>
-          }
-        />
-        <PanelRow
-          layout="wide"
-          label={
-            <>
-              <span style={{ fontWeight: 500 }}>Block:</span>{' '}
-              <span style={{ fontWeight: 600 }}>
-                {detailsInfo.blockNumber}.{detailsInfo.transactionIndex}
-              </span>
-            </>
-          }
-          value={
-            <>
-              <span style={{ fontWeight: 500 }}>Block Hash:</span>{' '}
-              {createHashLink(
-                detailsInfo.blockHash as { hash?: number[] },
-                'block',
-              )}
-            </>
-          }
-        />
-      </PanelTable>
-    </DetailSection>
+    <PanelTable>
+      <PanelRow
+        layout="full"
+        colSpan={2}
+        value={
+          <StyledValue weight="strong" size="md">
+            {formatDateTime()}
+          </StyledValue>
+        }
+      />
+      <PanelRow
+        layout="wide"
+        label={
+          <>
+            <StyledLabel weight="normal">Hash</StyledLabel>{' '}
+            {createHashLink(detailsInfo.hash as { hash?: number[] }, 'hash')}
+          </>
+        }
+        value={
+          <>
+            <StyledLabel weight="normal">Value</StyledLabel>{' '}
+            <EtherRenderer value={detailsInfo.value} />
+          </>
+        }
+      />
+      <PanelRow
+        layout="wide"
+        label={
+          <>
+            <StyledLabel weight="normal">Block</StyledLabel>{' '}
+            <StyledValue weight="strong">
+              {detailsInfo.blockNumber}.{detailsInfo.transactionIndex}
+            </StyledValue>
+          </>
+        }
+        value={
+          <>
+            <StyledLabel weight="normal">Block Hash</StyledLabel>{' '}
+            {createHashLink(
+              detailsInfo.blockHash as { hash?: number[] },
+              'block',
+            )}
+          </>
+        }
+      />
+    </PanelTable>
   );
 };
 

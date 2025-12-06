@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	dalle "github.com/TrueBlocks/trueblocks-dalle/v6"
+	"github.com/TrueBlocks/trueblocks-dalle/v6/pkg/model"
 	"github.com/TrueBlocks/trueblocks-approvals/pkg/types"
 	sdk "github.com/TrueBlocks/trueblocks-sdk/v6"
 )
@@ -24,6 +25,7 @@ type DressesPage struct {
 	Facet         types.DataFacet  `json:"facet"`
 	DalleDress    []DalleDress     `json:"dalledress"`
 	Databases     []Database       `json:"databases"`
+	Items         []Item           `json:"items"`
 	Logs          []Log            `json:"logs"`
 	Series        []Series         `json:"series"`
 	TotalItems    int              `json:"totalItems"`
@@ -125,6 +127,25 @@ func (c *DressesCollection) GetPage(
 			return nil, types.NewStoreError("dresses", dataFacet, "GetPage", err)
 		} else {
 			page.Databases = result.Items
+			page.TotalItems = result.TotalItems
+			page.State = result.State
+		}
+		page.ExpectedTotal = facet.ExpectedCount()
+	case DressesItems:
+		facet := c.itemsFacet
+		var filterFunc func(*Item) bool
+		if filter != "" {
+			filterFunc = func(item *Item) bool {
+				return c.matchesItemFilter(item, filter)
+			}
+		}
+		sortFunc := func(items []Item, sort sdk.SortSpec) error {
+			return model.SortItems(items, sort)
+		}
+		if result, err := facet.GetPage(first, pageSize, filterFunc, sortSpec, sortFunc); err != nil {
+			return nil, types.NewStoreError("dresses", dataFacet, "GetPage", err)
+		} else {
+			page.Items = result.Items
 			page.TotalItems = result.TotalItems
 			page.State = result.State
 		}
@@ -272,6 +293,19 @@ func (c *DressesCollection) matchesDatabaseFilter(item *Database, filter string)
 	_ = item   // delint
 	_ = filter // delint
 	return true
+}
+
+func (c *DressesCollection) matchesItemFilter(item *Item, filter string) bool {
+	if item == nil {
+		return false
+	}
+	if filter == "" {
+		return true
+	}
+	lf := strings.ToLower(filter)
+	dbName := strings.ToLower(item.DatabaseName)
+	matches := dbName == lf
+	return matches
 }
 
 func (c *DressesCollection) matchesEventFilter(item *Log, filter string) bool {

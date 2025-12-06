@@ -1,4 +1,4 @@
-import { DetailSection } from '@components';
+import { StyledLabel, StyledValue } from '@components';
 import { Text } from '@mantine/core';
 import { types } from '@models';
 import { createHashLink } from '@utils';
@@ -48,49 +48,45 @@ export const InfoStatusRenderer = ({ statusInfo }: InfoStatusRendererProps) => {
   };
 
   return (
-    <DetailSection>
-      <PanelTable>
-        <PanelRow
-          layout="wide"
-          label={
-            <>
-              <span style={{ fontWeight: 500 }}>Status:</span>{' '}
-              <Text component="span" c={getStatusColor()} fw={600}>
-                {getReceiptStatus()}
-              </Text>
-            </>
-          }
-          value={
-            <>
-              <span style={{ fontWeight: 500 }}>Log Count:</span>{' '}
-              <span style={{ fontWeight: 600 }}>
-                {statusInfo.logs?.length || 0}
-              </span>
-            </>
-          }
-        />
-        <PanelRow
-          layout="wide"
-          label={
-            statusInfo.contractAddress ? (
-              <span>
-                {createHashLink(statusInfo.contractAddress, 'address')}
-              </span>
-            ) : (
-              'None'
-            )
-          }
-          value={
-            <>
-              <span style={{ fontWeight: 500 }}>Trace Count:</span>{' '}
-              <span style={{ fontWeight: 600 }}>
-                {statusInfo.traces?.length || 0}
-              </span>
-            </>
-          }
-        />
-      </PanelTable>
-    </DetailSection>
+    <PanelTable>
+      <PanelRow
+        layout="wide"
+        label={
+          <>
+            <StyledLabel weight="normal">Status</StyledLabel>{' '}
+            <Text component="span" c={getStatusColor()} fw={600}>
+              {getReceiptStatus()}
+            </Text>
+          </>
+        }
+        value={
+          <>
+            <StyledLabel weight="normal">Log Count</StyledLabel>{' '}
+            <StyledValue weight="strong">
+              {statusInfo.logs?.length || 0}
+            </StyledValue>
+          </>
+        }
+      />
+      <PanelRow
+        layout="wide"
+        label={
+          statusInfo.contractAddress ? (
+            <span>{createHashLink(statusInfo.contractAddress, 'address')}</span>
+          ) : (
+            'None'
+          )
+        }
+        value={
+          <>
+            <StyledLabel weight="normal">Trace Count</StyledLabel>{' '}
+            <StyledValue weight="strong">
+              {statusInfo.traces?.length || 0}
+            </StyledValue>
+          </>
+        }
+      />
+    </PanelTable>
   );
 };
 

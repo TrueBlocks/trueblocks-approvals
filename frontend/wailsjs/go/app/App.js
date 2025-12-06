@@ -30,8 +30,8 @@ export function ClearActiveProject() {
   return window['go']['app']['App']['ClearActiveProject']();
 }
 
-export function ClearFilterState(arg1) {
-  return window['go']['app']['App']['ClearFilterState'](arg1);
+export function ClearViewFacetState(arg1) {
+  return window['go']['app']['App']['ClearViewFacetState'](arg1);
 }
 
 export function CloseActiveProject() {
@@ -126,6 +126,14 @@ export function GetActiveProjectPath() {
   return window['go']['app']['App']['GetActiveProjectPath']();
 }
 
+export function GetAddressName(arg1) {
+  return window['go']['app']['App']['GetAddressName'](arg1);
+}
+
+export function GetAllDetailSectionStates() {
+  return window['go']['app']['App']['GetAllDetailSectionStates']();
+}
+
 export function GetAllSkins() {
   return window['go']['app']['App']['GetAllSkins']();
 }
@@ -218,6 +226,10 @@ export function GetDefaultAppPreferences() {
   return window['go']['app']['App']['GetDefaultAppPreferences']();
 }
 
+export function GetDetailSectionState(arg1) {
+  return window['go']['app']['App']['GetDetailSectionState'](arg1);
+}
+
 export function GetDressesBuckets(arg1) {
   return window['go']['app']['App']['GetDressesBuckets'](arg1);
 }
@@ -232,6 +244,10 @@ export function GetDressesPage(arg1, arg2, arg3, arg4, arg5) {
 
 export function GetDressesSummary(arg1) {
   return window['go']['app']['App']['GetDressesSummary'](arg1);
+}
+
+export function GetElementsConfig() {
+  return window['go']['app']['App']['GetElementsConfig']();
 }
 
 export function GetExportsBuckets(arg1) {
@@ -256,10 +272,6 @@ export function GetExportsSummary(arg1) {
 
 export function GetFilename() {
   return window['go']['app']['App']['GetFilename']();
-}
-
-export function GetFilterState(arg1) {
-  return window['go']['app']['App']['GetFilterState'](arg1);
 }
 
 export function GetFormat() {
@@ -400,6 +412,10 @@ export function GetUserInfoStatus() {
 
 export function GetUserPreferences() {
   return window['go']['app']['App']['GetUserPreferences']();
+}
+
+export function GetViewFacetState(arg1) {
+  return window['go']['app']['App']['GetViewFacetState'](arg1);
 }
 
 export function GetWizardReturn() {
@@ -586,12 +602,12 @@ export function SetDebugCollapsed(arg1) {
   return window['go']['app']['App']['SetDebugCollapsed'](arg1);
 }
 
-export function SetExportsMetric(arg1, arg2) {
-  return window['go']['app']['App']['SetExportsMetric'](arg1, arg2);
+export function SetDetailSectionState(arg1, arg2) {
+  return window['go']['app']['App']['SetDetailSectionState'](arg1, arg2);
 }
 
-export function SetFilterState(arg1, arg2) {
-  return window['go']['app']['App']['SetFilterState'](arg1, arg2);
+export function SetExportsMetric(arg1, arg2) {
+  return window['go']['app']['App']['SetExportsMetric'](arg1, arg2);
 }
 
 export function SetFontScale(arg1) {
@@ -656,6 +672,10 @@ export function SetUserPreferences(arg1) {
 
 export function SetViewAndFacet(arg1, arg2) {
   return window['go']['app']['App']['SetViewAndFacet'](arg1, arg2);
+}
+
+export function SetViewFacetState(arg1, arg2) {
+  return window['go']['app']['App']['SetViewFacetState'](arg1, arg2);
 }
 
 export function SilenceDialog(arg1) {

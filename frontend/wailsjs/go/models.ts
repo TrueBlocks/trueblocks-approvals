@@ -380,6 +380,7 @@ export namespace dresses {
 	    facet: types.DataFacet;
 	    dalledress: model.DalleDress[];
 	    databases: model.Database[];
+	    items: model.Item[];
 	    logs: types.Log[];
 	    series: dalle.Series[];
 	    totalItems: number;
@@ -395,6 +396,7 @@ export namespace dresses {
 	        this.facet = source["facet"];
 	        this.dalledress = this.convertValues(source["dalledress"], model.DalleDress);
 	        this.databases = this.convertValues(source["databases"], model.Database);
+	        this.items = this.convertValues(source["items"], model.Item);
 	        this.logs = this.convertValues(source["logs"], types.Log);
 	        this.series = this.convertValues(source["series"], dalle.Series);
 	        this.totalItems = source["totalItems"];
@@ -696,6 +698,15 @@ export namespace model {
 	export class Database {
 	    id: string;
 	    name: string;
+	    databaseName: string;
+	    count: number;
+	    sample: string;
+	    filtered: string;
+	    version: string;
+	    columns: string[];
+	    description: string;
+	    lastUpdated: number;
+	    cacheHit: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Database(source);
@@ -705,6 +716,37 @@ export namespace model {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.name = source["name"];
+	        this.databaseName = source["databaseName"];
+	        this.count = source["count"];
+	        this.sample = source["sample"];
+	        this.filtered = source["filtered"];
+	        this.version = source["version"];
+	        this.columns = source["columns"];
+	        this.description = source["description"];
+	        this.lastUpdated = source["lastUpdated"];
+	        this.cacheHit = source["cacheHit"];
+	    }
+	}
+	export class Item {
+	    id: string;
+	    databaseName: string;
+	    index: number;
+	    version: string;
+	    value: string;
+	    remainder: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Item(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.databaseName = source["databaseName"];
+	        this.index = source["index"];
+	        this.version = source["version"];
+	        this.value = source["value"];
+	        this.remainder = source["remainder"];
 	    }
 	}
 
@@ -871,6 +913,7 @@ export namespace preferences {
 	    silencedDialogs: Record<string, boolean>;
 	    chunksMetrics?: Record<string, string>;
 	    exportsMetrics?: Record<string, string>;
+	    sectionStates?: Record<string, boolean>;
 	    bounds?: Bounds;
 	    fontScale: number;
 	    showFieldTypes: boolean;
@@ -897,6 +940,7 @@ export namespace preferences {
 	        this.silencedDialogs = source["silencedDialogs"];
 	        this.chunksMetrics = source["chunksMetrics"];
 	        this.exportsMetrics = source["exportsMetrics"];
+	        this.sectionStates = source["sectionStates"];
 	        this.bounds = this.convertValues(source["bounds"], Bounds);
 	        this.fontScale = source["fontScale"];
 	        this.showFieldTypes = source["showFieldTypes"];
@@ -939,6 +983,26 @@ export namespace preferences {
 	        this.remoteExplorer = source["remoteExplorer"];
 	        this.rpcProviders = source["rpcProviders"];
 	        this.symbol = source["symbol"];
+	    }
+	}
+	export class ElementsConfig {
+	    hideAddressSelector?: boolean;
+	    hideChainSelector?: boolean;
+	    hideContractSelector?: boolean;
+	    hidePeriodSelector?: boolean;
+	    hideProjectSelector?: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new ElementsConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.hideAddressSelector = source["hideAddressSelector"];
+	        this.hideChainSelector = source["hideChainSelector"];
+	        this.hideContractSelector = source["hideContractSelector"];
+	        this.hidePeriodSelector = source["hidePeriodSelector"];
+	        this.hideProjectSelector = source["hideProjectSelector"];
 	    }
 	}
 	export class Id {
@@ -1031,13 +1095,13 @@ export namespace preferences {
 
 export namespace project {
 	
-	export class FilterState {
+	export class ViewFacetState {
 	    sorting?: Record<string, any>;
 	    filtering?: Record<string, any>;
 	    other?: Record<string, any>;
 	
 	    static createFrom(source: any = {}) {
-	        return new FilterState(source);
+	        return new ViewFacetState(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -1074,7 +1138,7 @@ export namespace project {
 	    contracts: string[];
 	    activeContract: string;
 	    activePeriod: types.Period;
-	    filterStates: Record<string, FilterState>;
+	    viewFacetStates: Record<string, ViewFacetState>;
 	
 	    static createFrom(source: any = {}) {
 	        return new Project(source);
@@ -1094,7 +1158,7 @@ export namespace project {
 	        this.contracts = source["contracts"];
 	        this.activeContract = source["activeContract"];
 	        this.activePeriod = source["activePeriod"];
-	        this.filterStates = this.convertValues(source["filterStates"], FilterState, true);
+	        this.viewFacetStates = this.convertValues(source["viewFacetStates"], ViewFacetState, true);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -1115,6 +1179,7 @@ export namespace project {
 		    return a;
 		}
 	}
+	
 
 }
 
@@ -1363,6 +1428,20 @@ export namespace status {
 
 export namespace types {
 	
+	export enum StoreState {
+	    STALE = "stale",
+	    FETCHING = "fetching",
+	    LOADED = "loaded",
+	}
+	export enum Period {
+	    BLOCKLY = "blockly",
+	    HOURLY = "hourly",
+	    DAILY = "daily",
+	    WEEKLY = "weekly",
+	    MONTHLY = "monthly",
+	    QUARTERLY = "quarterly",
+	    ANNUAL = "annual",
+	}
 	export enum DataFacet {
 	    STATS = "stats",
 	    INDEX = "index",
@@ -1385,18 +1464,18 @@ export namespace types {
 	    DASHBOARD = "dashboard",
 	    EXECUTE = "execute",
 	    STATEMENTS = "statements",
-	    BALANCES = "balances",
-	    TRANSFERS = "transfers",
-	    TRANSACTIONS = "transactions",
-	    OPENAPPROVALS = "openapprovals",
-	    APPROVALLOGS = "approvallogs",
-	    APPROVALTXS = "approvaltxs",
-	    WITHDRAWALS = "withdrawals",
 	    ASSETS = "assets",
 	    ASSETCHARTS = "assetcharts",
+	    BALANCES = "balances",
+	    TRANSFERS = "transfers",
+	    OPENAPPROVALS = "openapprovals",
+	    APPROVALTXS = "approvaltxs",
+	    APPROVALLOGS = "approvallogs",
+	    TRANSACTIONS = "transactions",
+	    WITHDRAWALS = "withdrawals",
+	    RECEIPTS = "receipts",
 	    LOGS = "logs",
 	    TRACES = "traces",
-	    RECEIPTS = "receipts",
 	    MONITORS = "monitors",
 	    MANAGE = "manage",
 	    STATUS = "status",
@@ -1405,21 +1484,8 @@ export namespace types {
 	    GENERATOR = "generator",
 	    SERIES = "series",
 	    DATABASES = "databases",
+	    ITEMS = "items",
 	    GALLERY = "gallery",
-	}
-	export enum StoreState {
-	    STALE = "stale",
-	    FETCHING = "fetching",
-	    LOADED = "loaded",
-	}
-	export enum Period {
-	    BLOCKLY = "blockly",
-	    HOURLY = "hourly",
-	    DAILY = "daily",
-	    WEEKLY = "weekly",
-	    MONTHLY = "monthly",
-	    QUARTERLY = "quarterly",
-	    ANNUAL = "annual",
 	}
 	export class AbiCalcs {
 	    name?: string;
@@ -4134,6 +4200,8 @@ export namespace types {
 	    actions: Record<string, ActionConfig>;
 	    facetOrder: string[];
 	    menuOrder?: number;
+	    menuPosition?: string;
+	    menuLabel?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ViewConfig(source);
@@ -4147,6 +4215,8 @@ export namespace types {
 	        this.actions = this.convertValues(source["actions"], ActionConfig, true);
 	        this.facetOrder = source["facetOrder"];
 	        this.menuOrder = source["menuOrder"];
+	        this.menuPosition = source["menuPosition"];
+	        this.menuLabel = source["menuLabel"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

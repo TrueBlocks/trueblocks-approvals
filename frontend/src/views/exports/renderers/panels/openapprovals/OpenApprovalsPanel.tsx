@@ -15,6 +15,7 @@ import {
   PanelRow,
   PanelTable,
   StyledButton,
+  StyledValue,
   TransactionSuccessModal,
   approvalToAddressInfo,
 } from '@components';
@@ -75,10 +76,11 @@ export const ERC20_APPROVE_FUNCTION: types.Function = {
 // EXISTING_CODE
 
 export const OpenApprovalsPanel = (
-  rowData: Record<string, unknown> | null,
-  onFinal?: (rowKey: string, newValue: string, txHash: string) => void,
+  rowData: Record<string, unknown>,
+  onFinal: (rowKey: string, newValue: string, txHash: string) => void,
 ) => {
   // EXISTING_CODE
+  const facet = 'openapprovals';
 
   const { currentView } = useViewContext();
   const createPayload = usePayload(currentView);
@@ -101,6 +103,12 @@ export const OpenApprovalsPanel = (
 
   // State to track pending transaction amount
   const [pendingAmount, setPendingAmount] = useState<string>('');
+  const [isPreparingTransaction] = useState(false);
+
+  // Wallet hooks
+  const { createWalletGatedAction, isWalletConnected, isConnecting } =
+    useWalletGatedAction();
+  useWallet();
 
   const approval = useMemo(
     () =>
@@ -141,10 +149,6 @@ export const OpenApprovalsPanel = (
     ];
   }, [approval]);
 
-  const [isPreparingTransaction] = useState(false);
-  const { createWalletGatedAction, isWalletConnected, isConnecting } =
-    useWalletGatedAction();
-  useWallet();
   const { sendTransaction } = useWalletConnection({
     onTransactionSigned: (txHash: string) => {
       setRevokeModal({ opened: false, transactionData: null });
@@ -293,8 +297,8 @@ export const OpenApprovalsPanel = (
                 {isConnecting
                   ? 'Connecting...'
                   : isPreparingTransaction
-                    ? 'Pending...'
-                    : 'Revoke'}
+                    ? 'Preparing...'
+                    : 'Pending...'}
               </StyledButton>
               <StyledButton
                 onClick={handleApprove}
@@ -324,55 +328,55 @@ export const OpenApprovalsPanel = (
                 </Text>
               )}
             </div>
-            <Text variant="primary" size="md" fw={600}>
+            <StyledValue variant="blue" weight="strong">
               {hasApprovalData
                 ? `Approval ${displayHash(approval.token)} ${approval.tokenName || 'Token'}`
                 : 'Token Approval Management'}
-            </Text>
+            </StyledValue>
           </Group>
         </DetailHeader>
         {!hasApprovalData && (
-          <DetailSection title={'No Open Approvals'}>
-            <div
-              style={{ padding: '16px', textAlign: 'center', color: '#666' }}
-            >
-              <p style={{ margin: '0', fontSize: '14px' }}>
+          <DetailSection facet={facet} title={'No Open Approvals'}>
+            <div style={{ padding: '16px', textAlign: 'center', margin: '0' }}>
+              <StyledValue variant="dimmed" size="sm">
                 You may still create new token approvals using the Approve
                 button above.
-              </p>
+              </StyledValue>
             </div>
           </DetailSection>
         )}
         {hasApprovalData && (
-          <DetailSection title={'Information'}>
+          <DetailSection facet={facet} title={'Information'}>
             <InfoAddressRenderer addressInfo={addressInfo} />
           </DetailSection>
         )}
         <DetailSection
+          facet={facet}
           title={'Allowance Details'}
           cond={Boolean(hasApprovalData && allowanceInfo)}
         >
           <PanelTable>
             {allowanceInfo.map((item, index) => (
               <PanelRow
-                key={index}
+                key={`allowance-${item.label}-${index}`}
                 label={item.label}
                 value={
-                  <span
+                  <div
                     style={{
                       fontFamily: item.label.includes('Allowance')
                         ? 'monospace'
                         : 'inherit',
-                      fontSize: '14px',
-                      fontWeight: item.isHighlight ? 600 : 'normal',
-                      color: item.isHighlight
-                        ? 'var(--mantine-color-red-6)'
-                        : 'inherit',
                     }}
                     title={String(item.value)}
                   >
-                    {item.value}
-                  </span>
+                    <StyledValue
+                      variant={item.isHighlight ? 'error' : 'default'}
+                      weight={item.isHighlight ? 'strong' : 'normal'}
+                      size="sm"
+                    >
+                      {item.value}
+                    </StyledValue>
+                  </div>
                 }
               />
             ))}

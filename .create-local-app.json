@@ -6,29 +6,23 @@
   "Template": "default",
   "ViewConfig": {
     "abis": {
-      "menuOrder": 40,
       "disabled": true
     },
     "chunks": {
-      "menuOrder": 60,
       "disabled": true
     },
     "comparitoor": {
-      "menuOrder": 100,
       "disabled": true
     },
     "contracts": {
-      "menuOrder": 70,
       "disabled": true
     },
     "dresses": {
-      "menuOrder": 90,
       "disabled": true
     },
     "exports": {
-      "menuOrder": 20,
+      "facetOrder": ["openapprovals", "approvaltxs", "approvallogs", "assets", "assetcharts"],
       "disabledFacets": {
-        "approvallogs": true,
         "balances": true,
         "logs": true,
         "receipts": true,
@@ -39,18 +33,12 @@
         "withdrawals": true
       }
     },
-    "monitors": {
-      "menuOrder": 30
-    },
+    "monitors": {},
     "names": {
-      "menuOrder": 50,
       "disabled": true
     },
-    "projects": {
-      "menuOrder": 10
-    },
+    "projects": {},
     "status": {
-      "menuOrder": 80,
       "disabled": true
     }
   }

@@ -1,25 +1,16 @@
 import { useMemo } from 'react';
 
-import { FormField } from '@components';
+import { FacetRendererMap, FormField } from '@components';
 import { types } from '@models';
-
-type RendererCtx<T extends Record<string, unknown>> = {
-  data: T[];
-  columns: FormField<T>[];
-  facet: types.DataFacet;
-};
-
-type RendererMap<T extends Record<string, unknown>> = Partial<
-  Record<types.DataFacet, (ctx: RendererCtx<T>) => React.ReactNode>
->;
 
 interface UseFacetRendererParams<T extends Record<string, unknown>> {
   viewConfig: types.ViewConfig;
   getCurrentDataFacet: () => types.DataFacet;
   currentData: T[];
   currentColumns: FormField<T>[];
-  renderers?: RendererMap<T>;
+  renderers?: FacetRendererMap;
   viewName: string;
+  onRowAction?: (rowData: Record<string, unknown>) => void;
 }
 
 /**
@@ -34,6 +25,7 @@ export function useFacetRenderer<T extends Record<string, unknown>>({
   currentData,
   currentColumns,
   renderers,
+  onRowAction,
 }: UseFacetRendererParams<T>): {
   isCanvas: boolean;
   node: React.ReactNode | null;
@@ -48,16 +40,16 @@ export function useFacetRenderer<T extends Record<string, unknown>>({
 
     const data = currentData || [];
     const hasCustomRenderer = renderers && renderers[facet];
-    if (hasCustomRenderer && data.length > 0) {
+    if (hasCustomRenderer) {
       const renderer = renderers[facet];
       return renderer
-        ? renderer({ data, columns: currentColumns, facet })
+        ? renderer({ data, columns: currentColumns, facet, onRowAction })
         : null;
     }
 
-    // No custom renderer expected OR no data - return null (fall back to default form handling)
+    // No custom renderer expected - return null (fall back to default form handling)
     return null;
-  }, [isCanvas, currentData, currentColumns, renderers, facet]);
+  }, [isCanvas, currentData, currentColumns, renderers, facet, onRowAction]);
 
   return { isCanvas, node, facetConfig };
 }

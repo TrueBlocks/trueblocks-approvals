@@ -3,59 +3,6 @@
 .table-container {
   width: 100%;
   white-space: nowrap;
-  border-top: 1px solid var(--mantine-color-gray-4);
-}
-
-.data-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  outline: none;
-  border: 1px solid rgba(128, 128, 128, 0.25);
-  /* Hide scrollbars from table itself if any */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  height: auto;
-  max-height: max-content;
-}
-
-/* When DetailPanel is visible, allow horizontal scrolling */
-.table-main-content.with-detail-panel .data-table {
-  min-width: max-content;
-}
-
-.data-table::-webkit-scrollbar {
-  display: none;
-}
-
-.data-table th,
-.data-table td {
-  padding: 0.5rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
-  border-right: 1px solid rgba(128, 128, 128, 0.25);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: top;
-}
-
-.data-table th:last-child,
-.data-table td:last-child {
-  border-right: none;
-}
-
-.data-table th {
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.data-table th.sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.15s;
 }
 
 .header-label {
@@ -68,24 +15,6 @@
   margin-left: 0.1em;
   vertical-align: middle;
   padding-right: 2rem;
-}
-
-.data-table tbody tr {
-  cursor: pointer;
-}
-
-/* Focus styling handled by component props */
-.data-table:focus {
-  outline: 2px solid var(--mantine-color-primary-6);
-  outline-offset: 2px;
-}
-
-.data-table:focus tbody tr[aria-selected='true'] {
-  box-shadow: 0 0 0 2px var(--mantine-color-primary-3);
-}
-.data-table:focus {
-  outline: none;
-  box-shadow: none;
 }
 
 .table-outer-container {
@@ -206,26 +135,6 @@
   padding-top: 0;
 }
 
-.data-table tr:focus {
-  outline: 2px solid var(--mantine-color-primary-4);
-  outline-offset: -2px;
-}
-
-.mantine-integrated-table .data-table th {
-  background-color: var(--mantine-primary-color-filled);
-  color: var(--mantine-primary-color-contrast);
-}
-
-.data-table tr.deleted-row {
-  text-decoration: line-through;
-  opacity: 0.7;
-  background-color: rgba(255, 100, 100, 0.1);
-}
-
-.data-table tr.deleted-row td {
-  color: var(--mantine-color-dimmed);
-}
-
 .deleted-label {
   font-size: 0.7rem;
   color: var(--mantine-color-red-6);
@@ -242,11 +151,11 @@
   min-height: 0;
   height: auto;
   align-items: flex-start;
+  margin-right: 5px;
 }
 
 .table-main-content.with-detail-panel .table-section {
   flex: 0 0 65%;
-  border-right: 1px solid var(--mantine-color-gray-4);
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -262,7 +171,6 @@
 }
 
 .detail-panel {
-  /* Background and color now handled by Mantine Box component with bg="gray.1" */
   border-radius: var(--mantine-radius-sm);
   box-shadow: var(--mantine-shadow-md);
   position: relative;
@@ -272,6 +180,7 @@
   height: auto;
   max-height: 100vh;
   overflow: hidden;
+  margin-top: 2px;
 }
 
 .detail-panel-content {
@@ -349,4 +258,160 @@
   border-radius: var(--mantine-radius-sm);
   border: 2px dashed var(--mantine-color-gray-4);
   margin: var(--mantine-spacing-md);
+}
+
+/* ========================================
+   DATA TABLE STYLES
+   ======================================== */
+
+/* Base table */
+.data-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  outline: none;
+  /* Hide scrollbars from table itself if any */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: auto;
+  max-height: max-content;
+}
+
+.data-table::-webkit-scrollbar {
+  display: none;
+}
+
+/* When DetailPanel is visible, allow horizontal scrolling */
+.table-main-content.with-detail-panel .data-table {
+  min-width: max-content;
+}
+
+/* All cells */
+.data-table th,
+.data-table td {
+  padding: 0.5rem;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+/* Header cells */
+.data-table th {
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.data-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+/* Body rows */
+.data-table tbody tr {
+  cursor: pointer;
+}
+
+/* Focus states */
+.data-table:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.data-table tr:focus {
+  outline-offset: -2px;
+}
+
+/* Special states */
+.data-table tr.deleted-row {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* ========================================
+   BORDER AND BACKGROUND CONTROL SECTION
+   ======================================== */
+
+/* No outer borders - table is wrapped in Box with panel border */
+.data-table thead,
+.data-table tbody,
+.data-table tfoot {
+  border: none;
+}
+
+/* All cells - borders only */
+.data-table th,
+.data-table td {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+  border-right: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  border-right: none;
+}
+
+/* Remove bottom border from footer cells */
+.data-table tfoot td {
+  border-bottom: none;
+}
+
+/* Remove bottom border from last row to avoid conflict with Box border */
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Remove padding from all perimeter cells for continuous border */
+.data-table thead th {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.data-table tbody tr:last-child td {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+  margin-left: 0;
+  padding-left: 0.375rem;
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  margin-right: 0;
+  padding-right: 0.375rem;
+}
+
+/* Header cells - background only */
+.mantine-integrated-table .data-table th {
+  background-color: var(--mantine-primary-color-filled);
+}
+
+/* Special states - background only */
+.data-table tr.deleted-row {
+  background-color: rgba(255, 100, 100, 0.1);
+}
+
+/* Focus states - colors only */
+.data-table tr:focus {
+  outline: 2px solid var(--mantine-color-primary-4);
+}
+
+.data-table:focus tbody tr[aria-selected='true'] {
+  box-shadow: 0 0 0 2px var(--mantine-color-primary-3);
+}
+
+/* Text colors */
+.mantine-integrated-table .data-table th {
+  color: var(--mantine-primary-color-contrast);
+}
+
+.data-table tr.deleted-row td {
+  color: var(--mantine-color-dimmed);
 }

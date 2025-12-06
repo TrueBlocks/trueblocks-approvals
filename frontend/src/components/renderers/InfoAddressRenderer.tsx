@@ -1,4 +1,4 @@
-import { DetailSection } from '@components';
+import { StyledLabel, StyledValue } from '@components';
 import { createAddressLink } from '@utils';
 
 import { PanelRow, PanelTable } from '.';
@@ -35,53 +35,66 @@ export const InfoAddressRenderer = ({ addressInfo }: InfoAddressProps) => {
   } = addressInfo;
 
   return (
-    <DetailSection>
-      <PanelTable>
-        {showFromLabel && !!from && (
-          <PanelRow
-            label={fromLabel || 'From'}
-            value={
-              <>
-                {fromName && (
-                  <div className="panel-nested-name">{fromName}</div>
-                )}
-                <div className="panel-nested-address">
-                  {createAddressLink(from)}
-                </div>
-              </>
-            }
-          />
-        )}
-        {!!extra && (
-          <PanelRow
-            label={extraLabel || 'Extra'}
-            value={
-              <>
-                {extraName && (
-                  <div className="panel-nested-name">{extraName}</div>
-                )}
-                <div className="panel-nested-address">
-                  {createAddressLink(extra)}
-                </div>
-              </>
-            }
-          />
-        )}
-        {!!to && (
-          <PanelRow
-            label={toLabel || 'To'}
-            value={
-              <>
-                {toName && <div className="panel-nested-name">{toName}</div>}
-                <div className="panel-nested-address">
-                  {createAddressLink(to)}
-                </div>
-              </>
-            }
-          />
-        )}
-      </PanelTable>
-    </DetailSection>
+    <PanelTable>
+      {showFromLabel && !!from && (
+        <PanelRow
+          label={
+            <StyledLabel variant="blue">{fromLabel || 'From'}</StyledLabel>
+          }
+          value={
+            <>
+              {fromName && (
+                <>
+                  <StyledValue weight="normal">{fromName}</StyledValue>
+                  <br />
+                </>
+              )}
+              <StyledValue variant="blue" size="xs">
+                {createAddressLink(from)}
+              </StyledValue>
+            </>
+          }
+        />
+      )}
+      {!!extra && (
+        <PanelRow
+          label={
+            <StyledLabel variant="blue">{extraLabel || 'Extra'}</StyledLabel>
+          }
+          value={
+            <>
+              {extraName && (
+                <>
+                  <StyledValue weight="normal">{extraName}</StyledValue>
+                  <br />
+                </>
+              )}
+              <StyledValue variant="blue" size="xs">
+                {createAddressLink(extra)}
+              </StyledValue>
+            </>
+          }
+        />
+      )}
+      {!!to && (
+        <PanelRow
+          label={<StyledLabel variant="blue">{toLabel || 'To'}</StyledLabel>}
+          value={
+            <>
+              {toName && (
+                <>
+                  <StyledValue weight="normal">{toName}</StyledValue>
+                  <br />
+                </>
+              )}
+              <StyledValue variant="blue" size="xs">
+                {createAddressLink(to)}
+              </StyledValue>
+            </>
+          }
+        />
+      )}
+    </PanelTable>
   );
 };
 

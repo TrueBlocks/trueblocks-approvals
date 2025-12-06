@@ -231,7 +231,13 @@ export const Projects = () => {
   );
 
   const detailPanel = useMemo(
-    () => createDetailPanel(viewConfig, getCurrentDataFacet),
+    () =>
+      createDetailPanel(
+        viewConfig,
+        getCurrentDataFacet,
+        {},
+        (_rowKey: string, _newValue: string, _txHash: string) => {},
+      ),
     [viewConfig, getCurrentDataFacet],
   );
 
@@ -245,6 +251,7 @@ export const Projects = () => {
       >[],
     renderers: renderers.facets,
     viewName: ROUTE,
+    onRowAction: handleRowAction,
   });
 
   const perTabContent = useMemo(() => {
