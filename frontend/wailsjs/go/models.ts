@@ -1428,20 +1428,6 @@ export namespace status {
 
 export namespace types {
 	
-	export enum StoreState {
-	    STALE = "stale",
-	    FETCHING = "fetching",
-	    LOADED = "loaded",
-	}
-	export enum Period {
-	    BLOCKLY = "blockly",
-	    HOURLY = "hourly",
-	    DAILY = "daily",
-	    WEEKLY = "weekly",
-	    MONTHLY = "monthly",
-	    QUARTERLY = "quarterly",
-	    ANNUAL = "annual",
-	}
 	export enum DataFacet {
 	    STATS = "stats",
 	    INDEX = "index",
@@ -1486,6 +1472,20 @@ export namespace types {
 	    DATABASES = "databases",
 	    ITEMS = "items",
 	    GALLERY = "gallery",
+	}
+	export enum StoreState {
+	    STALE = "stale",
+	    FETCHING = "fetching",
+	    LOADED = "loaded",
+	}
+	export enum Period {
+	    BLOCKLY = "blockly",
+	    HOURLY = "hourly",
+	    DAILY = "daily",
+	    WEEKLY = "weekly",
+	    MONTHLY = "monthly",
+	    QUARTERLY = "quarterly",
+	    ANNUAL = "annual",
 	}
 	export class AbiCalcs {
 	    name?: string;
