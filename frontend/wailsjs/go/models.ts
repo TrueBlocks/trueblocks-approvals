@@ -913,7 +913,7 @@ export namespace preferences {
 	    silencedDialogs: Record<string, boolean>;
 	    chunksMetrics?: Record<string, string>;
 	    exportsMetrics?: Record<string, string>;
-	    sectionStates?: Record<string, boolean>;
+	    sectionStates: Record<string, boolean>;
 	    bounds?: Bounds;
 	    fontScale: number;
 	    showFieldTypes: boolean;
@@ -1449,6 +1449,11 @@ export namespace types {
 	    ALCHEMY = "alchemy",
 	    DASHBOARD = "dashboard",
 	    EXECUTE = "execute",
+	    GENERATOR = "generator",
+	    SERIES = "series",
+	    DATABASES = "databases",
+	    ITEMS = "items",
+	    GALLERY = "gallery",
 	    STATEMENTS = "statements",
 	    ASSETS = "assets",
 	    ASSETCHARTS = "assetcharts",
@@ -1467,11 +1472,6 @@ export namespace types {
 	    STATUS = "status",
 	    CACHES = "caches",
 	    CHAINS = "chains",
-	    GENERATOR = "generator",
-	    SERIES = "series",
-	    DATABASES = "databases",
-	    ITEMS = "items",
-	    GALLERY = "gallery",
 	}
 	export enum StoreState {
 	    STALE = "stale",
